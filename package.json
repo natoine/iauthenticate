@@ -16,5 +16,15 @@
   "bugs": {
     "url": "https://github.com/natoine/iauthenticate/issues"
   },
-  "homepage": "https://github.com/natoine/iauthenticate#readme"
+  "homepage": "https://github.com/natoine/iauthenticate#readme",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "connect-flash": "^0.1.1",
+    "ejs": "^2.5.7",
+    "express": "^4.15.4",
+    "mongoose": "^4.11.7",
+    "morgan": "^1.8.2",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0"
+  }
 }
