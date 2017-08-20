@@ -21,6 +21,7 @@ const configDB = require('./config/database.js')
 //mongoose.connect(configDB.url) // connect to our database
 const db = mongoose.createConnection()
 db.openUri(configDB.url)
+console.log(db)
 
 require('./config/passport')(passport)
 // pass passport for configuration

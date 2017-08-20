@@ -46,9 +46,23 @@ module.exports = function(passport) {
         // User.findOne wont fire unless data is sent back
         process.nextTick(function() {
             console.log("nextTick")
+
+/////pour comprendre ce qui ne marche pas
+
+            var newUser            = new User()
+            newUser.local.email    = email
+            newUser.local.password = newUser.generateHash(password)
+            newUser.save(function(err) {
+                    if (err)
+                        throw err
+                    return done(null, newUser)
+                })
+
+///////////
+
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
-        User.findOne({ 'local.email' :  email }, function(err, user) {
+       /* User.findOne({ 'local.email' :  email }, function(err, user) {
             console.log("findOne")
             // if there are any errors, return the error
             if (err)
@@ -75,7 +89,7 @@ module.exports = function(passport) {
                 })
             }
 
-        })    
+        })    */
 
         })
 
