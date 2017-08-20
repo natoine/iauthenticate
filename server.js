@@ -22,7 +22,7 @@ const configDB = require('./config/database.js')
 const db = mongoose.createConnection()
 db.openUri(configDB.url)
 
-//require('./config/passport')(passport)
+require('./config/passport')(passport)
 // pass passport for configuration
 
 // set up our express application
