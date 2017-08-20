@@ -20,7 +20,7 @@ const configDB = require('./config/database.js')
 //mongoose.connect("mongodb://localhost/iauthenticate") // works but deprecated
 //mongoose.connect(configDB.url) // connect to our database
 const db = mongoose.createConnection()
-db.openUri("mongodb://localhost/iauthenticate")
+db.openUri(configDB.url)
 
 // require('./config/passport')(passport)
 // pass passport for configuration
