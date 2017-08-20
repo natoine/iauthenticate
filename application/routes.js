@@ -5,7 +5,6 @@ module.exports = function(app, passport) {
     // HOME PAGE (with login links) ========
     // =====================================
     app.get('/', function(req, res) {
-        console.log("homepage")
         res.render('index.ejs')// load the index.ejs file
     })
 
