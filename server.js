@@ -22,7 +22,7 @@ const configDB = require('./config/database.js')
 const db = mongoose.createConnection()
 db.openUri(configDB.url)
 
-// require('./config/passport')(passport)
+//require('./config/passport')(passport)
 // pass passport for configuration
 
 // set up our express application
@@ -39,8 +39,7 @@ app.use(passport.session()) // persistent login sessions
 app.use(flash()) // use connect-flash for flash messages stored in session
 
 // routes ======================================================================
-require('./application/routes.js')
-//(app, passport) 
+require('./application/routes.js')(app, passport)
 // load our routes and pass in our app and fully configured passport
 
 // launch ======================================================================
