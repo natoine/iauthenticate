@@ -21,7 +21,8 @@ const configDB = require('./config/database.js')
 //mongoose.connect(configDB.url) // connect to our database
 const db = mongoose.createConnection()
 db.openUri(configDB.url)
-console.log(db)
+db.on('error', console.error.bind(console, 'connection error:'))
+//db.once('open', function() {}) Maybe needs this ...
 
 require('./config/passport')(passport)
 // pass passport for configuration
@@ -44,5 +45,5 @@ require('./application/routes.js')(app, passport)
 // load our routes and pass in our app and fully configured passport
 
 // launch ======================================================================
-app.listen(port);
+app.listen(port)
 console.log('The magic happens on port ' + port)

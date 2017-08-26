@@ -52,9 +52,12 @@ module.exports = function(passport) {
             var newUser            = new User()
             newUser.local.email    = email
             newUser.local.password = newUser.generateHash(password)
+            console.log(newUser)
             newUser.save(function(err) {
+                console.log("called save")
                     if (err)
-                        throw err
+                        console.log(err)
+                        //throw err
                     return done(null, newUser)
                 })
 
