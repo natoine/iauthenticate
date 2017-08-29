@@ -56,7 +56,7 @@ module.exports = function(app, passport) {
     // =====================================
     // LOGOUT ==============================
     // =====================================
-    app.get('/logout', function(req, res) {
+    app.get('/logout', function(req, res) { //do nothing right now should really manage a token
         req.logout()
         res.redirect('/')
     })
