@@ -17,4 +17,7 @@ URL de la page d'acceuil tant que dev local http://127.0.0.1:8080
 
 Sélectionnez comme type d'application : application Web
 Origines javascript autorisé : http://127.0.0.1:8080
-URI de redirection autorisée : http://127.0.0.1:8080/auth/google/callback
+URI de redirection autorisée : http://127.0.0.1:8080/auth/google/callback (localhost semble ne pas marcher)
+
+Pensez à activer l'API google : Google+ API
+Ca prend souvent un peu de temps ( 2 min ) à s'activer la première fois.
