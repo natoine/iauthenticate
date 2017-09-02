@@ -148,7 +148,28 @@ module.exports = function(passport)
 
                 // if the user is found, then log them in
                 if (user) {
-                    return done(null, user) // user found, return that user
+                    // if there is a user id already but no token (user was linked at one point and then removed)
+                        // just add our token and profile information
+                        if (!user.facebook.token) {
+                            user.facebook.token = token
+                            user.facebook.name  = profile.displayName
+                            if(profile.emails.length != null) 
+                            {
+                                user.facebook.email = profile.emails[0].value // facebook can return multiple emails so we'll take the first
+                            }
+                            else 
+                            {
+                                console.log("User id : " + profile.id + " facebook should authorize one mail public")
+                            }
+
+                            user.save(function(err) {
+                                if (err)
+                                    throw err
+                                return done(null, user)
+                            })
+                        }
+
+                        return done(null, user) // user found, return that user
                 } else {
                     // if there is no user found with that facebook id, create them
                     var newUser            = new User()
@@ -228,11 +249,25 @@ module.exports = function(passport)
                 // if there is an error, stop everything and return that
                 // ie an error connecting to the database
                 if (err)
-                    return done(err);
+                    return done(err)
 
                 // if the user is found then log them in
                 if (user) {
-                    return done(null, user); // user found, return that user
+                    // if there is a user id already but no token (user was linked at one point and then removed)
+                        // just add our token and profile information
+                        if (!user.twitter.token) {
+                            user.twitter.token = token
+                            user.twitter.username  = profile.username
+                            user.twitter.displayname = profile.displayName
+                            
+                            user.save(function(err) {
+                                if (err)
+                                    throw err
+                                return done(null, user)
+                            })
+                        }
+
+                        return done(null, user) // user found, return that user
                 } else {
                     // if there is no user, create them
                     var newUser                 = new User()
@@ -303,9 +338,21 @@ module.exports = function(passport)
                     return done(err)
 
                 if (user) {
+                        // if there is a user id already but no token (user was linked at one point and then removed)
+                        // just add our token and profile information
+                        if (!user.google.token) {
+                            user.google.token = token
+                            user.google.name  = profile.displayname
+                            user.google.email = profile.emails[0].value
+                            
+                            user.save(function(err) {
+                                if (err)
+                                    throw err
+                                return done(null, user)
+                            })
+                        }
 
-                    // if a user is found, log them in
-                    return done(null, user)
+                        return done(null, user) // user found, return that user
                 } else {
                     // if the user isnt in our database, create a new user
                     var newUser          = new User()
