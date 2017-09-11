@@ -48,13 +48,17 @@ module.exports = function(passport)
     },
     function(req, email, password, done) {
 
+        //check to see if email is correctly spelled
+        const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+        if(!email.match(mailformat)) {
+            return done(null, false, req.flash('signupMessage', 'That email is not correctly spelled'))
+        }
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
         User.findOne({ 'local.email' :  email }, function(err, user) {
             // if there are any errors, return the error
             if (err)
                 return done(err)
-
             // check to see if theres already a user with that email
             if (user) {
                 return done(null, false, req.flash('signupMessage', 'That email is already taken.'))
@@ -93,6 +97,12 @@ module.exports = function(passport)
         passReqToCallback : true // allows us to pass back the entire request to the callback
     },
     function(req, email, password, done) { // callback with email and password from our form
+
+        //check to see if email is correctly spelled
+        const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+        if(!email.match(mailformat)) {
+            return done(null, false, req.flash('loginMessage', 'That email is not correctly spelled'))
+        }
 
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
