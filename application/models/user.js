@@ -9,6 +9,8 @@ const userSchema = mongoose.Schema({
     local            : {
         email        : String,
         password     : String,
+        timepwdreco  : Number,
+        pwdrecotoken : String
     },
     facebook         : {
         id           : String,
@@ -40,6 +42,11 @@ userSchema.methods.generateHash = function(password) {
 // checking if password is valid
 userSchema.methods.validPassword = function(password) {
     return bcrypt.compareSync(password, this.local.password)
+}
+
+//generate password recovery token
+userSchema.methods.generatePwdRecoToken = function(email , timepwdreco) {
+    return bcrypt.hashSync(email + timepwdreco, bcrypt.genSaltSync(8), null)
 }
 
 // create the model for users and expose it to our app

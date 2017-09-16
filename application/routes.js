@@ -82,28 +82,51 @@ module.exports = function(app, passport) {
                 // check to see if theres already a user with that email
                 if (user) 
                 {
-                    console.log("user asked for pwd reco : " + user)
-                    //sends an email to recover password
-                    const mailOptions =
+                    const now = new Date().getTime()
+                    console.log("user asked for pwd reco : " + user + " at " + now)
+                    user.local.timepwdreco = now
+                    user.local.pwdrecotoken = user.generatePwdRecoToken(email , now)
+                    user.save(function(err) 
                     {
-                        to : email,
-                        subject : "iauthenticate pwd recovery ok",
-                        text : "you seem to have lost your pwd"
-                    }
-                    smtpTransport.sendMail(mailOptions, function(error, response){
-                        if(error){
-                            console.log(error)
+                        if (err)
+                        {
+                            console.log(err)
+                            //flash
+                            req.flash('pwdrecoveryMessage', 'An error occured, try later')
+                            req.flash('pwdrecoveryokMessage', '')
+                            res.render('pwdrecovery.ejs', { messageok: req.flash('pwdrecoveryokMessage') , messagedanger: req.flash('pwdrecoveryMessage') })
                         }
                         else
                         {
-                            console.log("Message sent: " + response.message)
-                        }
-                    })
+                            //sends an email to recover password
+                            const mailOptions =
+                            {
+                                to : email,
+                                subject : "iauthenticate pwd recovery ok",
+                                text : "you seem to have lost your pwd. Click on the following link to change your password : http://localhost:8080/pwdrecovery/" + user.local.pwdrecotoken
+                            }
+                            smtpTransport.sendMail(mailOptions, function(error, response){
+                                if(error){
+                                    console.log(error)
+                                    //flash
+                                    req.flash('pwdrecoveryMessage', 'An error occured, try later')
+                                    req.flash('pwdrecoveryokMessage', '')
+                                    res.render('pwdrecovery.ejs', { messageok: req.flash('pwdrecoveryokMessage') , messagedanger: req.flash('pwdrecoveryMessage') })
+                                }
+                                else
+                                {
+                                    console.log("Message sent: " + response.message)
+                                }
+                            })
 
-                    //flash
-                    req.flash('pwdrecoveryokMessage', 'An email has been sent')
-                    res.render('pwdrecovery.ejs', { messageok: req.flash('pwdrecoveryokMessage') , messagedanger: "" })
-                } else {
+                            //flash
+                            req.flash('pwdrecoveryokMessage', 'An email has been sent')
+                            req.flash('pwdrecoveryMessage', '')
+                            res.render('pwdrecovery.ejs', { messageok: req.flash('pwdrecoveryokMessage') , messagedanger: req.flash('pwdrecoveryMessage') })
+                        }
+                    })      
+                } 
+                else {
                     console.log("someone asked for pwd reco : " + email)
                     //sends an email to prevent a missuse of email
                     const mailOptions =
