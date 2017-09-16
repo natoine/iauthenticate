@@ -188,9 +188,8 @@ module.exports = function(app, passport) {
         }
     })
    
-        //process the pwd recovery form
-    app.post('/pwdchange' , function(req, res) {
-        
+    //process the pwd recovery form
+    app.post('/pwdchangerecovery' , function(req, res) {
         
         User.findOne({ 'local.email' :  req.body.email }, function(err, user) 
             {
@@ -234,6 +233,10 @@ module.exports = function(app, passport) {
                     }
                 }
             })
+    })
+
+    app.get('/changepwd', isLoggedIn, function(req, res) {
+        res.render('changepwd.ejs', {email: req.user.local.email, message: req.flash('changepwdMessage')})
     })
 
 

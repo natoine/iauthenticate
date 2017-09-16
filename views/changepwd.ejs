@@ -1,4 +1,4 @@
-<!-- views/pwdrecoverylink.ejs -->
+<!-- views/changepwd.ejs -->
 <!doctype html>
 <html>
 <head>
@@ -16,7 +16,7 @@
 
     <h1><span class="fa fa-sign-in"></span> Change your Password <%= email %></h1>
 
-    <!-- show any messages that come back with pwdrecoverylinks -->
+    <!-- show any messages that come back with changepwd -->
     <% if (message.length > 0) { %>
         <div class="alert alert-danger"><%= message %></div>
     <% } %>
@@ -24,10 +24,12 @@
     <!-- PWD CHANGE FORM -->
     <form action="/pwdchangerecovery" method="post">
         <div class="form-group">
-            <label>Password</label>
-            <input type="password" class="form-control" name="password">
-            <input type="hidden" name="email" value="<%= email %>">
-            <input type="hidden" name="token" value="<%= token %>">
+            <label>Current Password</label>
+            <input type="password" class="form-control" name="currentpassword">
+        </div>
+        <div class="form-group">
+            <label>New Password</label>
+            <input type="password" class="form-control" name="newpassword">
         </div>
 
         <button type="submit" class="btn btn-warning btn-lg">Change Password</button>
