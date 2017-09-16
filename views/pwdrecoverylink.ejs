@@ -1,0 +1,42 @@
+<!-- views/signup.ejs -->
+<!doctype html>
+<html>
+<head>
+    <title>Node Authentication</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body        { padding-top:80px; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+<div class="col-sm-6 col-sm-offset-3">
+
+    <h1><span class="fa fa-sign-in"></span> Change your Password</h1>
+
+    <!-- show any messages that come back with pwdrecoverylinks -->
+    <% if (message.length > 0) { %>
+        <div class="alert alert-danger"><%= messagedanger %></div>
+    <% } %>
+
+    <!-- PWD CHANGE FORM -->
+    <form action="/pwdchange" method="post">
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" class="form-control" name="password">
+        </div>
+
+        <button type="submit" class="btn btn-warning btn-lg">Change Password</button>
+    </form>
+
+    <hr>
+
+    <p><a href="/">home</a></p>
+
+</div>
+
+</div>
+</body>
+</html>

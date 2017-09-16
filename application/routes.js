@@ -153,6 +153,15 @@ module.exports = function(app, passport) {
         }
     })
 
+    //when user clicks on the recovery link
+    app.get('/pwdrecovery/*', function(req, res) {
+
+        // render the page and pass in any flash data if it exists
+        res.render('pwdrecoverylink.ejs', { message: req.flash('pwdrecoverylinkMessage') })
+    })    
+
+
+
 
 
     // =====================================
