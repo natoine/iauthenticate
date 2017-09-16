@@ -54,8 +54,42 @@ module.exports = function(app, passport) {
     // show the pwd recovery form
     app.get('/pwdrecovery', function(req, res) {
 
-        // render the page and pass in any flash data if it exists
-        res.render('pwdrecovery.ejs', { messagedanger: req.flash('pwdrecoveryMessage') , messageok: req.flash('pwdrecoveryokMessage') })
+        if(!req.query.token)
+        {
+            res.render('pwdrecovery.ejs', { messagedanger: req.flash('pwdrecoveryMessage') , messageok: req.flash('pwdrecoveryokMessage') })
+        }
+        else
+        {
+            User.findOne({ 'local.pwdrecotoken' :  req.query.token }, function(err, user) 
+            {
+                // if there are any errors, return the error
+                if (err)
+                {
+                    console.log(err)
+                    req.flash('pwdrecoverylinkMessage', 'An error occured, try later')
+                    res.render('pwdrecoverylink.ejs' , { message: req.flash('pwdrecoverylinkMessage') , email: "ERROR"})
+                }
+                if (user) 
+                {
+                    const now = new Date().getTime()
+                    if( now - user.local.timepwdreco > 3600000 ) 
+                    {
+                        console.log("too late")
+                        req.flash('pwdrecoverylinkMessage', 'too late ! more than one hour since you asked to change pwd')
+                        res.render('pwdrecoverylink.ejs' , { message: req.flash('pwdrecoverylinkMessage'), email: user.local.email })
+                    }
+                    else
+                    {
+                        res.render('pwdrecoverylink.ejs' , { message: req.flash('pwdrecoverylinkMessage'), email: user.local.email })
+                    }
+                }
+                else
+                {
+                    res.redirect('/')
+                }
+            }
+            )
+        }
     })
 
     //process the pwd recovery form
@@ -103,7 +137,7 @@ module.exports = function(app, passport) {
                             {
                                 to : email,
                                 subject : "iauthenticate pwd recovery ok",
-                                text : "you seem to have lost your pwd. Click on the following link to change your password : http://localhost:8080/pwdrecovery/" + user.local.pwdrecotoken
+                                text : "you seem to have lost your pwd. Click on the following link to change your password : http://localhost:8080/pwdrecovery?token=" + user.local.pwdrecotoken
                             }
                             smtpTransport.sendMail(mailOptions, function(error, response){
                                 if(error){
@@ -152,13 +186,7 @@ module.exports = function(app, passport) {
             })
         }
     })
-
-    //when user clicks on the recovery link
-    app.get('/pwdrecovery/*', function(req, res) {
-
-        // render the page and pass in any flash data if it exists
-        res.render('pwdrecoverylink.ejs', { message: req.flash('pwdrecoverylinkMessage') })
-    })    
+   
 
 
 
