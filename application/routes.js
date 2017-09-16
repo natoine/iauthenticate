@@ -1,6 +1,9 @@
 // load up the user model
 const User            = require('../application/models/user')
 
+//to send emails
+const smtpTransport = require('../config/mailer')
+
 // application/routes.js
 module.exports = function(app, passport) {
 
@@ -81,12 +84,43 @@ module.exports = function(app, passport) {
                 {
                     console.log("user asked for pwd reco : " + user)
                     //sends an email to recover password
+                    const mailOptions =
+                    {
+                        to : email,
+                        subject : "iauthenticate pwd recovery ok",
+                        text : "you seem to have lost your pwd"
+                    }
+                    smtpTransport.sendMail(mailOptions, function(error, response){
+                        if(error){
+                            console.log(error)
+                        }
+                        else
+                        {
+                            console.log("Message sent: " + response.message)
+                        }
+                    })
+
                     //flash
                     req.flash('pwdrecoveryokMessage', 'An email has been sent')
                     res.render('pwdrecovery.ejs', { messageok: req.flash('pwdrecoveryokMessage') , messagedanger: "" })
                 } else {
                     console.log("someone asked for pwd reco : " + email)
                     //sends an email to prevent a missuse of email
+                    const mailOptions =
+                    {
+                        to : email,
+                        subject : "iauthenticate pwd recovery notok",
+                        text : "someone thinks you use our service"
+                    }
+                    smtpTransport.sendMail(mailOptions, function(error, response){
+                        if(error){
+                            console.log(error)
+                        }
+                        else
+                        {
+                            console.log("Message sent: " + response.message)
+                        }
+                    })
                     //flash
                     req.flash('pwdrecoveryokMessage', 'An email has been sent')
                     res.render('pwdrecovery.ejs', { messageok: req.flash('pwdrecoveryokMessage') , messagedanger: "" })
