@@ -57,8 +57,4 @@ typings/
 # dotenv environment variables file
 .env
 
-# config files
-config/auth.js
-config/mailer.js
-
 
