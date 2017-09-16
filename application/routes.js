@@ -1,3 +1,6 @@
+// load up the user model
+const User            = require('../application/models/user')
+
 // application/routes.js
 module.exports = function(app, passport) {
 
@@ -41,6 +44,59 @@ module.exports = function(app, passport) {
         failureRedirect : '/signup', // redirect back to the signup page if there is an error
         failureFlash : true // allow flash messages
     }))
+
+    // =====================================
+    // PWD RECOVERY ==============================
+    // =====================================
+    // show the pwd recovery form
+    app.get('/pwdrecovery', function(req, res) {
+
+        // render the page and pass in any flash data if it exists
+        res.render('pwdrecovery.ejs', { messagedanger: req.flash('pwdrecoveryMessage') , messageok: req.flash('pwdrecoveryokMessage') })
+    })
+
+    //process the pwd recovery form
+    app.post('/pwdrecovery' , function(req, res) {
+
+        const email = req.body.email
+        //check to see if email is correctly spelled
+        const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+        if(!email.match(mailformat)) {
+            req.flash('pwdrecoveryMessage', 'That email is not correctly spelled')
+            res.render('pwdrecovery.ejs', { messagedanger: req.flash('pwdrecoveryMessage') , messageok: ""})
+        }
+        else 
+        {
+            User.findOne({ 'local.email' :  email }, function(err, user) 
+            {
+                // if there are any errors, return the error
+                if (err)
+                {
+                    console.log(err)
+                    req.flash('pwdrecoveryMessage', 'An error occured, try later')
+                    res.render('pwdrecovery.ejs', { messagedanger: req.flash('pwdrecoveryMessage') , messageok: "" })
+                }
+                // check to see if theres already a user with that email
+                if (user) 
+                {
+                    console.log("user asked for pwd reco : " + user)
+                    //sends an email to recover password
+                    //flash
+                    req.flash('pwdrecoveryokMessage', 'An email has been sent')
+                    res.render('pwdrecovery.ejs', { messageok: req.flash('pwdrecoveryokMessage') , messagedanger: "" })
+                } else {
+                    console.log("someone asked for pwd reco : " + email)
+                    //sends an email to prevent a missuse of email
+                    //flash
+                    req.flash('pwdrecoveryokMessage', 'An email has been sent')
+                    res.render('pwdrecovery.ejs', { messageok: req.flash('pwdrecoveryokMessage') , messagedanger: "" })
+                }
+
+            })
+        }
+    })
+
+
 
     // =====================================
     // PROFILE SECTION =====================
