@@ -204,7 +204,7 @@ module.exports = function(app, passport) {
                 if (user) 
                 {
                     const now = new Date().getTime()
-                    if(!user.local.pwdrecotoken === req.body.token || now - user.local.timepwdreco > TIMINGTOCHANGEPWD)
+                    if(user.local.pwdrecotoken.localeCompare(req.body.token)!=0 || now - user.local.timepwdreco > TIMINGTOCHANGEPWD)
                     {
                         req.flash('pwdrecoveryMessage', 'You have taken too long time or are not authorized to change. Try again.')
                         req.flash('pwdrecoveryokMessage', '')
@@ -239,7 +239,33 @@ module.exports = function(app, passport) {
         res.render('changepwd.ejs', {email: req.user.local.email, message: req.flash('changepwdMessage')})
     })
 
-
+    app.post('/changepwd', isLoggedIn, function(req, res){
+        const user = req.user
+        if(!user.validPassword(req.body.currentpassword))
+        {
+            req.flash('changepwdMessage', 'not the right password')
+            res.render('changepwd.ejs', {email: user.local.email, message: req.flash('changepwdMessage')})
+        }
+        else
+        {
+            user.local.password = user.generateHash(req.body.newpassword)
+            user.save(function(err) 
+            {
+                if (err) 
+                {
+                    console.log(err)
+                    //flash
+                    req.flash('changepwdMessage', 'An error occured, try later')
+                    res.render('changepwd.ejs', {email: user.local.email, message: req.flash('changepwdMessage')})
+                }
+                else
+                {
+                    req.flash('loginMessage', 'pwd changed. Try to login.')
+                    res.render('login.ejs', { message: req.flash('loginMessage') })
+                }
+            })
+        }
+    })
 
 
     // =====================================
