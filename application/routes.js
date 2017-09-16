@@ -4,6 +4,8 @@ const User            = require('../application/models/user')
 //to send emails
 const smtpTransport = require('../config/mailer')
 
+const TIMINGTOCHANGEPWD = 3600000
+
 // application/routes.js
 module.exports = function(app, passport) {
 
@@ -66,29 +68,28 @@ module.exports = function(app, passport) {
                 if (err)
                 {
                     console.log(err)
-                    req.flash('pwdrecoverylinkMessage', 'An error occured, try later')
-                    res.render('pwdrecoverylink.ejs' , { message: req.flash('pwdrecoverylinkMessage') , email: "ERROR"})
+                    req.flash('pwdrecoveryMessage', 'An error occured, try later')
+                    res.render('pwdrecovery.ejs' , { messagedanger: req.flash('pwdrecoveryMessage') , messageok: ""})
                 }
                 if (user) 
                 {
                     const now = new Date().getTime()
-                    if( now - user.local.timepwdreco > 3600000 ) 
+                    console.log(now - user.local.timepwdreco)
+                    if( now - user.local.timepwdreco > TIMINGTOCHANGEPWD ) 
                     {
-                        console.log("too late")
-                        req.flash('pwdrecoverylinkMessage', 'too late ! more than one hour since you asked to change pwd')
-                        res.render('pwdrecoverylink.ejs' , { message: req.flash('pwdrecoverylinkMessage'), email: user.local.email })
+                        req.flash('pwdrecoveryMessage', 'too late ! more than one hour since you asked to change pwd')
+                        res.render('pwdrecovery.ejs' , { messagedanger: req.flash('pwdrecoveryMessage') , messageok: "" })
                     }
                     else
                     {
-                        res.render('pwdrecoverylink.ejs' , { message: req.flash('pwdrecoverylinkMessage'), email: user.local.email })
+                        res.render('pwdrecoverylink.ejs' , { message: req.flash('pwdrecoverylinkMessage'), email: user.local.email, token: req.query.token })
                     }
                 }
                 else
                 {
                     res.redirect('/')
                 }
-            }
-            )
+            })
         }
     })
 
@@ -187,7 +188,53 @@ module.exports = function(app, passport) {
         }
     })
    
-
+        //process the pwd recovery form
+    app.post('/pwdchange' , function(req, res) {
+        
+        
+        User.findOne({ 'local.email' :  req.body.email }, function(err, user) 
+            {
+                // if there are any errors, return the error
+                if (err)
+                {
+                    console.log(err)
+                    req.flash('pwdrecoveryMessage', 'An error occured, try later')
+                    res.render('pwdrecovery.ejs', { messagedanger: req.flash('pwdrecoveryMessage') , messageok: "" })
+                }
+                // check to see if theres already a user with that email
+                if (user) 
+                {
+                    const now = new Date().getTime()
+                    if(!user.local.pwdrecotoken === req.body.token || now - user.local.timepwdreco > TIMINGTOCHANGEPWD)
+                    {
+                        req.flash('pwdrecoveryMessage', 'You have taken too long time or are not authorized to change. Try again.')
+                        req.flash('pwdrecoveryokMessage', '')
+                        res.render('pwdrecovery.ejs', { messageok: req.flash('pwdrecoveryokMessage') , messagedanger: req.flash('pwdrecoveryMessage') })
+                    }
+                    else
+                    {
+                        user.local.password = user.generateHash(req.body.password)
+                        user.local.pwdrecotoken = ""
+                        user.local.timepwdreco = ""
+                        user.save(function(err) {
+                            if (err)
+                            {
+                                console.log(err)
+                                //flash
+                                req.flash('pwdrecoveryMessage', 'An error occured, try later')
+                                req.flash('pwdrecoveryokMessage', '')
+                                res.render('pwdrecovery.ejs', { messageok: req.flash('pwdrecoveryokMessage') , messagedanger: req.flash('pwdrecoveryMessage') })
+                            }
+                            else
+                            {
+                                req.flash('loginMessage', 'pwd changed. Try to login.')
+                                res.render('login.ejs', { message: req.flash('loginMessage') })
+                            }
+                        })
+                    }
+                }
+            })
+    })
 
 
 

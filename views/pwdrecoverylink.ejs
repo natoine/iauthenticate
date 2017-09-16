@@ -26,6 +26,8 @@
         <div class="form-group">
             <label>Password</label>
             <input type="password" class="form-control" name="password">
+            <input type="hidden" name="email" value="<%= email %>">
+            <input type="hidden" name="token" value="<%= token %>">
         </div>
 
         <button type="submit" class="btn btn-warning btn-lg">Change Password</button>
