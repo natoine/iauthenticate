@@ -75,7 +75,7 @@ module.exports = function(passport)
                 newUser.local.email    = email
                 newUser.local.password = newUser.generateHash(password) // use the generateHash function in our user model
                 newUser.local.mailvalidated = false
-
+                newUser.local.activationtoken = newUser.generateHash(email)
                 // save the user
                 newUser.save(function(err) {
                     if (err) throw err
@@ -86,7 +86,7 @@ module.exports = function(passport)
                         {
                             to : email,
                             subject : "iauthenticate account activation",
-                            text : "Welcome on iauthenticate. Please click the link bellow to activate your account : http://localhost:8080/activateaccount?token="
+                            text : "Welcome on iauthenticate. Please click the link bellow to activate your account : http://localhost:8080/activateaccount?email=" + email + "&token=" + newUser.local.activationtoken
                         }
                         smtpTransport.sendMail(mailOptions, function(error, response){
                             if(error)
@@ -103,9 +103,7 @@ module.exports = function(passport)
                     return done(null, newUser)
                 })
             }
-
         })
-
     }))
 
     // =========================================================================

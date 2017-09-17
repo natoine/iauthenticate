@@ -10,6 +10,7 @@ const userSchema = mongoose.Schema({
         email        : String,
         password     : String,
         mailvalidated: Boolean, 
+        activationtoken: String,
         timepwdreco  : Number,
         pwdrecotoken : String
     },
@@ -48,6 +49,11 @@ userSchema.methods.validPassword = function(password) {
 //generate password recovery token
 userSchema.methods.generatePwdRecoToken = function(email , timepwdreco) {
     return bcrypt.hashSync(email + timepwdreco, bcrypt.genSaltSync(8), null)
+}
+
+//checking if user is activated
+userSchema.methods.isActivated = function() {
+    return this.local.mailvalidated
 }
 
 // create the model for users and expose it to our app

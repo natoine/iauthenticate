@@ -200,7 +200,6 @@ module.exports = function(app, passport) {
                     req.flash('pwdrecoveryMessage', 'An error occured, try later')
                     res.render('pwdrecovery.ejs', { messagedanger: req.flash('pwdrecoveryMessage') , messageok: "" })
                 }
-                // check to see if theres already a user with that email
                 if (user) 
                 {
                     const now = new Date().getTime()
@@ -235,6 +234,11 @@ module.exports = function(app, passport) {
             })
     })
 
+   // =====================================
+    // CHANGE PWD ==============================
+    // =====================================
+
+
     app.get('/changepwd', isLoggedIn, function(req, res) {
         res.render('changepwd.ejs', {email: req.user.local.email, message: req.flash('changepwdMessage')})
     })
@@ -267,6 +271,57 @@ module.exports = function(app, passport) {
         }
     })
 
+    // =====================================
+    // ACTIVATE ACCOUNT ==============================
+    // =====================================
+    app.get('/activateaccount', function(req, res) {
+        const token = req.query.token
+        User.findOne({ 'local.activationtoken' : token }, function(err, user) 
+            {
+                // if there are any errors, return the error
+                if (err)
+                {
+                    console.log(err)
+                    req.flash('activateAccountDangerMessage', 'An error occured, try later')
+                    res.render('activateaccount.ejs', { messagedanger: req.flash('activateAccountDangerMessage') , messageok: "" })
+                }
+                if(user)
+                {
+                    console.log(token)
+                    console.log(req.query.email)
+                    console.log(user.local.email)
+                    console.log(user.local.email.localeCompare(req.query.email))
+                    if(user.local.email.localeCompare(req.query.email)==0)
+                    {
+                        if(user.isActivated())
+                        {
+                            res.redirect('/')
+                        }
+                        else
+                        {
+                            user.local.mailvalidated = true
+                            user.save(function(err) 
+                            {
+                                if (err) 
+                                {
+                                    console.log(err)
+                                    //flash
+                                    req.flash('activateAccountDangerMessage', 'An error occured, try later')
+                                    res.render('activateaccount.ejs', { messagedanger: req.flash('activateAccountDangerMessage') , messageok: "" })
+                                }
+                                else
+                                {
+                                    req.flash('activateAccountOkMessage', 'Account activated !')
+                                    res.render('activateaccount.ejs', { messagedanger: "" , messageok: req.flash('activateAccountOkMessage') })
+                                }
+                            })
+                        }    
+                    }
+                    else res.redirect('/')    
+                }
+                else res.redirect('/')
+            })
+    })
 
     // =====================================
     // PROFILE SECTION =====================
