@@ -92,15 +92,11 @@ module.exports = function(passport)
                             if(error)
                             {
                                 console.log(error)
-                                return done(null, false, req.flash('signupMessage', 'Something wrong happened sending you activation email.'))
-                            }
-                            else
-                            {
-                                console.log("Message sent: " + response.message)
                             }
                         })
                     }
-                    return done(null, newUser)
+                    return done(null, newUser, 
+                                    req.flash('signupMessage', 'We have sent you an activation email'))
                 })
             }
         })
@@ -211,6 +207,7 @@ module.exports = function(passport)
                     newUser.facebook.id    = profile.id // set the users facebook id                   
                     newUser.facebook.token = token // we will save the token that facebook provides to the user                    
                     newUser.facebook.name  = profile.displayName // look at the passport user profile to see how names are returned
+                    newUser.local.mailvalidated = true
                     if(profile.emails.length != null) 
                     {
                         newUser.facebook.email = profile.emails[0].value // facebook can return multiple emails so we'll take the first
@@ -310,6 +307,7 @@ module.exports = function(passport)
                     newUser.twitter.token       = token
                     newUser.twitter.username    = profile.username
                     newUser.twitter.displayName = profile.displayName
+                    newUser.local.mailvalidated = true
 
                     // save our user into the database
                     newUser.save(function(err) {
@@ -394,6 +392,7 @@ module.exports = function(passport)
                     newUser.google.token = token
                     newUser.google.name  = profile.displayName
                     newUser.google.email = profile.emails[0].value // pull the first email
+                    newUser.local.mailvalidated = true
 
                     // save the user
                     newUser.save(function(err) {

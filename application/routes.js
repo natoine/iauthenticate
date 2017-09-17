@@ -13,6 +13,7 @@ module.exports = function(app, passport) {
     // HOME PAGE (with login links) ========
     // =====================================
     app.get('/', function(req, res) {
+        req.logout()
         res.render('index.ejs')// load the index.ejs file
     })
 
@@ -21,7 +22,6 @@ module.exports = function(app, passport) {
     // =====================================
     // show the login form
     app.get('/login', function(req, res) {
-
         // render the page and pass in any flash data if it exists
         res.render('login.ejs', { message: req.flash('loginMessage') })
     })
@@ -38,14 +38,13 @@ module.exports = function(app, passport) {
     // =====================================
     // show the signup form
     app.get('/signup', function(req, res) {
-
         // render the page and pass in any flash data if it exists
         res.render('signup.ejs', { message: req.flash('signupMessage') })
     })
 
     // process the signup form
     app.post('/signup', passport.authenticate('local-signup', {
-        successRedirect : '/profile', // redirect to the secure profile section
+        successRedirect : '/signup', // redirect to the secure profile section
         failureRedirect : '/signup', // redirect back to the signup page if there is an error
         failureFlash : true // allow flash messages
     }))
@@ -55,34 +54,40 @@ module.exports = function(app, passport) {
     // =====================================
     // show the pwd recovery form
     app.get('/pwdrecovery', function(req, res) {
-
-        if(!req.query.token)
+        const token = req.query.token
+        if(!token)
         {
-            res.render('pwdrecovery.ejs', { messagedanger: req.flash('pwdrecoveryMessage') , messageok: req.flash('pwdrecoveryokMessage') })
+            res.render('pwdrecovery.ejs', 
+                { messagedanger: req.flash('pwdrecoveryMessage') , 
+                messageok: req.flash('pwdrecoveryokMessage') })
         }
         else
         {
-            User.findOne({ 'local.pwdrecotoken' :  req.query.token }, function(err, user) 
+            User.findOne({ 'local.pwdrecotoken' :  token }, function(err, user) 
             {
                 // if there are any errors, return the error
                 if (err)
                 {
                     console.log(err)
                     req.flash('pwdrecoveryMessage', 'An error occured, try later')
-                    res.render('pwdrecovery.ejs' , { messagedanger: req.flash('pwdrecoveryMessage') , messageok: ""})
+                    res.render('pwdrecovery.ejs' , 
+                        { messagedanger: req.flash('pwdrecoveryMessage') , messageok: ""})
                 }
                 if (user) 
                 {
                     const now = new Date().getTime()
-                    console.log(now - user.local.timepwdreco)
                     if( now - user.local.timepwdreco > TIMINGTOCHANGEPWD ) 
                     {
-                        req.flash('pwdrecoveryMessage', 'too late ! more than one hour since you asked to change pwd')
-                        res.render('pwdrecovery.ejs' , { messagedanger: req.flash('pwdrecoveryMessage') , messageok: "" })
+                        req.flash('pwdrecoveryMessage', 
+                            'too late ! more than one hour since you asked to change pwd')
+                        res.render('pwdrecovery.ejs' , 
+                            { messagedanger: req.flash('pwdrecoveryMessage') , messageok: "" })
                     }
                     else
                     {
-                        res.render('pwdrecoverylink.ejs' , { message: req.flash('pwdrecoverylinkMessage'), email: user.local.email, token: req.query.token })
+                        res.render('pwdrecoverylink.ejs' , 
+                            { message: req.flash('pwdrecoverylinkMessage'), 
+                                email: user.local.email, token: token })
                     }
                 }
                 else
@@ -112,13 +117,13 @@ module.exports = function(app, passport) {
                 {
                     console.log(err)
                     req.flash('pwdrecoveryMessage', 'An error occured, try later')
-                    res.render('pwdrecovery.ejs', { messagedanger: req.flash('pwdrecoveryMessage') , messageok: "" })
+                    res.render('pwdrecovery.ejs', 
+                        { messagedanger: req.flash('pwdrecoveryMessage') , messageok: "" })
                 }
                 // check to see if theres already a user with that email
                 if (user) 
                 {
                     const now = new Date().getTime()
-                    console.log("user asked for pwd reco : " + user + " at " + now)
                     user.local.timepwdreco = now
                     user.local.pwdrecotoken = user.generatePwdRecoToken(email , now)
                     user.save(function(err) 
@@ -129,7 +134,9 @@ module.exports = function(app, passport) {
                             //flash
                             req.flash('pwdrecoveryMessage', 'An error occured, try later')
                             req.flash('pwdrecoveryokMessage', '')
-                            res.render('pwdrecovery.ejs', { messageok: req.flash('pwdrecoveryokMessage') , messagedanger: req.flash('pwdrecoveryMessage') })
+                            res.render('pwdrecovery.ejs', 
+                                { messageok: req.flash('pwdrecoveryokMessage') , 
+                                messagedanger: req.flash('pwdrecoveryMessage') })
                         }
                         else
                         {
@@ -138,31 +145,33 @@ module.exports = function(app, passport) {
                             {
                                 to : email,
                                 subject : "iauthenticate pwd recovery ok",
-                                text : "you seem to have lost your pwd. Click on the following link to change your password : http://localhost:8080/pwdrecovery?token=" + user.local.pwdrecotoken
+                                text : "you seem to have lost your pwd. "
+                                 + "Click on the following link to change your password : " 
+                                 + "http://localhost:8080/pwdrecovery?token=" + user.local.pwdrecotoken
                             }
                             smtpTransport.sendMail(mailOptions, function(error, response){
-                                if(error){
+                                if(error)
+                                {
                                     console.log(error)
                                     //flash
                                     req.flash('pwdrecoveryMessage', 'An error occured, try later')
                                     req.flash('pwdrecoveryokMessage', '')
-                                    res.render('pwdrecovery.ejs', { messageok: req.flash('pwdrecoveryokMessage') , messagedanger: req.flash('pwdrecoveryMessage') })
-                                }
-                                else
-                                {
-                                    console.log("Message sent: " + response.message)
+                                    res.render('pwdrecovery.ejs', 
+                                        { messageok: req.flash('pwdrecoveryokMessage') , 
+                                        messagedanger: req.flash('pwdrecoveryMessage') })
                                 }
                             })
 
                             //flash
                             req.flash('pwdrecoveryokMessage', 'An email has been sent')
                             req.flash('pwdrecoveryMessage', '')
-                            res.render('pwdrecovery.ejs', { messageok: req.flash('pwdrecoveryokMessage') , messagedanger: req.flash('pwdrecoveryMessage') })
+                            res.render('pwdrecovery.ejs', 
+                                { messageok: req.flash('pwdrecoveryokMessage') , 
+                                messagedanger: req.flash('pwdrecoveryMessage') })
                         }
                     })      
                 } 
                 else {
-                    console.log("someone asked for pwd reco : " + email)
                     //sends an email to prevent a missuse of email
                     const mailOptions =
                     {
@@ -171,17 +180,16 @@ module.exports = function(app, passport) {
                         text : "someone thinks you use our service"
                     }
                     smtpTransport.sendMail(mailOptions, function(error, response){
-                        if(error){
-                            console.log(error)
-                        }
-                        else
+                        if(error)
                         {
-                            console.log("Message sent: " + response.message)
+                            console.log(error)
                         }
                     })
                     //flash
                     req.flash('pwdrecoveryokMessage', 'An email has been sent')
-                    res.render('pwdrecovery.ejs', { messageok: req.flash('pwdrecoveryokMessage') , messagedanger: "" })
+                    res.render('pwdrecovery.ejs', 
+                        { messageok: req.flash('pwdrecoveryokMessage') , 
+                        messagedanger: "" })
                 }
 
             })
@@ -190,7 +198,6 @@ module.exports = function(app, passport) {
    
     //process the pwd recovery form
     app.post('/pwdchangerecovery' , function(req, res) {
-        
         User.findOne({ 'local.email' :  req.body.email }, function(err, user) 
             {
                 // if there are any errors, return the error
@@ -198,22 +205,27 @@ module.exports = function(app, passport) {
                 {
                     console.log(err)
                     req.flash('pwdrecoveryMessage', 'An error occured, try later')
-                    res.render('pwdrecovery.ejs', { messagedanger: req.flash('pwdrecoveryMessage') , messageok: "" })
+                    res.render('pwdrecovery.ejs', 
+                        { messagedanger: req.flash('pwdrecoveryMessage') , messageok: "" })
                 }
                 if (user) 
                 {
                     const now = new Date().getTime()
-                    if(user.local.pwdrecotoken.localeCompare(req.body.token)!=0 || now - user.local.timepwdreco > TIMINGTOCHANGEPWD)
+                    if( user.local.pwdrecotoken.localeCompare(req.body.token)!=0 || 
+                        now - user.local.timepwdreco > TIMINGTOCHANGEPWD )
                     {
-                        req.flash('pwdrecoveryMessage', 'You have taken too long time or are not authorized to change. Try again.')
+                        req.flash('pwdrecoveryMessage', 
+                            'You have taken too long time or are not authorized to change. Try again.')
                         req.flash('pwdrecoveryokMessage', '')
-                        res.render('pwdrecovery.ejs', { messageok: req.flash('pwdrecoveryokMessage') , messagedanger: req.flash('pwdrecoveryMessage') })
+                        res.render('pwdrecovery.ejs', { messageok: req.flash('pwdrecoveryokMessage') ,
+                         messagedanger: req.flash('pwdrecoveryMessage') })
                     }
                     else
                     {
                         user.local.password = user.generateHash(req.body.password)
                         user.local.pwdrecotoken = ""
                         user.local.timepwdreco = ""
+                        user.local.mailvalidated = true //validate account in the same time. Afterall, if a guy recovers pwd but is not activated, we have verified its email in the same time.
                         user.save(function(err) {
                             if (err)
                             {
@@ -221,7 +233,8 @@ module.exports = function(app, passport) {
                                 //flash
                                 req.flash('pwdrecoveryMessage', 'An error occured, try later')
                                 req.flash('pwdrecoveryokMessage', '')
-                                res.render('pwdrecovery.ejs', { messageok: req.flash('pwdrecoveryokMessage') , messagedanger: req.flash('pwdrecoveryMessage') })
+                                res.render('pwdrecovery.ejs', { messageok: req.flash('pwdrecoveryokMessage') , 
+                                    messagedanger: req.flash('pwdrecoveryMessage') })
                             }
                             else
                             {
@@ -239,11 +252,11 @@ module.exports = function(app, passport) {
     // =====================================
 
 
-    app.get('/changepwd', isLoggedIn, function(req, res) {
+    app.get('/changepwd', isLoggedInAndActivated, function(req, res) {
         res.render('changepwd.ejs', {email: req.user.local.email, message: req.flash('changepwdMessage')})
     })
 
-    app.post('/changepwd', isLoggedIn, function(req, res){
+    app.post('/changepwd', isLoggedInAndActivated, function(req, res){
         const user = req.user
         if(!user.validPassword(req.body.currentpassword))
         {
@@ -283,14 +296,11 @@ module.exports = function(app, passport) {
                 {
                     console.log(err)
                     req.flash('activateAccountDangerMessage', 'An error occured, try later')
-                    res.render('activateaccount.ejs', { messagedanger: req.flash('activateAccountDangerMessage') , messageok: "" })
+                    res.render('activateaccount.ejs', 
+                        { messagedanger: req.flash('activateAccountDangerMessage') , messageok: "" })
                 }
                 if(user)
                 {
-                    console.log(token)
-                    console.log(req.query.email)
-                    console.log(user.local.email)
-                    console.log(user.local.email.localeCompare(req.query.email))
                     if(user.local.email.localeCompare(req.query.email)==0)
                     {
                         if(user.isActivated())
@@ -307,12 +317,15 @@ module.exports = function(app, passport) {
                                     console.log(err)
                                     //flash
                                     req.flash('activateAccountDangerMessage', 'An error occured, try later')
-                                    res.render('activateaccount.ejs', { messagedanger: req.flash('activateAccountDangerMessage') , messageok: "" })
+                                    res.render('activateaccount.ejs', 
+                                        { messagedanger: req.flash('activateAccountDangerMessage') , 
+                                        messageok: "" })
                                 }
                                 else
                                 {
                                     req.flash('activateAccountOkMessage', 'Account activated !')
-                                    res.render('activateaccount.ejs', { messagedanger: "" , messageok: req.flash('activateAccountOkMessage') })
+                                    res.render('activateaccount.ejs', 
+                                        { messagedanger: "" , messageok: req.flash('activateAccountOkMessage') })
                                 }
                             })
                         }    
@@ -328,7 +341,7 @@ module.exports = function(app, passport) {
     // =====================================
     // we will want this protected so you have to be logged in to visit
     // we will use route middleware to verify this (the isLoggedIn function)
-    app.get('/profile', isLoggedIn, function(req, res) {
+    app.get('/profile', isLoggedInAndActivated, function(req, res) {
         res.render('profile.ejs', {
             user : req.user // get the user out of session and pass to template
         })
@@ -389,10 +402,10 @@ module.exports = function(app, passport) {
 // =============================================================================
 
     // locally --------------------------------
-        app.get('/connect/local', function(req, res) {
+        app.get('/connect/local', isLoggedInAndActivated, function(req, res) {
             res.render('connect-local.ejs', { message: req.flash('loginMessage') })
         })
-        app.post('/connect/local', passport.authenticate('local-signup', {
+        app.post('/connect/local', isLoggedInAndActivated, passport.authenticate('local-signup', {
             successRedirect : '/profile', // redirect to the secure profile section
             failureRedirect : '/connect/local', // redirect back to the signup page if there is an error
             failureFlash : true // allow flash messages
@@ -401,10 +414,10 @@ module.exports = function(app, passport) {
     // facebook -------------------------------
 
         // send to facebook to do the authentication
-        app.get('/connect/facebook', passport.authorize('facebook', { scope : 'email' }))
+        app.get('/connect/facebook', isLoggedInAndActivated, passport.authorize('facebook', { scope : 'email' }))
 
         // handle the callback after facebook has authorized the user
-        app.get('/connect/facebook/callback',
+        app.get('/connect/facebook/callback', isLoggedInAndActivated,
             passport.authorize('facebook', {
                 successRedirect : '/profile',
                 failureRedirect : '/'
@@ -413,10 +426,10 @@ module.exports = function(app, passport) {
     // twitter --------------------------------
 
         // send to twitter to do the authentication
-        app.get('/connect/twitter', passport.authorize('twitter', { scope : 'email' }))
+        app.get('/connect/twitter', isLoggedInAndActivated, passport.authorize('twitter', { scope : 'email' }))
 
         // handle the callback after twitter has authorized the user
-        app.get('/connect/twitter/callback',
+        app.get('/connect/twitter/callback', isLoggedInAndActivated,
             passport.authorize('twitter', {
                 successRedirect : '/profile',
                 failureRedirect : '/'
@@ -425,10 +438,10 @@ module.exports = function(app, passport) {
     // google ---------------------------------
 
         // send to google to do the authentication
-        app.get('/connect/google', passport.authorize('google', { scope : ['profile', 'email'] }))
+        app.get('/connect/google', isLoggedInAndActivated, passport.authorize('google', { scope : ['profile', 'email'] }))
 
         // the callback after google has authorized the user
-        app.get('/connect/google/callback',
+        app.get('/connect/google/callback', isLoggedInAndActivated,
             passport.authorize('google', {
                 successRedirect : '/profile',
                 failureRedirect : '/'
@@ -442,7 +455,7 @@ module.exports = function(app, passport) {
 // user account will stay active in case they want to reconnect in the future
 
     // local -----------------------------------
-    app.get('/unlink/local', function(req, res) {
+    app.get('/unlink/local', isLoggedInAndActivated, function(req, res) {
         var user            = req.user
         user.local.email    = undefined
         user.local.password = undefined
@@ -452,7 +465,7 @@ module.exports = function(app, passport) {
     })
 
     // facebook -------------------------------
-    app.get('/unlink/facebook', function(req, res) {
+    app.get('/unlink/facebook', isLoggedInAndActivated, function(req, res) {
         var user            = req.user
         user.facebook.token = undefined
         user.save(function(err) {
@@ -461,7 +474,7 @@ module.exports = function(app, passport) {
     })
 
     // twitter --------------------------------
-    app.get('/unlink/twitter', function(req, res) {
+    app.get('/unlink/twitter', isLoggedInAndActivated, function(req, res) {
         var user           = req.user
         user.twitter.token = undefined
         user.save(function(err) {
@@ -470,7 +483,7 @@ module.exports = function(app, passport) {
     })
 
     // google ---------------------------------
-    app.get('/unlink/google', function(req, res) {
+    app.get('/unlink/google', isLoggedInAndActivated, function(req, res) {
         var user          = req.user
         user.google.token = undefined
         user.save(function(err) {
@@ -487,6 +500,19 @@ function isLoggedIn(req, res, next) {
     // if user is authenticated in the session, carry on 
     if (req.isAuthenticated())
         return next()
+
+    // if they aren't redirect them to the home page
+    res.redirect('/')
+}
+
+function isLoggedInAndActivated(req, res, next) {
+
+    // if user is authenticated in the session, carry on 
+    if (req.isAuthenticated() && req.user.isActivated())
+    {
+        if(req.user.local.email || req.user.facebook.token || req.user.twitter.token || req.user.google.token)
+        return next()
+    }
 
     // if they aren't redirect them to the home page
     res.redirect('/')
