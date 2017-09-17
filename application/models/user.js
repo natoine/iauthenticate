@@ -9,6 +9,7 @@ const userSchema = mongoose.Schema({
     local            : {
         email        : String,
         password     : String,
+        mailvalidated: Boolean, 
         timepwdreco  : Number,
         pwdrecotoken : String
     },

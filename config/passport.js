@@ -6,6 +6,9 @@ var FacebookStrategy = require('passport-facebook').Strategy
 var TwitterStrategy  = require('passport-twitter').Strategy
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 
+//to send emails
+const smtpTransport = require('../config/mailer')
+
 // load up the user model
 var User            = require('../application/models/user')
 
@@ -71,11 +74,32 @@ module.exports = function(passport)
                 // set the user's local credentials
                 newUser.local.email    = email
                 newUser.local.password = newUser.generateHash(password) // use the generateHash function in our user model
+                newUser.local.mailvalidated = false
 
                 // save the user
                 newUser.save(function(err) {
-                    if (err)
-                        throw err;
+                    if (err) throw err
+                    else 
+                    {
+                        //sends an email to activate account
+                        const mailOptions =
+                        {
+                            to : email,
+                            subject : "iauthenticate account activation",
+                            text : "Welcome on iauthenticate. Please click the link bellow to activate your account : http://localhost:8080/activateaccount?token="
+                        }
+                        smtpTransport.sendMail(mailOptions, function(error, response){
+                            if(error)
+                            {
+                                console.log(error)
+                                return done(null, false, req.flash('signupMessage', 'Something wrong happened sending you activation email.'))
+                            }
+                            else
+                            {
+                                console.log("Message sent: " + response.message)
+                            }
+                        })
+                    }
                     return done(null, newUser)
                 })
             }
