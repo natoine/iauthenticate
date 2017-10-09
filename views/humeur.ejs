@@ -1,0 +1,33 @@
+<!-- views/humeur.ejs -->
+<!doctype html>
+<html>
+<head>
+    <title>Mon humeur</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body        { padding-top:80px; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+<div class="col-sm-6 col-sm-offset-3">
+
+   <form action="/humeur" method ="post" >
+  <div>
+    <input type="radio" name="humeur" value="joyeux">Joyeux
+     <input type="radio"  name="humeur" value="bof">Bof
+     <input type="radio"  name="humeur" value="triste">Triste
+    
+  </div>
+  <div>
+    <button type="submit" href="/humeur">Emmetre mon humeur</button>
+  </div>
+</form>
+
+</div>
+
+</div>
+</body>
+</html>
