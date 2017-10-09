@@ -12,14 +12,6 @@ Renseigner avec : http://localhost:8080/auth/facebook/callback
 
 Enregistrer les modifications.
 
-ajouter un produit>
-fb lg>
-web>
-save continuer continuer suite>
-facebook login>
-parametre>
- url de redirection oauth valides>
- on met le lien "http://localhost:8080/auth/facebook/callback">
- enregistrer le smodif
+
 
 
