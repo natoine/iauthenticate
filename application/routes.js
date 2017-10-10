@@ -519,7 +519,7 @@ module.exports = function(app, passport) {
     app.post('/humeur', isLoggedInAndActivated, function(req, res) {
 
         var newmood = new Humeur()
-        newmood.humeur = req.body.mood
+        newmood.emotion = req.body.mood
         newmood.user = req.user
         newmood.date = new Date().getTime()
         newmood.lat = req.body.lat
