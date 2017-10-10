@@ -1,5 +1,6 @@
 // load up the user model
-const User            = require('../application/models/user')
+const User              = require('../application/models/user')
+const Humeur            = require('../application/models/humeur')
 
 //to send emails
 const smtpTransport = require('../config/mailer')
@@ -490,7 +491,26 @@ module.exports = function(app, passport) {
            res.redirect('/profile')
         })
     })
-
+    
+    // Récupérer l'humer ----------------------
+    app.get('/humeur', isLoggedInAndActivated, function(req, res) {
+        
+            res.render('humeur.ejs')
+      
+    })
+    
+    app.post('/humeur', isLoggedInAndActivated, function(req, res) {
+        var newmood = new Humeur()
+        newmood.humeur = req.body.mood
+        newmood.user = req.user
+        newmood.date = new Date().getTime()
+        newmood.lat = req.body.lat
+        newmood.long = req.body.long
+        newmood.save(function(err) {
+           res.redirect('/humeur')
+        })
+           
+    })
 
 }
 
