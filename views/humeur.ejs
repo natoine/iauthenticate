@@ -26,6 +26,7 @@
 
      <input type="hidden" name="lat" id="lat" value="">
      <input type="hidden" name="long" id="long" value="">
+     <input type="hidden" name="city" id="city" value="">
     
   </div>
   <div>
@@ -67,6 +68,14 @@ function success(pos) {
  document.getElementById('lat').value = crd.latitude;
  document.getElementById('long').value = crd.longitude;
 
+ var s = document.createElement('script');       
+ s.src = 'http://nominatim.openstreetmap.org/reverse?json_callback=cb&format=json&lat='+ crd.latitude + '&lon=' + crd.longitude + '&zoom=18&addressdetails=1';
+ document.getElementsByTagName('head')[0].appendChild(s);
+
+};
+
+window.cb = function cb(json) {
+    document.getElementById('city').value = json.address.city;
 };
 
 function error(err) {

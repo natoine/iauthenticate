@@ -525,6 +525,7 @@ module.exports = function(app, passport) {
         newmood.date = new Date().getTime()
         newmood.lat = req.body.lat
         newmood.long = req.body.long
+        newmood.city = req.body.city
         newmood.save(function(err) {
            res.redirect('/humeur')
         })
