@@ -1,7 +1,11 @@
 // load up the user model
 const mongoose = require('mongoose')
-const User            = require('../application/models/user')
-const Humeur            = require('../application/models/humeur')
+const User = require('../application/models/user')
+const Humeur = require('../application/models/humeur')
+const Tweet = require('../application/models/tweets')
+var Twitter = require('twitter');
+var credentials = require('../config/auth.js');
+
 const configDB = require('../config/database.js')
 const db = mongoose.createConnection(configDB.url)
 
@@ -514,8 +518,33 @@ module.exports = function(app, passport) {
            
       
     })
-
-
+	
+	//Récupération des tweets
+    app.get('/tweets', isLoggedInAndActivated, function(req, res) {
+		var client = new Twitter({
+			consumer_key: credentials.twitterAuth.consumerKey,
+			consumer_secret: credentials.twitterAuth.consumerSecret,
+			access_token_key: credentials.twitterAuth.accessTokenKey,
+			access_token_secret: credentials.twitterAuth.accessTokenSecret
+		});
+		var params = {screen_name: '20Minutes'};
+		client.get('statuses/user_timeline', params, function(error, tweets, response) {
+			if (!error) {
+				res.render('tweets.ejs' , {tweets: tweets});
+			}
+			else {
+				console.log("problème pour la récupération des tweets")
+				res.redirect('/')
+			}
+		});
+            
+      
+    })
+	/*app.get('/tweets/display', isLoggedInAndActivated, function(req, res) {
+    
+            res.render('tweets_display.ejs',{tweets: req.params.})
+      
+    })*/
 }
 
 // route middleware to make sure a user is logged in
