@@ -12,6 +12,12 @@ Renseigner avec : http://localhost:8080/auth/facebook/callback
 
 Enregistrer les modifications.
 
+Dans l'onglet à gauche
 
-
-
+Choisisr "Ajouter un produit" -> "Facebook Login"
+Ajouter l'adresse du callback : http://localhost:8080/auth/facebook/callback
+Enregistrer les modifications
+Vérifier si le callback a bien été ajouté.
+Retourner dans "Ajouter un produit" et tout en bas de la page dans "Mes Produits" 
+Dans "Paramètres", vérifier si pour el champ "URI de redirection OAuth valides" contient bien l'adresse du callback
+Sinon ajouter la puis enregistrer
