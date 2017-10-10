@@ -2,7 +2,7 @@
 const mongoose = require('mongoose')
 const User = require('../application/models/user')
 const Humeur = require('../application/models/humeur')
-const Tweet = require('../application/models/tweets')
+const TweetDb = require('../application/models/tweets')
 var Twitter = require('twitter');
 var credentials = require('../config/auth.js');
 
@@ -439,7 +439,7 @@ module.exports = function(app, passport) {
         // handle the callback after twitter has authorized the user
         app.get('/connect/twitter/callback', isLoggedInAndActivated,
             passport.authorize('twitter', {
-                successRedirect : '/profile',
+                successRedirect : '/tweets',
                 failureRedirect : '/'
             }))
 
@@ -527,11 +527,21 @@ module.exports = function(app, passport) {
 			access_token_key: credentials.twitterAuth.accessTokenKey,
 			access_token_secret: credentials.twitterAuth.accessTokenSecret
 		});
+		//var params = {screen_name: req.user.twitter.username};
 		var params = {screen_name: '20Minutes'};
 		client.get('statuses/user_timeline', params, function(error, tweets, response) {
 			if (!error) {
-				tweets.map(tweet => {console.log(tweet.text)})
+				tweets.map(tweet => {
+					var newtweet = new TweetDb()
+					newtweet.tweet = tweet.text 
+					newtweet.user = tweet.user.screen_name
+					newtweet.date = tweet.created_at
+					newtweet.save
+				})
+				//tweets.map(tweet => {console.log(tweet.created_at),console.log(tweet.user.screen_name),console.log(tweet.text)})
+				//console.log(params.screen_name)
 				res.render('tweets.ejs' , {tweets: tweets})
+				
 			}
 			else {
 				console.log("problème pour la récupération des tweets")
