@@ -8,8 +8,10 @@ const humeurSchema = mongoose.Schema({
 
 
         user       : {type : mongoose.Schema.Types.ObjectId, ref : 'User'},
-        emotion     : String,
-        date: Number    
+        humeur     : String,
+        date 	   : Number,
+        lat 	   : Number,
+        long	   : Number    
 })
 
 
