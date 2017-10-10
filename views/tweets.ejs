@@ -17,7 +17,12 @@
 
 		<div>
 		  <p>Affichage des Tweets</p>
-		  <p><%= tweets %></p>
+		  
+		  <ul>
+			<% tweets.map(tweet => { %>
+				<li><%= tweet.text %></li>
+			<% }); %>
+		  </ul>
 		</div>
 
 

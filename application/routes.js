@@ -530,15 +530,14 @@ module.exports = function(app, passport) {
 		var params = {screen_name: '20Minutes'};
 		client.get('statuses/user_timeline', params, function(error, tweets, response) {
 			if (!error) {
-				res.render('tweets.ejs' , {tweets: tweets});
+				tweets.map(tweet => {console.log(tweet.text)})
+				res.render('tweets.ejs' , {tweets: tweets})
 			}
 			else {
 				console.log("problème pour la récupération des tweets")
 				res.redirect('/')
 			}
-		});
-            
-      
+		});  
     })
 	/*app.get('/tweets/display', isLoggedInAndActivated, function(req, res) {
     
