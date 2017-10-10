@@ -500,17 +500,18 @@ module.exports = function(app, passport) {
             var user = req.user
             var humeur = new Humeur();
             var list;
-            
+            var list_humeurs = require("../ressources/humeurs.json")
+            console.log(list_humeurs.humeurs[1])
             Humeur.find({'user' : req.user},
             function(err, docs){
                 user.moods = docs;
                  res.render('humeur.ejs',{
-            moods : user.moods 
+            moods : user.moods ,list : list_humeurs
         })
                 
     
     });
-        console.log(user.moods)
+        
             
            
       
@@ -519,7 +520,7 @@ module.exports = function(app, passport) {
     app.post('/humeur', isLoggedInAndActivated, function(req, res) {
 
         var newmood = new Humeur()
-        newmood.humeur = req.body.mood
+        newmood.emotion = req.body.mood
         newmood.user = req.user
         newmood.date = new Date().getTime()
         newmood.lat = req.body.lat

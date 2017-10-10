@@ -33,10 +33,11 @@
    <form action="/humeur" method ="post" >
   <div>
 
-    <input type="radio" name="mood" value="joyeux">Joyeux
-     <input type="radio"  name="mood" value="bof" checked>Bof
+<%for (var i = 0;i < list.humeurs.length;i++){%>
+    <input type="radio" name="mood" value="<%= list.humeurs[i].humeur %>"><%= list.humeurs[i].humeur %>
+    
+    <% }%>
 
-     <input type="radio"  name="mood" value="triste">Triste
 
      <input type="hidden" name="lat" id="lat" value="">
      <input type="hidden" name="long" id="long" value="">
