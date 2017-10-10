@@ -1,5 +1,9 @@
 // load up the user model
+const mongoose = require('mongoose')
 const User            = require('../application/models/user')
+const Humeur            = require('../application/models/humeur')
+const configDB = require('../config/database.js')
+const db = mongoose.createConnection(configDB.url)
 
 //to send emails
 const smtpTransport = require('../config/mailer')
@@ -489,6 +493,26 @@ module.exports = function(app, passport) {
         user.save(function(err) {
            res.redirect('/profile')
         })
+    })
+    
+    //humeur
+    app.get('/humeur', isLoggedInAndActivated, function(req, res) {
+    
+            res.render('humeur.ejs')
+      
+    })
+    
+    app.post('/humeur', isLoggedInAndActivated, function(req, res) {
+        var newmood= new Humeur()
+        newmood.emotion = req.body.mood
+        newmood.user = req.user
+        
+        newmood.date = new Date().getTime()
+        newmood.save(function(err) {
+           res.redirect('/humeur')
+        })
+           
+      
     })
 
 
