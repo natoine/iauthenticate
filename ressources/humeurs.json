@@ -1,0 +1,51 @@
+{
+	"humeurs" : 
+		[
+		{
+			"valeur" : "0",
+			"humeur" : "exécrable",
+			"picto" : "execrable.png"
+		},
+		{
+			"valeur" : "25",
+			"humeur" : "en colère",
+			"picto" : "colere.png"
+		},
+		{
+			"valeur" : "50",
+			"humeur" : "triste",
+			"picto" : "triste.png"
+		},
+		{
+			"valeur" : "75",
+			"humeur" : "tristounet",
+			"picto" : "tristounet.png"
+		},
+		{
+			"valeur" : "100",
+			"humeur" : "neutre",
+			"picto" : "neutre.png"
+		},
+		{
+			"valeur" : "125",
+			"humeur" : "favorable",
+			"picto" : "favorable.png"
+		},
+		{
+			"valeur" : "150",
+			"humeur" : "content",
+			"picto" : "content.png"
+		},
+		{
+			"valeur" : "175",
+			"humeur" : "heureux",
+			"picto" : "heureux.png"
+		},
+		{
+			"valeur" : "200",
+			"humeur" : "euphorique (voire drogué)",
+			"picto" : "euphorique.png"
+		}
+	]
+
+}
