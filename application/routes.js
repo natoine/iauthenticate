@@ -1,6 +1,6 @@
 // load up the user model
+const User              = require('../application/models/user')
 const mongoose = require('mongoose')
-const User            = require('../application/models/user')
 const Humeur            = require('../application/models/humeur')
 const configDB = require('../config/database.js')
 const db = mongoose.createConnection(configDB.url)
@@ -495,7 +495,7 @@ module.exports = function(app, passport) {
         })
     })
     
-    //humeur
+    // Récupérer l'humer ----------------------
     app.get('/humeur', isLoggedInAndActivated, function(req, res) {
     
             res.render('humeur.ejs')
@@ -503,18 +503,18 @@ module.exports = function(app, passport) {
     })
     
     app.post('/humeur', isLoggedInAndActivated, function(req, res) {
-        var newmood= new Humeur()
-        newmood.emotion = req.body.mood
+
+        var newmood = new Humeur()
+        newmood.humeur = req.body.mood
         newmood.user = req.user
-        
         newmood.date = new Date().getTime()
+        newmood.lat = req.body.lat
+        newmood.long = req.body.long
         newmood.save(function(err) {
            res.redirect('/humeur')
         })
            
-      
     })
-
 
 }
 

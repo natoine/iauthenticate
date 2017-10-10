@@ -17,13 +17,17 @@
 
    <form action="/humeur" method ="post" >
   <div>
-    <input type="radio" name="mood" value="joyeux">Joyeux
+
+     <input type="radio" name="mood" value="joyeux">Joyeux
      <input type="radio"  name="mood" value="bof">Bof
      <input type="radio"  name="mood" value="triste">Triste
+
+     <input type="hidden" name="lat" id="lat" value="">
+     <input type="hidden" name="long" id="long" value="">
     
   </div>
   <div>
-    <button type="submit" href="/humeur">Emmetre mon humeur</button>
+    <button type="submit" href="/humeur";>Emmetre mon humeur</button>
   </div>
 </form>
 <table>
@@ -33,5 +37,35 @@
 </div>
 
 </div>
+
 </body>
+
+<script>
+
+var options = {
+ enableHighAccuracy: true,
+ timeout: 5000,
+ maximumAge: 0
+};
+
+function success(pos) {
+ var crd = pos.coords;
+ console.log('Votre position actuelle est :');
+ console.log(`Latitude : ${crd.latitude}`);
+ console.log(`Longitude: ${crd.longitude}`);
+ document.getElementById('lat').value = crd.latitude;
+ document.getElementById('long').value = crd.longitude;
+
+};
+
+function error(err) {
+ console.warn(`ERROR(${err.code}): ${err.message}`);
+};
+
+navigator.geolocation.getCurrentPosition(success, error, options)
+
+
+</script>
+
+
 </html>
