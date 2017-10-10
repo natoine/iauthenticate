@@ -5,6 +5,8 @@ const Humeur            = require('../application/models/humeur')
 const configDB = require('../config/database.js')
 const db = mongoose.createConnection(configDB.url)
 
+const http = require('http')
+
 //to send emails
 const smtpTransport = require('../config/mailer')
 
@@ -524,6 +526,9 @@ module.exports = function(app, passport) {
         newmood.date = new Date().getTime()
         newmood.lat = req.body.lat
         newmood.long = req.body.long
+		
+		http.get('http://api.openweathermap.org/data/2.5/weather?lat='+newmood.lat+'&lon='+newmood.long , res => console.log(res))
+		
         newmood.save(function(err) {
            res.redirect('/humeur')
         })
