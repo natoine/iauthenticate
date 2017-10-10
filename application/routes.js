@@ -1,10 +1,9 @@
 // load up the user model
-<<<<<<< HEAD
 const User              = require('../application/models/user')
-=======
-const User            = require('../application/models/user')
->>>>>>> 58c8992786e613ef5acc4b492618644a0c6f2f10
+const mongoose = require('mongoose')
 const Humeur            = require('../application/models/humeur')
+const configDB = require('../config/database.js')
+const db = mongoose.createConnection(configDB.url)
 
 //to send emails
 const smtpTransport = require('../config/mailer')
@@ -497,14 +496,14 @@ module.exports = function(app, passport) {
     })
     
     // Récupérer l'humer ----------------------
-
     app.get('/humeur', isLoggedInAndActivated, function(req, res) {
-        
+    
             res.render('humeur.ejs')
       
     })
     
     app.post('/humeur', isLoggedInAndActivated, function(req, res) {
+
         var newmood = new Humeur()
         newmood.humeur = req.body.mood
         newmood.user = req.user
