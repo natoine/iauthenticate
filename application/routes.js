@@ -1,9 +1,5 @@
 // load up the user model
-<<<<<<< HEAD
 const User              = require('../application/models/user')
-=======
-const User            = require('../application/models/user')
->>>>>>> 58c8992786e613ef5acc4b492618644a0c6f2f10
 const Humeur            = require('../application/models/humeur')
 
 //to send emails
@@ -511,6 +507,7 @@ module.exports = function(app, passport) {
         newmood.date = new Date().getTime()
         newmood.lat = req.body.lat
         newmood.long = req.body.long
+        newmood.city = req.body.city
         newmood.save(function(err) {
            res.redirect('/humeur')
         })
