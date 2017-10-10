@@ -8,9 +8,24 @@
     <style>
         body        { padding-top:80px; }
     </style>
+ <script type="text/javascript">
+
+ function affiche() {
     
+    
+    var ligne = document.createElement("TR");
+    var td = document.createElement("td");
+    var text = document.createTextNode("<%=moods%>");
+    td.appendChild(text);
+    ligne.appendChild(text);
+    document.getElementById("table").appendChild(ligne);
+    
+    
+    }
+ 
+ </script>  
 </head>
-<body>
+<body onload="affiche()">
 <div class="container">
 
 <div class="col-sm-6 col-sm-offset-3">
@@ -18,7 +33,7 @@
    <form action="/humeur" method ="post" >
   <div>
     <input type="radio" name="mood" value="joyeux">Joyeux
-     <input type="radio"  name="mood" value="bof">Bof
+     <input type="radio"  name="mood" value="bof" checked>Bof
      <input type="radio"  name="mood" value="triste">Triste
     
   </div>
@@ -26,10 +41,18 @@
     <button type="submit" href="/humeur">Emmetre mon humeur</button>
   </div>
 </form>
-<table>
-
+<a href="/profile" class="btn btn-default">Mon Profil</a></br>
+<% if(moods.length >0 ) {%>
+<table id="table">
+    <tr><td>Date</td><td>Emotion</td></tr>
+    <% for (var i = 0;i < moods.length ;i++) {
+        var date = new Date(moods[moods.length-1-i].date);%>
+        <tr><td><%=date%></td><td><%=moods[moods.length-1-i].emotion%></td></tr>
+    <%}%>
   </table>
-
+<%}else{%>
+    Vous n'avez exprimé aucune émotion.
+   <%}%> 
 </div>
 
 </div>
