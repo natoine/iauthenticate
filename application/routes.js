@@ -500,17 +500,18 @@ module.exports = function(app, passport) {
             var user = req.user
             var humeur = new Humeur();
             var list;
-            
+            var list_humeurs = require("../ressources/humeurs.json")
+            console.log(list_humeurs.humeurs[1])
             Humeur.find({'user' : req.user},
             function(err, docs){
                 user.moods = docs;
                  res.render('humeur.ejs',{
-            moods : user.moods 
+            moods : user.moods ,list : list_humeurs
         })
                 
     
     });
-        console.log(user.moods)
+        
             
            
       
