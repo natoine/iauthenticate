@@ -532,6 +532,30 @@ module.exports = function(app, passport) {
            
     })
 
+
+
+// Récupérer toutes les humeurs--
+    app.get('/listhumeur', isLoggedInAndActivated, function(req, res) {
+            var user = req.user
+            var humeur = new Humeur();
+            var list;
+            var list_humeurs = require("../ressources/humeurs.json")
+            console.log(list_humeurs.humeurs[1])
+            Humeur.find({},
+            function(err, docs){
+                user.moods = docs;
+                 res.render('listhumeur.ejs',{
+            moods : user.moods ,list : list_humeurs
+        })
+                
+    
+    });
+        
+            
+           
+      
+    })
+    
 }
 
 // route middleware to make sure a user is logged in
