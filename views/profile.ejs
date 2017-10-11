@@ -16,7 +16,8 @@
         <h1><span class="fa fa-anchor"></span> Profile Page</h1>
         <a href="/logout" class="btn btn-default btn-sm">Logout</a>
     </div>
-
+<a href="/humeur" class="btn btn-default">Humeur</a>
+<a href="/listhumeur" class="btn btn-default">Liste totale des humeurs</a>
     <div class="row">
 
         <!-- LOCAL INFORMATION -->
@@ -30,7 +31,7 @@
                         <strong>email</strong>: <%= user.local.email %><br>
                         <strong>password</strong>: <%= user.local.password %>
                     </p>
-
+                    
                     <a href="/unlink/local" class="btn btn-default">Unlink</a>
                     <a href="/changepwd" class="btn btn-default">Change Password</a>
                 <% } else { %>

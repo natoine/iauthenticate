@@ -1,0 +1,75 @@
+<!-- views/listhumeur.ejs -->
+<!doctype html>
+<html>
+<head>
+    <title>Mon humeur</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body        { padding-top:80px; }
+    </style>
+ 
+</head>
+<body>
+<div class="container">
+
+<!--div class="col-sm-6 col-sm-offset-3"-->
+<div>
+   <h1>Liste de toutes les humeurs de tous les users </h1>
+
+<% if(moods.length >0 ) {%>
+<table id="table">
+    <tr><td>User</td><td>Date</td><td>Emotion</td><td>Ville</td></tr>
+    <% for (var i = 0;i < moods.length ;i++) {
+        var date = new Date(moods[moods.length-1-i].date);%>
+        <tr><td><%=moods[moods.length-1-i].user%></td><td><%=date%></td><td><%=moods[moods.length-1-i].emotion%></td><td><%=moods[moods.length-1-i].city%></td></tr>
+    <%}%>
+  </table>
+<%}else{%>
+    Il n'y a aucune émotion.
+   <%}%> 
+</div>
+<a href="/profile" class="btn btn-default">Mon Profil</a></br>
+<a href="/humeur" class="btn btn-default">Mon Humeur</a></br>
+</div>
+
+</body>
+
+
+<script>
+
+var options = {
+ enableHighAccuracy: true,
+ timeout: 5000,
+ maximumAge: 0
+};
+
+function success(pos) {
+ var crd = pos.coords;
+ console.log('Votre position actuelle est :');
+ console.log(`Latitude : ${crd.latitude}`);
+ console.log(`Longitude: ${crd.longitude}`);
+ document.getElementById('lat').value = crd.latitude;
+ document.getElementById('long').value = crd.longitude;
+
+ var s = document.createElement('script');       
+ s.src = 'http://nominatim.openstreetmap.org/reverse?json_callback=cb&format=json&lat='+ crd.latitude + '&lon=' + crd.longitude + '&zoom=18&addressdetails=1';
+ document.getElementsByTagName('head')[0].appendChild(s);
+
+};
+
+window.cb = function cb(json) {
+    document.getElementById('city').value = json.address.city;
+};
+
+function error(err) {
+ console.warn(`ERROR(${err.code}): ${err.message}`);
+};
+
+navigator.geolocation.getCurrentPosition(success, error, options)
+
+
+</script>
+
+
+</html>

@@ -1,0 +1,31 @@
+<!-- views/tweets.ejs -->
+<!doctype html>
+<html>
+<head>
+    <title>Affichage des Tweets</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body        { padding-top:80px; }
+    </style>
+    
+</head>
+<body>
+<div class="container">
+
+	<div class="col-sm-6 col-sm-offset-3">
+
+		<div>
+		  <p>Affichage des Tweets</p>
+		  
+		  <ul>
+			<% tweets.map(tweet => { %>
+				<li><%= tweet.text %></li>
+			<% }); %>
+		  </ul>
+		</div>
+
+
+</div>
+</body>
+</html>
