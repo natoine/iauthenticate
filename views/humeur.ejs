@@ -25,7 +25,11 @@
 
      <input type="hidden" name="lat" id="lat" value="">
      <input type="hidden" name="long" id="long" value="">
-    
+
+     <input type="hidden" name="meteo" id="meteo" value="">
+     <input type="hidden" name="temp" id="temp" value="">
+     <input type="hidden" name="vent" id="vent" value="">
+	 
   </div>
   <div>
     <button type="submit" href="/humeur";>Emmetre mon humeur</button>
@@ -65,8 +69,23 @@ function success(pos) {
  console.log(`Longitude: ${crd.longitude}`);
  document.getElementById('lat').value = crd.latitude;
  document.getElementById('long').value = crd.longitude;
+ document.getElementById('long').value = crd.longitude;
+var url = 'http://api.openweathermap.org/data/2.5/weather?lat='+crd.latitude+'&lon='+crd.longitude+'&APPID=9662eab1170b33ae9cc5e74d1612bf46'
+fetch(url).then(
+	function(response){
+		response.json().then(function(data){
+			console.log(data.weather[0].main);
+			console.log(data.main.temp / 32);
+			console.log(data.wind.speed); 
+			document.getElementById('meteo').value = data.weather[0].main;
+			document.getElementById('temp').value = data.main.temp / 32;
+			document.getElementById('vent').value = data.wind.speed;
+		})
+	}
+)
+}
 
-};
+
 
 function error(err) {
  console.warn(`ERROR(${err.code}): ${err.message}`);
