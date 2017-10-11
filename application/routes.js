@@ -586,7 +586,7 @@ module.exports = function(app, passport) {
 
 
 // Récupérer toutes les humeurs--
-    app.get('/listhumeur', isLoggedInAndActivated, function(req, res) {
+    app.get('/listhumeur',  function(req, res) {
 		var user = req.user
 		var humeur = new Humeur();
 		var list;

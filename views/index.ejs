@@ -65,16 +65,17 @@
                         'accept': 'application/json'
                     })
             })
-            fetch (request).then(function(response){
+            fetch(request).then(function(response){
                     response.text().then(function(data){
                     var humeurs = data
-                    alert(humeurs)
+                    console.log(response)
                      for ( var i=0; i<humeurs.length; i++) {
                             long=humeurs[i].long
                             lat=humeurs[i].lat
                             humeur = humeurs[i].humeur
                             var marker = L.marker([lat, long]).addTo(map);} //
-                    })
+                   }
+                    )
             })
            
         </script>
