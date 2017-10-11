@@ -1,16 +1,11 @@
 // load up the user model
-const User              = require('../application/models/user')
-const mongoose = require('mongoose')
-<<<<<<< HEAD
 const User = require('../application/models/user')
+const mongoose = require('mongoose')
 const Humeur = require('../application/models/humeur')
 const TweetDb = require('../application/models/tweets')
 var Twitter = require('twitter');
 var credentials = require('../config/auth.js');
 
-=======
-const Humeur            = require('../application/models/humeur')
->>>>>>> origin/master
 const configDB = require('../config/database.js')
 const db = mongoose.createConnection(configDB.url)
 
