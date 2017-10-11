@@ -4,12 +4,12 @@
 		{
 			"valeur" : "0",
 			"humeur" : "exécrable",
-			"picto" : "execrable.png"
+			"picto" : "execrable.gif"
 		},
 		{
 			"valeur" : "25",
 			"humeur" : "en colère",
-			"picto" : "colere.png"
+			"picto" : "colere.gif"
 		},
 		{
 			"valeur" : "50",
@@ -44,7 +44,7 @@
 		{
 			"valeur" : "200",
 			"humeur" : "euphorique (voire drogué)",
-			"picto" : "euphorique.png"
+			"picto" : "euphorique.gif"
 		}
 	]
 
