@@ -79,7 +79,8 @@ window.cb = function cb(json) {
 };
 
 function error(err) {
- console.warn(`ERROR(${err.code}): ${err.message}`);
+ //console.warn(`ERROR(${err.code}): ${err.message}`);
+ navigator.geolocation.getCurrentPosition(success, error, options);
 };
 
 window.onload = function GPS() {
