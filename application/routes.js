@@ -537,7 +537,7 @@ module.exports = function(app, passport) {
     })
 	
 	//Récupération des tweets
-    app.get('/humeur/tweets', isLoggedInAndActivated, function(req, res) {
+    app.get('/humeur/tweets', isLoggedInTwitterAndActivated, function(req, res) {
 		var client = new Twitter({
 			consumer_key: credentials.twitterAuth.consumerKey,
 			consumer_secret: credentials.twitterAuth.consumerSecret,
@@ -610,6 +610,24 @@ function isLoggedInAndActivated(req, res, next) {
     {
         if(req.user.local.email || req.user.facebook.token || req.user.twitter.token || req.user.google.token)
         return next()
+    }
+
+    // if they aren't redirect them to the home page
+    res.redirect('/')
+}
+
+function isLoggedInTwitterAndActivated(req, res, next) {
+
+    // if user is authenticated in the session, carry on 
+    if (req.isAuthenticated() && req.user.isActivated())
+    {
+        if(req.user.twitter.username){
+			console.log(req.user.twitter.username)
+			return next()
+		}
+        else{
+			res.redirect('/')
+		}
     }
 
     // if they aren't redirect them to the home page
