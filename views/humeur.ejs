@@ -79,6 +79,7 @@ window.city = function city(json) {
 function error(err) {
  console.warn(`ERROR(${err.code}): ${err.message}`);
  document.getElementById('submit').disabled = 'disabled';
+ setTimeout(location.reload(), 5000);
 };
 
 window.onload = function GPS() {
