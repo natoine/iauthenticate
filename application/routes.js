@@ -23,8 +23,14 @@ module.exports = function(app, passport) {
     // HOME PAGE (with login links) ========
     // =====================================
     app.get('/', function(req, res) {
-        req.logout()
-        res.render('index.ejs')// load the index.ejs file
+        req.logout() 
+
+        //gather moods
+        Humeur.find({}, function(err,docs){
+            console.log("Liste d'humeurs " + docs)
+            res.render('index.ejs', { humeurs: docs })// load the index.ejs file
+        })
+        //res.render('index.ejs')// load the index.ejs file
     })
 
     // =====================================
