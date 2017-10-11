@@ -537,7 +537,7 @@ module.exports = function(app, passport) {
     })
 	
 	//Récupération des tweets
-    app.get('/tweets', isLoggedInAndActivated, function(req, res) {
+    app.get('/humeur/tweets', isLoggedInAndActivated, function(req, res) {
 		var client = new Twitter({
 			consumer_key: credentials.twitterAuth.consumerKey,
 			consumer_secret: credentials.twitterAuth.consumerSecret,
