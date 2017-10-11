@@ -10,7 +10,7 @@
     </style>
  
 </head>
-<body>
+<body onLoad="GPS()">
 <div class="container">
 
 <!--div class="col-sm-6 col-sm-offset-3"-->
@@ -29,8 +29,8 @@
      <input type="hidden" name="city" id="city" value="">
     
   </div>
-  <div>
-    <button type="submit" href="/humeur">Emmetre mon humeur</button>
+  <div id="bouton">
+    <input type="submit" id="submit" disabled="" href="/humeur" value="Partager mon humeur">
   </div>
 </form>
 <a href="/profile" class="btn btn-default">Mon Profil</a>
@@ -63,27 +63,29 @@ var options = {
 
 function success(pos) {
  var crd = pos.coords;
- console.log('Votre position actuelle est :');
- console.log(`Latitude : ${crd.latitude}`);
- console.log(`Longitude: ${crd.longitude}`);
  document.getElementById('lat').value = crd.latitude;
  document.getElementById('long').value = crd.longitude;
+ document.getElementById('submit').disabled = '';
 
  var s = document.createElement('script');       
- s.src = 'http://nominatim.openstreetmap.org/reverse?json_callback=cb&format=json&lat='+ crd.latitude + '&lon=' + crd.longitude + '&zoom=18&addressdetails=1';
+ s.src = 'http://nominatim.openstreetmap.org/reverse?json_callback=city&format=json&lat='+ crd.latitude + '&lon=' + crd.longitude + '&zoom=18&addressdetails=1';
  document.getElementsByTagName('head')[0].appendChild(s);
 
 };
 
-window.cb = function cb(json) {
+window.city = function city(json) {
     document.getElementById('city').value = json.address.city;
 };
 
 function error(err) {
  console.warn(`ERROR(${err.code}): ${err.message}`);
+ document.getElementById('submit').disabled = 'disabled';
+ setTimeout(location.reload(), 5000);
 };
 
-navigator.geolocation.getCurrentPosition(success, error, options)
+window.onload = function GPS() {
+  navigator.geolocation.getCurrentPosition(success, error, options);
+}
 
 
 </script>
