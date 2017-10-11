@@ -1,7 +1,11 @@
 // load up the user model
-const User              = require('../application/models/user')
+const User = require('../application/models/user')
 const mongoose = require('mongoose')
-const Humeur            = require('../application/models/humeur')
+const Humeur = require('../application/models/humeur')
+const TweetDb = require('../application/models/tweets')
+var Twitter = require('twitter');
+var credentials = require('../config/auth.js');
+
 const configDB = require('../config/database.js')
 const db = mongoose.createConnection(configDB.url)
 
@@ -532,30 +536,59 @@ module.exports = function(app, passport) {
         })
            
     })
+	
+	//Récupération des tweets
+    app.get('/humeur/tweets', isLoggedInTwitterAndActivated, function(req, res) {
+		var client = new Twitter({
+			consumer_key: credentials.twitterAuth.consumerKey,
+			consumer_secret: credentials.twitterAuth.consumerSecret,
+			access_token_key: credentials.twitterAuth.accessTokenKey,
+			access_token_secret: credentials.twitterAuth.accessTokenSecret
+		});
+		var params = {screen_name: req.user.twitter.username};
+		//var params = {screen_name: '20Minutes'};
+		client.get('statuses/user_timeline', params, function(error, tweets, response) {
+			if (!error) {
+				tweets.map(tweet => {
+					var newtweet = new TweetDb()
+					newtweet.tweet = tweet.text 
+					newtweet.user = tweet.user.screen_name
+					newtweet.date = tweet.created_at
+					newtweet.save
+				})
+				//tweets.map(tweet => {console.log(tweet.created_at),console.log(tweet.user.screen_name),console.log(tweet.text)})
+				//console.log(params.screen_name)
+				res.render('tweets.ejs' , {tweets: tweets})
+				
+			}
+			else {
+				console.log("problème pour la récupération des tweets")
+				res.redirect('/')
+			}
+		});  
+    })
+	/*app.get('/tweets/display', isLoggedInAndActivated, function(req, res) {
+    
+            res.render('tweets_display.ejs',{tweets: req.params.})
+      
+    })*/
 
 
 
 // Récupérer toutes les humeurs--
     app.get('/listhumeur', isLoggedInAndActivated, function(req, res) {
-            var user = req.user
-            var humeur = new Humeur();
-            var list;
-            var list_humeurs = require("../ressources/humeurs.json")
-           
-            console.log(list_humeurs.humeurs[1])
-            Humeur.find({},
-            function(err, docs){
-                user.moods = docs;
-                 res.render('listhumeur.ejs',{
-            moods : user.moods ,list : list_humeurs
-        })
-                
-    
-    });
-        
-            
-           
-      
+		var user = req.user
+		var humeur = new Humeur();
+		var list;
+		var list_humeurs = require("../ressources/humeurs.json")
+		console.log(list_humeurs.humeurs[1])
+		Humeur.find({},
+		function(err, docs){
+			user.moods = docs;
+			res.render('listhumeur.ejs',{
+				moods : user.moods ,list : list_humeurs
+			})
+		});
     })
     
 }
@@ -578,6 +611,24 @@ function isLoggedInAndActivated(req, res, next) {
     {
         if(req.user.local.email || req.user.facebook.token || req.user.twitter.token || req.user.google.token)
         return next()
+    }
+
+    // if they aren't redirect them to the home page
+    res.redirect('/')
+}
+
+function isLoggedInTwitterAndActivated(req, res, next) {
+
+    // if user is authenticated in the session, carry on 
+    if (req.isAuthenticated() && req.user.isActivated())
+    {
+        if(req.user.twitter.username){
+			console.log(req.user.twitter.username)
+			return next()
+		}
+        else{
+			res.redirect('/')
+		}
     }
 
     // if they aren't redirect them to the home page
