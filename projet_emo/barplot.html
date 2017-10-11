@@ -1,0 +1,35 @@
+<head>
+<!-- Plotly.js -->
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+		<style>
+			#myDiv{ width:500px; height:700px}
+		</style> 
+</head>
+        <body>
+        <div id="myDiv"></div>
+        <script>
+			var x = ['Humeur Générale','Humeur Générale','Humeur Générale','Humeur Générale','Humeur Générale','Humeur Générale','Humeur Générale']
+
+			var trace1 = {
+			  y: [25,75,100,50,-75,0],
+			  x: x,
+			  name: 'kale',
+			  marker: {color: '#57A1C4'},
+			  type: 'box'
+			};
+
+			
+
+			var data = [trace1];
+
+			var layout = {
+			  yaxis: {
+				title: 'Boite à moustache (en %)',
+				zeroline: true
+			  },
+			  boxmode: 'group'
+			};
+
+			Plotly.newPlot('myDiv', data, layout);
+        </script>
+        </body>
