@@ -7,7 +7,7 @@ const bcrypt   = require('bcrypt-nodejs')
 const humeurSchema = mongoose.Schema({
 
         user       : {type : mongoose.Schema.Types.ObjectId, ref : 'User'},
-        emotion     : String,
+        emotion    : String,
         date 	   : Number,
         lat 	   : Number,
         long	   : Number,    

@@ -10,7 +10,7 @@
     </style>
  
 </head>
-<body>
+<body onLoad="GPS()">
 <div class="container">
 
 <!--div class="col-sm-6 col-sm-offset-3"-->
@@ -82,7 +82,9 @@ function error(err) {
  console.warn(`ERROR(${err.code}): ${err.message}`);
 };
 
-navigator.geolocation.getCurrentPosition(success, error, options)
+window.onload = function GPS() {
+  navigator.geolocation.getCurrentPosition(success, error, options);
+}
 
 
 </script>
