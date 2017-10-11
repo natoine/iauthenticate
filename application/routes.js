@@ -544,8 +544,8 @@ module.exports = function(app, passport) {
 			access_token_key: credentials.twitterAuth.accessTokenKey,
 			access_token_secret: credentials.twitterAuth.accessTokenSecret
 		});
-		//var params = {screen_name: req.user.twitter.username};
-		var params = {screen_name: '20Minutes'};
+		var params = {screen_name: req.user.twitter.username};
+		//var params = {screen_name: '20Minutes'};
 		client.get('statuses/user_timeline', params, function(error, tweets, response) {
 			if (!error) {
 				tweets.map(tweet => {
