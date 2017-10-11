@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         body        { padding-top:80px; }
+        .tablisthum {border-spacing: 10px;border-collapse: separate;}
     </style>
  
 </head>
@@ -18,11 +19,11 @@
    <h1>Liste de toutes les humeurs de tous les users </h1>
 
 <% if(moods.length >0 ) {%>
-<table id="table">
-    <tr><td>User</td><td>Date</td><td>Emotion</td><td>Ville</td></tr>
+<table id="table" class="tablisthum">
+    <tr><th>Utilisateur</th><th>Date</th><th>Emotion</th><th>Ville</th><th>Météo (eng)</th></tr>
     <% for (var i = 0;i < moods.length ;i++) {
         var date = new Date(moods[moods.length-1-i].date);%>
-        <tr><td><%=moods[moods.length-1-i].user%></td><td><%=date%></td><td><%=moods[moods.length-1-i].emotion%></td><td><%=moods[moods.length-1-i].city%></td></tr>
+        <tr><td><%=moods[moods.length-1-i].user%></td><td><%=date%></td><td><%=moods[moods.length-1-i].emotion%></td><td><%=moods[moods.length-1-i].city%></td><td><%=moods[moods.length-1-i].meteo%></td></tr>
     <%}%>
   </table>
 <%}else{%>

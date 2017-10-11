@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         body        { padding-top:80px; }
+        .tablisthum {border-spacing: 10px;border-collapse: separate;}
     </style>
  
 </head>
@@ -39,11 +40,11 @@
 <a href="/profile" class="btn btn-default">Mon Profil</a>
 <a href="/humeur/tweets" class="btn btn-default">Tweeting</a></br>
 <% if(moods.length >0 ) {%>
-<table id="table">
-    <tr><td>Date</td><td>Emotion</td><td>Ville</td></tr>
+<table id="table" class="tablisthum">
+    <tr><th>Date</th><th>Emotion</th><th>Ville</th><th>Météo (eng)</th></tr>
     <% for (var i = 0;i < moods.length ;i++) {
         var date = new Date(moods[moods.length-1-i].date);%>
-        <tr><td><%=date%></td><td><%=moods[moods.length-1-i].emotion%></td><td><%=moods[moods.length-1-i].city%></td></tr>
+        <tr><td><%=date%></td><td><%=moods[moods.length-1-i].emotion%></td><td><%=moods[moods.length-1-i].city%></td><td><%=moods[moods.length-1-i].meteo%></td></tr>
     <%}%>
   </table>
 <%}else{%>
