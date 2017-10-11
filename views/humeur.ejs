@@ -26,6 +26,9 @@
 
      <input type="hidden" name="lat" id="lat" value="">
      <input type="hidden" name="long" id="long" value="">
+     <input type="hidden" name="meteo" id="meteo" value="">
+     <input type="hidden" name="temp" id="temp" value="">
+     <input type="hidden" name="vent" id="vent" value="">
      <input type="hidden" name="city" id="city" value="">
     
   </div>
@@ -71,6 +74,19 @@ function success(pos) {
  s.src = 'http://nominatim.openstreetmap.org/reverse?json_callback=city&format=json&lat='+ crd.latitude + '&lon=' + crd.longitude + '&zoom=18&addressdetails=1';
  document.getElementsByTagName('head')[0].appendChild(s);
 
+ var url = 'http://api.openweathermap.org/data/2.5/weather?lat='+crd.latitude+'&lon='+crd.longitude+'&APPID=9662eab1170b33ae9cc5e74d1612bf46'
+ fetch(url).then(
+	 function(response){
+		 response.json().then(function(data){
+			 console.log(data.weather[0].main);
+			 console.log(data.main.temp / 32);
+			 console.log(data.wind.speed); 
+			 document.getElementById('meteo').value = data.weather[0].main;
+			 document.getElementById('temp').value = data.main.temp / 32;
+			 document.getElementById('vent').value = data.wind.speed;
+		 })
+	 }
+ )
 };
 
 window.city = function city(json) {
