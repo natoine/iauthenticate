@@ -4,18 +4,12 @@ const mongoose = require('mongoose')
 const bcrypt   = require('bcrypt-nodejs')
 
 // define the schema for our user model
-const humeurSchema = mongoose.Schema({
-
-        user       : {type : mongoose.Schema.Types.ObjectId, ref : 'User'},
-        emotion    : String,
-        date 	     : Number,
-        lat 	     : Number,
-        long	     : Number, 
-		    meteo      : String,
-		    temp       : Number,
-		    vent       : Number,
-        city	     : String
-
+const tweetsSchema = mongoose.Schema({
+	
+        user: {type : mongoose.Schema.Types.ObjectId, ref : 'User'},
+        tweet: String,
+        date: String
+		
 })
 
 
@@ -26,4 +20,4 @@ const humeurSchema = mongoose.Schema({
 const configDB = require('../../config/database.js')
 const db = mongoose.createConnection(configDB.url)
 //module.exports = mongoose.model('User', userSchema)
-module.exports = db.model('Humeur', humeurSchema)
+module.exports = db.model('Tweets', tweetsSchema)
