@@ -501,6 +501,7 @@ module.exports = function(app, passport) {
             var humeur = new Humeur();
             var list;
             var list_humeurs = require("../ressources/humeurs.json")
+            
             console.log(list_humeurs.humeurs[1])
             Humeur.find({'user' : req.user},
             function(err, docs){
@@ -540,6 +541,7 @@ module.exports = function(app, passport) {
             var humeur = new Humeur();
             var list;
             var list_humeurs = require("../ressources/humeurs.json")
+           
             console.log(list_humeurs.humeurs[1])
             Humeur.find({},
             function(err, docs){
