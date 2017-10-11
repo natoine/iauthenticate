@@ -12,6 +12,7 @@ const humeurSchema = mongoose.Schema({
         lat 	   : Number,
         long	   : Number,    
         city	   : String
+        
 })
 
 
