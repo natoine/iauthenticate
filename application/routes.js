@@ -22,11 +22,9 @@ module.exports = function(app, passport) {
         //gather moods
         Humeur.find({}, function(err,docs){
             console.log("Liste d'humeurs " + docs)
+            res.render('index.ejs', { humeurs: docs })// load the index.ejs file
         })
-
-
-
-        res.render('index.ejs')// load the index.ejs file
+        //res.render('index.ejs')// load the index.ejs file
     })
 
     // =====================================
