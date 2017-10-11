@@ -11,7 +11,10 @@ const humeurSchema = mongoose.Schema({
         emotion     : String,
         date 	   : Number,
         lat 	   : Number,
-        long	   : Number    
+        long	   : Number,
+		meteo      : String,
+		temp       : Number,
+		vent       : Number
 })
 
 

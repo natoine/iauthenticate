@@ -526,8 +526,9 @@ module.exports = function(app, passport) {
         newmood.date = new Date().getTime()
         newmood.lat = req.body.lat
         newmood.long = req.body.long
-		
-		http.get('http://api.openweathermap.org/data/2.5/weather?lat='+newmood.lat+'&lon='+newmood.long , res => console.log(res))
+        newmood.meteo = req.body.meteo
+        newmood.temp = req.body.temp
+        newmood.vent = req.body.vent
 		
         newmood.save(function(err) {
            res.redirect('/humeur')
