@@ -549,8 +549,8 @@ module.exports = function(app, passport) {
 		//var params = {screen_name: '20Minutes'};
 		client.get('statuses/user_timeline', params, function(error, tweets, response) {
 			if (!error) {
-				tweets.map(tweet => {
-					var newtweet = new TweetDb()
+				tweets.forEach(function(tweet) {
+					newtweet = new TweetDb()
 					newtweet.tweet = tweet.text 
 					newtweet.user = tweet.user.screen_name
 					newtweet.date = tweet.created_at
@@ -558,20 +558,37 @@ module.exports = function(app, passport) {
 				})
 				//tweets.map(tweet => {console.log(tweet.created_at),console.log(tweet.user.screen_name),console.log(tweet.text)})
 				//console.log(params.screen_name)
-				res.render('tweets.ejs' , {tweets: tweets})
+				res.render('tweets.ejs' , {tweets: tweets, twitter_user: params.screen_name})
 				
 			}
 			else {
-				console.log("problème pour la récupération des tweets")
+				console.log("problème lors de la récupération des tweets, vérifiez le statut de confidentialité du profil")
 				res.redirect('/')
 			}
 		});  
     })
-	/*app.get('/tweets/display', isLoggedInAndActivated, function(req, res) {
-    
-            res.render('tweets_display.ejs',{tweets: req.params.})
-      
-    })*/
+	
+	app.post('/humeur/tweets', isLoggedInTwitterAndActivated, function(req, res) {
+        var client = new Twitter({
+			consumer_key: credentials.twitterAuth.consumerKey,
+			consumer_secret: credentials.twitterAuth.consumerSecret,
+			access_token_key: credentials.twitterAuth.accessTokenKey,
+			access_token_secret: credentials.twitterAuth.accessTokenSecret
+		});
+		//var params = {screen_name: req.user.twitter.username};
+		var params = {screen_name: req.body.newtweets};
+		client.get('statuses/user_timeline', params, function(error, tweets, response) {
+			if (!error) {
+				//tweets.map(tweet => {console.log(tweet.created_at),console.log(tweet.user.screen_name),console.log(tweet.text)})
+				//console.log(params.screen_name)
+				res.render('tweets.ejs' , {tweets: tweets, twitter_user: params.screen_name})
+			}
+			else {
+				console.log("problème pour la récupération des tweets, vérifiez le statut de confidentialité du profil")
+				res.redirect('/')
+			}
+		}); 
+    })
 
 
 
@@ -623,7 +640,7 @@ function isLoggedInTwitterAndActivated(req, res, next) {
     if (req.isAuthenticated() && req.user.isActivated())
     {
         if(req.user.twitter.username){
-			console.log(req.user.twitter.username)
+			console.log(req.user.twitter.username, "logged in")
 			return next()
 		}
         else{
