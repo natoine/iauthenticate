@@ -24,7 +24,7 @@ svg text.percent{
 
 </style>
 <body>
-<button onClick="changeData()">Change Data</button>
+
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script >!function(){
 	var Donut3D={};			
@@ -152,11 +152,15 @@ svg text.percent{
 <script>
 
 var salesData=[
-	{label:"Basic", color:"#3366CC"},
-	{label:"Plus", color:"#DC3912"},
-	{label:"Lite", color:"#FF9900"},
-	{label:"Elite", color:"#109618"},
-	{label:"Delux", color:"#990099"}
+	{label:"execrable", color:"#FC0404"},
+	{label:"enerve", color:"#FE5304"},
+	{label:"triste", color:"#FE8C04"},
+	{label:"tristounet", color:"#FEB204"},
+	{label:"neutre", color:"#FEEE04"},
+	{label:"favorable", color:"#D9FE04"},
+	{label:"content", color:"#B9FE04"},
+	{label:"heureux", color:"#60FE04"},
+	{label:"euphorique", color:"#06E116"}
 ];
 
 var svg = d3.select("body").append("svg").attr("width",700).attr("height",300);
@@ -165,10 +169,7 @@ svg.append("g").attr("id","salesDonut");
 
 Donut3D.draw("salesDonut", randomData(), 150, 150, 130, 100, 30, 0.4);
 	
-function changeData(){
-	Donut3D.transition("salesDonut", randomData(), 130, 100, 30, 0.4);
-}
-
+//connecter a la bdd ici a la place de ces donnees random
 function randomData(){
 	return salesData.map(function(d){ 
 		return {label:d.label, value:1000*Math.random(), color:d.color};});
