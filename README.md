@@ -2,8 +2,8 @@
 un projet pour faire du passport js
 
 Pour twitter :
-Aller sur la page de developpeurs twitter
-https://dev.twitter.com/
+Aller sur la page de gestion de vos applications twitter :
+https://apps.twitter.com/
 
 My apps
 Create new app
