@@ -1,5 +1,15 @@
 // load up the user model
-const User            = require('../application/models/user')
+const User = require('../application/models/user')
+const mongoose = require('mongoose')
+const Humeur = require('../application/models/humeur')
+const TweetDb = require('../application/models/tweets')
+var Twitter = require('twitter');
+var credentials = require('../config/auth.js');
+
+const configDB = require('../config/database.js')
+const db = mongoose.createConnection(configDB.url)
+
+const http = require('http')
 
 //to send emails
 const smtpTransport = require('../config/mailer')
@@ -28,7 +38,7 @@ module.exports = function(app, passport) {
 
     // process the login form
     app.post('/login', passport.authenticate('local-login', {
-        successRedirect : '/profile', // redirect to the secure profile section
+        successRedirect : '/humeur', // redirect to the secure profile section
         failureRedirect : '/login', // redirect back to the signup page if there is an error
         failureFlash : true // allow flash messages
     }))
@@ -357,7 +367,7 @@ module.exports = function(app, passport) {
     // handle the callback after facebook has authenticated the user
     app.get('/auth/facebook/callback',
         passport.authenticate('facebook', {
-            successRedirect : '/profile',
+            successRedirect : '/humeur',
             failureRedirect : '/'
         }))
 
@@ -370,7 +380,7 @@ module.exports = function(app, passport) {
     // handle the callback after twitter has authenticated the user
     app.get('/auth/twitter/callback',
         passport.authenticate('twitter', {
-            successRedirect : '/profile',
+            successRedirect : '/humeur',
             failureRedirect : '/'
         }))
 
@@ -385,7 +395,7 @@ module.exports = function(app, passport) {
     // the callback after google has authenticated the user
     app.get('/auth/google/callback',
             passport.authenticate('google', {
-                    successRedirect : '/profile',
+                    successRedirect : '/humeur',
                     failureRedirect : '/'
             }))
 
@@ -407,7 +417,7 @@ module.exports = function(app, passport) {
             res.render('connect-local.ejs', { message: req.flash('loginMessage') })
         })
         app.post('/connect/local', isLoggedInAndActivated, passport.authenticate('local-signup', {
-            successRedirect : '/profile', // redirect to the secure profile section
+            successRedirect : '/humeur', // redirect to the secure profile section
             failureRedirect : '/connect/local', // redirect back to the signup page if there is an error
             failureFlash : true // allow flash messages
         }))
@@ -420,7 +430,7 @@ module.exports = function(app, passport) {
         // handle the callback after facebook has authorized the user
         app.get('/connect/facebook/callback', isLoggedInAndActivated,
             passport.authorize('facebook', {
-                successRedirect : '/profile',
+                successRedirect : '/humeur',
                 failureRedirect : '/'
             }))
 
@@ -432,7 +442,7 @@ module.exports = function(app, passport) {
         // handle the callback after twitter has authorized the user
         app.get('/connect/twitter/callback', isLoggedInAndActivated,
             passport.authorize('twitter', {
-                successRedirect : '/profile',
+                successRedirect : '/humeur',
                 failureRedirect : '/'
             }))
 
@@ -444,7 +454,7 @@ module.exports = function(app, passport) {
         // the callback after google has authorized the user
         app.get('/connect/google/callback', isLoggedInAndActivated,
             passport.authorize('google', {
-                successRedirect : '/profile',
+                successRedirect : '/humeur',
                 failureRedirect : '/'
             }))
 
@@ -491,8 +501,118 @@ module.exports = function(app, passport) {
            res.redirect('/profile')
         })
     })
+    
+    // Récupérer l'humer ----------------------
+    app.get('/humeur', isLoggedInAndActivated, function(req, res) {
+            var user = req.user
+            var humeur = new Humeur();
+            var list;
+            var list_humeurs = require("../ressources/humeurs.json")
+            
+            console.log(list_humeurs.humeurs[1])
+            Humeur.find({'user' : req.user},
+            function(err, docs){
+                user.moods = docs;
+                 res.render('humeur.ejs',{
+            moods : user.moods ,list : list_humeurs
+        })
+                
+    
+    });
+        
+            
+           
+      
+    })
+    
+    app.post('/humeur', isLoggedInAndActivated, function(req, res) {
+
+        var newmood = new Humeur()
+        newmood.emotion = req.body.mood
+        newmood.user = req.user
+        newmood.date = new Date().getTime()
+        newmood.lat = req.body.lat
+        newmood.meteo = req.body.meteo
+        newmood.temp = req.body.temp
+        newmood.vent = req.body.vent
+        newmood.city = req.body.city
+        newmood.save(function(err) {
+           res.redirect('/humeur')
+        })
+           
+    })
+	
+	//Récupération des tweets
+    app.get('/humeur/tweets', isLoggedInTwitterAndActivated, function(req, res) {
+		var client = new Twitter({
+			consumer_key: credentials.twitterAuth.consumerKey,
+			consumer_secret: credentials.twitterAuth.consumerSecret,
+			access_token_key: credentials.twitterAuth.accessTokenKey,
+			access_token_secret: credentials.twitterAuth.accessTokenSecret
+		});
+		var params = {screen_name: req.user.twitter.username};
+		//var params = {screen_name: '20Minutes'};
+		client.get('statuses/user_timeline', params, function(error, tweets, response) {
+			if (!error) {
+				tweets.forEach(function(tweet) {
+					newtweet = new TweetDb()
+					newtweet.tweet = tweet.text 
+					newtweet.user = tweet.user.screen_name
+					newtweet.date = tweet.created_at
+					newtweet.save
+				})
+				//tweets.map(tweet => {console.log(tweet.created_at),console.log(tweet.user.screen_name),console.log(tweet.text)})
+				//console.log(params.screen_name)
+				res.render('tweets.ejs' , {tweets: tweets, twitter_user: params.screen_name})
+				
+			}
+			else {
+				console.log("problème lors de la récupération des tweets, vérifiez le statut de confidentialité du profil")
+				res.redirect('/')
+			}
+		});  
+    })
+	
+	app.post('/humeur/tweets', isLoggedInTwitterAndActivated, function(req, res) {
+        var client = new Twitter({
+			consumer_key: credentials.twitterAuth.consumerKey,
+			consumer_secret: credentials.twitterAuth.consumerSecret,
+			access_token_key: credentials.twitterAuth.accessTokenKey,
+			access_token_secret: credentials.twitterAuth.accessTokenSecret
+		});
+		//var params = {screen_name: req.user.twitter.username};
+		var params = {screen_name: req.body.newtweets};
+		client.get('statuses/user_timeline', params, function(error, tweets, response) {
+			if (!error) {
+				//tweets.map(tweet => {console.log(tweet.created_at),console.log(tweet.user.screen_name),console.log(tweet.text)})
+				//console.log(params.screen_name)
+				res.render('tweets.ejs' , {tweets: tweets, twitter_user: params.screen_name})
+			}
+			else {
+				console.log("problème pour la récupération des tweets, vérifiez le statut de confidentialité du profil")
+				res.redirect('/')
+			}
+		}); 
+    })
 
 
+
+// Récupérer toutes les humeurs--
+    app.get('/listhumeur', isLoggedInAndActivated, function(req, res) {
+		var user = req.user
+		var humeur = new Humeur();
+		var list;
+		var list_humeurs = require("../ressources/humeurs.json")
+		console.log(list_humeurs.humeurs[1])
+		Humeur.find({},
+		function(err, docs){
+			user.moods = docs;
+			res.render('listhumeur.ejs',{
+				moods : user.moods ,list : list_humeurs
+			})
+		});
+    })
+    
 }
 
 // route middleware to make sure a user is logged in
@@ -513,6 +633,24 @@ function isLoggedInAndActivated(req, res, next) {
     {
         if(req.user.local.email || req.user.facebook.token || req.user.twitter.token || req.user.google.token)
         return next()
+    }
+
+    // if they aren't redirect them to the home page
+    res.redirect('/')
+}
+
+function isLoggedInTwitterAndActivated(req, res, next) {
+
+    // if user is authenticated in the session, carry on 
+    if (req.isAuthenticated() && req.user.isActivated())
+    {
+        if(req.user.twitter.username){
+			console.log(req.user.twitter.username, "logged in")
+			return next()
+		}
+        else{
+			res.redirect('/')
+		}
     }
 
     // if they aren't redirect them to the home page
