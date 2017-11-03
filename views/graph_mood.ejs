@@ -9,6 +9,153 @@
 		<style>
 			#myDiv{ width:500px; height:700px}
 		</style>
+		<style>
+	body {
+	  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	  width: 960px;
+	  height: 500px;
+	  position: relative;
+	}
+	path.slice{
+		stroke-width:2px;
+	}
+	polyline{
+		opacity: .3;
+		stroke: black;
+		stroke-width: 2px;
+		fill: none;
+	} 
+	svg text.percent{
+		fill:white;
+		text-anchor:middle;
+		font-size:12px;
+	}
+
+	</style>
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+<script >!function(){
+	var Donut3D={};			
+			function pieTop(d, rx, ry, ir ){
+				if(d.endAngle - d.startAngle == 0 ) return "M 0 0";
+				var sx = rx*Math.cos(d.startAngle),
+					sy = ry*Math.sin(d.startAngle),
+					ex = rx*Math.cos(d.endAngle),
+					ey = ry*Math.sin(d.endAngle);
+					
+				var ret =[];
+				ret.push("M",sx,sy,"A",rx,ry,"0",(d.endAngle-d.startAngle > Math.PI? 1: 0),"1",ex,ey,"L",ir*ex,ir*ey);
+				ret.push("A",ir*rx,ir*ry,"0",(d.endAngle-d.startAngle > Math.PI? 1: 0), "0",ir*sx,ir*sy,"z");
+				return ret.join(" ");
+			}
+
+			function pieOuter(d, rx, ry, h ){
+				var startAngle = (d.startAngle > Math.PI ? Math.PI : d.startAngle);
+				var endAngle = (d.endAngle > Math.PI ? Math.PI : d.endAngle);
+				
+				var sx = rx*Math.cos(startAngle),
+					sy = ry*Math.sin(startAngle),
+					ex = rx*Math.cos(endAngle),
+					ey = ry*Math.sin(endAngle);
+					
+					var ret =[];
+					ret.push("M",sx,h+sy,"A",rx,ry,"0 0 1",ex,h+ey,"L",ex,ey,"A",rx,ry,"0 0 0",sx,sy,"z");
+					return ret.join(" ");
+			}
+
+			function pieInner(d, rx, ry, h, ir ){
+				var startAngle = (d.startAngle < Math.PI ? Math.PI : d.startAngle);
+				var endAngle = (d.endAngle < Math.PI ? Math.PI : d.endAngle);
+				
+				var sx = ir*rx*Math.cos(startAngle),
+					sy = ir*ry*Math.sin(startAngle),
+					ex = ir*rx*Math.cos(endAngle),
+					ey = ir*ry*Math.sin(endAngle);
+
+					var ret =[];
+					ret.push("M",sx, sy,"A",ir*rx,ir*ry,"0 0 1",ex,ey, "L",ex,h+ey,"A",ir*rx, ir*ry,"0 0 0",sx,h+sy,"z");
+					return ret.join(" ");
+			}
+
+			function getPercent(d){
+				return (d.endAngle-d.startAngle > 0.2 ? 
+						Math.round(1000*(d.endAngle-d.startAngle)/(Math.PI*2))/10+'%' : '');
+			}	
+			
+			Donut3D.transition = function(id, data, rx, ry, h, ir){
+				function arcTweenInner(a) {
+				  var i = d3.interpolate(this._current, a);
+				  this._current = i(0);
+				  return function(t) { return pieInner(i(t), rx+0.5, ry+0.5, h, ir);  };
+				}
+				function arcTweenTop(a) {
+				  var i = d3.interpolate(this._current, a);
+				  this._current = i(0);
+				  return function(t) { return pieTop(i(t), rx, ry, ir);  };
+				}
+				function arcTweenOuter(a) {
+				  var i = d3.interpolate(this._current, a);
+				  this._current = i(0);
+				  return function(t) { return pieOuter(i(t), rx-.5, ry-.5, h);  };
+				}
+				function textTweenX(a) {
+				  var i = d3.interpolate(this._current, a);
+				  this._current = i(0);
+				  return function(t) { return 0.6*rx*Math.cos(0.5*(i(t).startAngle+i(t).endAngle));  };
+				}
+				function textTweenY(a) {
+				  var i = d3.interpolate(this._current, a);
+				  this._current = i(0);
+				  return function(t) { return 0.6*rx*Math.sin(0.5*(i(t).startAngle+i(t).endAngle));  };
+				}
+				
+				var _data = d3.layout.pie().sort(null).value(function(d) {return d.value;})(data);
+				
+				d3.select("#"+id).selectAll(".innerSlice").data(_data)
+					.transition().duration(750).attrTween("d", arcTweenInner); 
+					
+				d3.select("#"+id).selectAll(".topSlice").data(_data)
+					.transition().duration(750).attrTween("d", arcTweenTop); 
+					
+				d3.select("#"+id).selectAll(".outerSlice").data(_data)
+					.transition().duration(750).attrTween("d", arcTweenOuter); 	
+					
+				d3.select("#"+id).selectAll(".percent").data(_data).transition().duration(750)
+					.attrTween("x",textTweenX).attrTween("y",textTweenY).text(getPercent); 	
+			}
+			
+			Donut3D.draw=function(id, data, x /*center x*/, y/*center y*/, 
+					rx/*radius x*/, ry/*radius y*/, h/*height*/, ir/*inner radius*/){
+			
+				var _data = d3.layout.pie().sort(null).value(function(d) {return d.value;})(data);
+				
+				var slices = d3.select("#"+id).append("g").attr("transform", "translate(" + x + "," + y + ")")
+					.attr("class", "slices");
+					
+				slices.selectAll(".innerSlice").data(_data).enter().append("path").attr("class", "innerSlice")
+					.style("fill", function(d) { return d3.hsl(d.data.color).darker(0.7); })
+					.attr("d",function(d){ return pieInner(d, rx+0.5,ry+0.5, h, ir);})
+					.each(function(d){this._current=d;});
+				
+				slices.selectAll(".topSlice").data(_data).enter().append("path").attr("class", "topSlice")
+					.style("fill", function(d) { return d.data.color; })
+					.style("stroke", function(d) { return d.data.color; })
+					.attr("d",function(d){ return pieTop(d, rx, ry, ir);})
+					.each(function(d){this._current=d;});
+				
+				slices.selectAll(".outerSlice").data(_data).enter().append("path").attr("class", "outerSlice")
+					.style("fill", function(d) { return d3.hsl(d.data.color).darker(0.7); })
+					.attr("d",function(d){ return pieOuter(d, rx-.5,ry-.5, h);})
+					.each(function(d){this._current=d;});
+
+				slices.selectAll(".percent").data(_data).enter().append("text").attr("class", "percent")
+					.attr("x",function(d){ return 0.6*rx*Math.cos(0.5*(d.startAngle+d.endAngle));})
+					.attr("y",function(d){ return 0.6*ry*Math.sin(0.5*(d.startAngle+d.endAngle));})
+					.text(getPercent).each(function(d){this._current=d;});				
+			}
+			
+			this.Donut3D = Donut3D;
+		}();
+</script>
 		<script>
 	function drawAxes_curs(val_pol){
 		var axes = document.getElementById("axes_curs");
@@ -56,7 +203,6 @@
 			curs += '<line x1="-20" y1="'+(y2-((val_pol+100)*y2/200))+'" x2="20" y2="'+(y2-((val_pol+100)*y2/200))+'" stroke="blue" stroke-width="1" />';
 			curs += '<text font-family="stellar" x="35" y="'+(y2-((val_pol+100)*y2/200)+5)+'" fill="black" font-size="20" >'+val_pol+'%</text>';
 			var path = "";
-			alert(n);
 			curs += '<image xlink:href="'+path+'" x="90" y="'+(y2-((val_pol+100)*y2/200)-35)+'" height="50px" width="50px"/>'
 			points_curs.innerHTML=curs;
 		}		
@@ -70,9 +216,7 @@
 				<g id="axes_curs" transform="translate(100,50)"></g>
 				<g id="points_curs" transform="translate(100,50)"></g>
 			</svg>
-		</div>		
-		
-		<a href="/profile" class="btn btn-default">Mon Profil</a></br>
+		</div>				
 		
 		<script>
 			var humeur = <%- JSON.stringify(moods) %> 	//Récupération des humeurs de l'utilisateur
@@ -84,8 +228,9 @@
 				onto2[onto[i].humeur] = onto[i].valeur
 			}
 
-			var tab = []
+			var tab = [];
 			var sum = 0;
+			var tab_cam=[0,0,0,0,0,0,0,0,0];
 			for (i in humeur){
 				if (humeur[i].emotion == undefined){
 					tab.push(0)
@@ -93,7 +238,12 @@
 				}
 				else{
 					tab.push(onto2[humeur[i].emotion])
-					sum+=onto2[humeur[i].emotion]
+					sum+=onto2[humeur[i].emotion]					
+					for (j=0;j<9;j++){
+						if(onto2[humeur[i].emotion]==(j-4)*25){
+							tab_cam[j]+=1;
+						}
+					}
 				}
 			}
 			var n = tab.length
@@ -121,6 +271,31 @@
 			Plotly.newPlot('myDiv', data, layout);
 			
 		</script>
+		<script>
+		var salesData=[
+			{label:"execrable", color:"#FC0404",value:tab_cam[0]},
+			{label:"enerve", color:"#FE5304",value:tab_cam[1]},
+			{label:"triste", color:"#FE8C04",value:tab_cam[2]},
+			{label:"tristounet", color:"#FEB204",value:tab_cam[3]},
+			{label:"neutre", color:"#FEEE04",value:tab_cam[4]},
+			{label:"favorable", color:"#D9FE04",value:tab_cam[5]},
+			{label:"content", color:"#B9FE04",value:tab_cam[6]},
+			{label:"heureux", color:"#60FE04",value:tab_cam[7]},
+			{label:"euphorique", color:"#06E116",value:tab_cam[8]}
+		];
+
+		var svg = d3.select("body").append("svg").attr("width",700).attr("height",300);
+
+		svg.append("g").attr("id","salesDonut");
+
+		Donut3D.draw("salesDonut", Data(), 150, 150, 130, 100, 30, 0.4);
 			
+		//connecter a la bdd ici a la place de ces donnees random
+		function Data(){
+			return salesData.map(function(d){ 
+				return {label:d.label, value:d.value, color:d.color};});
+		}
+		</script>	
+	<a href="/profile" class="btn btn-default">Mon Profil</a></br>
 	</body>
 </html>
