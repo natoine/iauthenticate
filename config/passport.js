@@ -76,6 +76,7 @@ module.exports = function(passport)
                 newUser.local.password = newUser.generateHash(password) // use the generateHash function in our user model
                 newUser.local.mailvalidated = false
                 newUser.local.activationtoken = newUser.generateHash(email)
+                newUser.apitoken = false //not authorized to use token before activation
                 // save the user
                 newUser.save(function(err) {
                     if (err) throw err
@@ -208,6 +209,7 @@ module.exports = function(passport)
                     newUser.facebook.token = token // we will save the token that facebook provides to the user                    
                     newUser.facebook.name  = profile.displayName // look at the passport user profile to see how names are returned
                     newUser.local.mailvalidated = true
+                    newUser.apitoken = true //authorized to use token
                     if(profile.emails.length != null) 
                     {
                         newUser.facebook.email = profile.emails[0].value // facebook can return multiple emails so we'll take the first
@@ -308,6 +310,7 @@ module.exports = function(passport)
                     newUser.twitter.username    = profile.username
                     newUser.twitter.displayName = profile.displayName
                     newUser.local.mailvalidated = true
+                    newUser.apitoken = true //authorized to use token
 
                     // save our user into the database
                     newUser.save(function(err) {
@@ -393,6 +396,7 @@ module.exports = function(passport)
                     newUser.google.name  = profile.displayName
                     newUser.google.email = profile.emails[0].value // pull the first email
                     newUser.local.mailvalidated = true
+                    newUser.apitoken = true //authorized to use token
 
                     // save the user
                     newUser.save(function(err) {

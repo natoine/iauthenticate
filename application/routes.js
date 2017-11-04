@@ -311,6 +311,7 @@ module.exports = function(app, passport) {
                         else
                         {
                             user.local.mailvalidated = true
+                            user.apitoken = true //authorized to use token
                             user.save(function(err) 
                             {
                                 if (err) 
