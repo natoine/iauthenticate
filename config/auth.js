@@ -5,7 +5,7 @@
 module.exports = {
 
     'sessionsecret' : 'supersessionsecret', //passport needs this for sessions
-    'jwtsecret' : 'supersecretjwt'
+    'jwtsecret' : 'supersecretjwt' ,
     'facebookAuth' : {
         'clientID'      : '', // your App ID
         'clientSecret'  : '', // your App Secret
