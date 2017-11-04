@@ -4,7 +4,8 @@
 // expose our config directly to our application using module.exports
 module.exports = {
 
-    'sessionsecret' : 'natoineiauthenticatesessionpassport', //passport needs this for sessions
+    'sessionsecret' : 'supersessionsecret', //passport needs this for sessions
+    'jwtsecret' : 'supersecretjwt'
     'facebookAuth' : {
         'clientID'      : '', // your App ID
         'clientSecret'  : '', // your App Secret
