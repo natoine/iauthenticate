@@ -19,7 +19,7 @@ module.exports = function(app, express) {
 	})
 
 	// route to authenticate a user (POST http://localhost:8080/api/authenticatelocal)
-	// expects an email and password parameter
+	// expects an email and password parameter in x-www-form-urlencoded
 	apiRoutes.post('/authenticatelocal', function(req, res) {
 		email = req.body.email
 		password = req.body.password
