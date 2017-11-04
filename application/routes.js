@@ -18,6 +18,18 @@ module.exports = function(app, passport) {
     })
 
     // =====================================
+    // API with TOKEN ===============================
+    // =====================================
+    
+    //list all users
+    app.get('/users', function(req, res) {
+        User.find({}, function(err, users) {
+            res.json(users)
+        })
+    })
+
+
+    // =====================================
     // LOGIN ===============================
     // =====================================
     // show the login form
@@ -491,7 +503,6 @@ module.exports = function(app, passport) {
            res.redirect('/profile')
         })
     })
-
 
 }
 
