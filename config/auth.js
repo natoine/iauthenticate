@@ -4,6 +4,7 @@
 // expose our config directly to our application using module.exports
 module.exports = {
 
+    'sessionsecret' : 'natoineiauthenticatesessionpassport', //passport needs this for sessions
     'facebookAuth' : {
         'clientID'      : '', // your App ID
         'clientSecret'  : '', // your App Secret
@@ -19,7 +20,7 @@ module.exports = {
     'googleAuth' : {
         'clientID'      : '',
         'clientSecret'  : '',
-        'callbackURL'   : 'http://127.0.0.1:8080/auth/google/callback'
+        'callbackURL'   : 'http://localhost:8080/auth/google/callback'
     }
 
 }
