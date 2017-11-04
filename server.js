@@ -8,6 +8,7 @@ const port     = process.env.PORT || 8080
 const mongoose = require('mongoose')
 const passport = require('passport')
 const flash    = require('connect-flash')
+const jwt    = require('jsonwebtoken')
 
 const morgan       = require('morgan')
 const cookieParser = require('cookie-parser')
@@ -16,6 +17,7 @@ const session      = require('express-session')
 
 const configDB = require('./config/database.js')
 const confsecret = require('./config/auth.js').sessionsecret
+app.set('jwtSecret', require('./config/auth.js').jwtsecret) // secret jwt variable
 
 // configuration ===============================================================
 const db = mongoose.createConnection(configDB.url)
@@ -26,7 +28,8 @@ require('./config/passport')(passport)
 // set up our express application
 app.use(morgan('dev')) // log every request to the console
 app.use(cookieParser()) // read cookies (needed for auth)
-app.use(bodyParser()) // get information from html forms
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 app.set('view engine', 'ejs') // set up ejs for templating
 
