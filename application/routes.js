@@ -550,20 +550,38 @@ module.exports = function(app, passport) {
 		client.get('statuses/user_timeline', params, function(error, tweets, response) {
 			if (!error) {
 				tweets.forEach(function(tweet) {
-					newtweet = new TweetDb()
-					newtweet.tweet = tweet.text 
-					newtweet.user = tweet.user.screen_name
-					newtweet.date = tweet.created_at
-					newtweet.save
+					TweetDb.count({tweet_id: tweet.id}, function (err, count){ 
+						if(count>0){
+							//tweet exists
+							return
+						}
+						else{
+							//console.log(tweet)
+							newtweet = new TweetDb()
+							newtweet.tweet_id = tweet.id
+							newtweet.tweet = tweet.text 
+							newtweet.user = tweet.user.screen_name
+							newtweet.date = tweet.created_at
+							newtweet.save(function(errSave){
+								if (errSave){
+									console.log("Problème lors de la sauvegarde des tweets en get");
+								}
+							})
+						}
+					})
+					
 				})
 				//tweets.map(tweet => {console.log(tweet.created_at),console.log(tweet.user.screen_name),console.log(tweet.text)})
 				//console.log(params.screen_name)
 				res.render('tweets.ejs' , {tweets: tweets, twitter_user: params.screen_name})
-				
+			}
+			else if(!params.screen_name){
+				console.log("nom pas defini")
+				res.redirect('/humeur/tweets')
 			}
 			else {
 				console.log("problème lors de la récupération des tweets, vérifiez le statut de confidentialité du profil")
-				res.redirect('/')
+				res.redirect('/humeur/tweets')
 			}
 		});  
     })
@@ -579,13 +597,39 @@ module.exports = function(app, passport) {
 		var params = {screen_name: req.body.newtweets};
 		client.get('statuses/user_timeline', params, function(error, tweets, response) {
 			if (!error) {
+				tweets.forEach(function(tweet) {
+					TweetDb.count({tweet_id: tweet.id}, function (err, count){ 
+						if(count>0){
+							//tweet exists
+							return
+						}
+						else{
+							//console.log(tweet)
+							newtweet = new TweetDb()
+							newtweet.tweet_id = tweet.id
+							newtweet.tweet = tweet.text 
+							newtweet.user = tweet.user.screen_name
+							newtweet.date = tweet.created_at
+							newtweet.save(function(errSave){
+								if (errSave){
+									console.log("Problème lors de la sauvegarde des tweets en post");
+								}
+							})
+						}
+					})
+					
+				})
 				//tweets.map(tweet => {console.log(tweet.created_at),console.log(tweet.user.screen_name),console.log(tweet.text)})
 				//console.log(params.screen_name)
 				res.render('tweets.ejs' , {tweets: tweets, twitter_user: params.screen_name})
 			}
+			else if(!params.screen_name){
+				console.log("nom pas defini")
+				res.redirect('/humeur/tweets', {errMsg: "rien error"})
+			}
 			else {
-				console.log("problème pour la récupération des tweets, vérifiez le statut de confidentialité du profil")
-				res.redirect('/')
+				console.log("problème lors de la récupération des tweets en post, vérifiez le statut de confidentialité du profil")
+				res.redirect('/humeur/tweets')
 			}
 		}); 
     })
@@ -640,7 +684,6 @@ function isLoggedInTwitterAndActivated(req, res, next) {
     if (req.isAuthenticated() && req.user.isActivated())
     {
         if(req.user.twitter.username){
-			console.log(req.user.twitter.username, "logged in")
 			return next()
 		}
         else{
