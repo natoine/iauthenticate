@@ -8,6 +8,7 @@ var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 
 //to send emails
 const smtpTransport = require('../config/mailer')
+const urlService = require('../config/usefulvars').urlService
 
 // load up the user model
 var User            = require('../application/models/user')
@@ -86,7 +87,7 @@ module.exports = function(passport)
                         {
                             to : email,
                             subject : "iauthenticate account activation",
-                            html : "Welcome on iauthenticate. Please click the link bellow to activate your account : <a href=\"http://localhost:8080/activateaccount?email=" + email + "&token=" + newUser.local.activationtoken +"\">Activate Account</a>"
+                            html : "Welcome on iauthenticate. Please click the link bellow to activate your account : <a href=\""+ urlService + "/activateaccount?email=" + email + "&token=" + newUser.local.activationtoken +"\">Activate Account</a>"
                         }
                         smtpTransport.sendMail(mailOptions, function(error, response){
                             if(error)
