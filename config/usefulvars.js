@@ -1,5 +1,5 @@
 //config/usefulvars.js
 
 module.exports = {
-	'url' : process.env.urlService
+	'urlService' : process.env.urlService
 }
