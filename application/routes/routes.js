@@ -1,5 +1,5 @@
 // load up the user model
-const User            = require('../../application/models/user')
+const User            = require('../models/user')
 
 //to send emails
 const smtpTransport = require('../../config/mailer')

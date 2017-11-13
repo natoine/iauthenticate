@@ -20,7 +20,7 @@ const confsecret = require('./config/auth.js').sessionsecret
 // configuration ===============================================================
 const db = mongoose.createConnection(configDB.url)
 
-require('./application/routes/passport')(passport)
+require('./application/utils/passport')(passport)
 // pass passport for configuration
 
 // set up our express application
