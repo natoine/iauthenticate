@@ -7,14 +7,14 @@ var TwitterStrategy  = require('passport-twitter').Strategy
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 
 //to send emails
-const smtpTransport = require('../config/mailer')
-const urlService = require('../config/usefulvars').urlService
+const smtpTransport = require('../../config/mailer')
+const urlService = require('../../config/usefulvars').urlService
 
 // load up the user model
-var User            = require('../application/models/user')
+var User            = require('../../application/models/user')
 
 // load the auth variables
-var configAuth = require('./auth')
+var configAuth = require('../../config/auth')
 
 // expose this function to our app using module.exports
 module.exports = function(passport) 
