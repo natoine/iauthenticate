@@ -17,10 +17,10 @@
 <!--div class="col-sm-6 col-sm-offset-3"-->
 <div>
    <form action="/humeur" method ="post" >
-  <div>
+  <div align="center">
 
 <%for (var i = 0;i < list.humeurs.length;i++){%>
-    <input type="radio" name="mood" value="<%= list.humeurs[i].humeur %>"><%= list.humeurs[i].humeur %>
+    <label><input type="radio" name="mood" value="<%= list.humeurs[i].humeur %>" style="display:none"><img src="images/<%= list.humeurs[i].picto %>" alt="<%= list.humeurs[i].humeur %>" width="80" /></label>
     
     <% }%>
 
@@ -34,7 +34,7 @@
     
   </div>
   <div id="bouton">
-    <input type="submit" id="submit" disabled="" href="/humeur" value="Partager mon humeur">
+    <input type="submit" id="submit" disabled="" href="/humeur" value="Partager mon humeur" style="background-color:#555555; color:#ffffff">
   </div>
 </form>
 <a href="/profile" class="btn btn-default">Mon Profil</a>
