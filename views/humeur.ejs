@@ -19,7 +19,7 @@
   <div align="center">
 
 <%for (var i = 0;i < list.humeurs.length;i++){%>
-    <label><input type="radio" name="mood" value="<%= list.humeurs[i].humeur %>" style="display:none"><img src="images/<%= list.humeurs[i].picto %>" alt="<%= list.humeurs[i].humeur %>" width="80" /></label>
+    <label><input type="radio" name="mood" value="<%= list.humeurs[i].humeur %>" style="display:none"><img src="../ressources/<%= list.humeurs[i].picto %>" alt="<%= list.humeurs[i].humeur %>" width="80" /></label>
     
     <% }%>
 
