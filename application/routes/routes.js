@@ -3,7 +3,6 @@ const User            = require('../models/user')
 
 //to send emails
 const mailSender = require('../utils/mailSender')
-const urlService = require('../../config/usefulvars').urlService
 
 const TIMINGTOCHANGEPWD = 3600000
 
@@ -145,7 +144,7 @@ module.exports = function(app, passport) {
                             var subject = "iauthenticate pwd recovery ok"
                             var html = "you seem to have lost your pwd. "
                                  + "Click on the following link to change your password : " 
-                                 + "<a href=\"" + urlService + "/pwdrecovery?token=" 
+                                 + "<a href=\"" + mailSender.urlService + "/pwdrecovery?token=" 
                                  + user.local.pwdrecotoken
                                  + "\">Password change</a>"
                             mailSender.sendMail(email, subject, html, function(error, response){

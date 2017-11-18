@@ -8,7 +8,6 @@ var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 
 //to send emails
 const mailSender = require('./mailSender')
-const urlService = require('../../config/usefulvars').urlService
 
 // load up the user model
 var User            = require('../../application/models/user')
@@ -86,7 +85,7 @@ module.exports = function(passport)
                         var subject = "iauthenticate account activation"
                         var html = "Welcome on iauthenticate." + 
                             " Please click the link bellow to activate your account : <a href=\""
-                            + urlService 
+                            + mailSender.urlService 
                             + "/activateaccount?email=" + email 
                             + "&token=" + newUser.local.activationtoken 
                             +"\">Activate Account</a>"
