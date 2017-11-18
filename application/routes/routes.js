@@ -2,7 +2,7 @@
 const User            = require('../models/user')
 
 //to send emails
-const smtpTransport = require('../../config/mailer')
+const mailSender = require('../utils/mailSender')
 const urlService = require('../../config/usefulvars').urlService
 
 const TIMINGTOCHANGEPWD = 3600000
@@ -142,16 +142,13 @@ module.exports = function(app, passport) {
                         else
                         {
                             //sends an email to recover password
-                            const mailOptions =
-                            {
-                                to : email,
-                                subject : "iauthenticate pwd recovery ok",
-                                html : "you seem to have lost your pwd. "
+                            var subject = "iauthenticate pwd recovery ok"
+                            var html = "you seem to have lost your pwd. "
                                  + "Click on the following link to change your password : " 
-                                 + "<a href=\"" + urlService + "/pwdrecovery?token=" + user.local.pwdrecotoken
+                                 + "<a href=\"" + urlService + "/pwdrecovery?token=" 
+                                 + user.local.pwdrecotoken
                                  + "\">Password change</a>"
-                            }
-                            smtpTransport.sendMail(mailOptions, function(error, response){
+                            mailSender.sendMail(email, subject, html, function(error, response){
                                 if(error)
                                 {
                                     console.log(error)
@@ -163,7 +160,6 @@ module.exports = function(app, passport) {
                                         messagedanger: req.flash('pwdrecoveryMessage') })
                                 }
                             })
-
                             //flash
                             req.flash('pwdrecoveryokMessage', 'An email has been sent')
                             req.flash('pwdrecoveryMessage', '')
@@ -175,18 +171,15 @@ module.exports = function(app, passport) {
                 } 
                 else {
                     //sends an email to prevent a missuse of email
-                    const mailOptions =
-                    {
-                        to : email,
-                        subject : "iauthenticate pwd recovery notok",
-                        text : "someone thinks you use our service"
-                    }
-                    smtpTransport.sendMail(mailOptions, function(error, response){
-                        if(error)
-                        {
-                            console.log(error)
-                        }
-                    })
+                        var subject = "iauthenticate pwd recovery notok"
+                        var html = "someone thinks you use our service"
+                        mailSender.sendMail(email, subject, html, function(error, response){
+                            if(error)
+                            {
+                                console.log(error)
+                            }
+                        })
+                
                     //flash
                     req.flash('pwdrecoveryokMessage', 'An email has been sent')
                     res.render('pwdrecovery.ejs', 
