@@ -242,6 +242,6 @@ module.exports = function(app, express) {
         }
     })
 
-	// apply the routes to our application with the prefix /rsc
+	// apply the routes to our application
 	app.use('/', pwdRoutes)
 }

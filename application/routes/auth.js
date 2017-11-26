@@ -237,7 +237,7 @@ module.exports = function(app, express, passport) {
         })
     })
 
-	// apply the routes to our application with the prefix /rsc
+	// apply the routes to our application
 	app.use('/', authRoutes)
 
 }
