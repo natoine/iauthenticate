@@ -11,6 +11,9 @@ const db = mongoose.createConnection(configDB.url)
 
 const http = require('http')
 
+// file system to write in file
+var fs = require("fs")
+
 //to send emails
 const smtpTransport = require('../config/mailer')
 
@@ -604,13 +607,35 @@ module.exports = function(app, passport) {
 		var list;
 		var list_humeurs = require("../ressources/humeurs.json")
 		console.log(list_humeurs.humeurs[1])
-		Humeur.find({},
-		function(err, docs){
+		Humeur.find({}, function(err, docs){
 			user.moods = docs;
+
 			res.render('listhumeur.ejs',{
 				moods : user.moods ,list : list_humeurs
 			})
 		});
+    })
+
+    // Récupérer toutes les humeurs en JSON : http://localhost:8080/moodsJSON
+    app.get('/moodsJSON', isLoggedInAndActivated, function(req, res) {
+        var user = req.user
+
+        Humeur.find({}, function(err, docs){
+            user.moods = docs
+
+            var modsJson = JSON.stringify(user.moods, null, '\t')
+            var myFile = process.cwd()+"/tmp/moods.json"
+
+            fs.writeFile(myFile, modsJson, function (err) {
+                if (err) {
+                    return console.log('error writing file: ' + err);
+                } else {
+                    console.log('file written, just check it');
+                }
+            });
+
+            res.json(user.moods)
+        });
     })
     
 }
