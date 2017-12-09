@@ -10,7 +10,6 @@ const configDB = require('../config/database.js')
 const db = mongoose.createConnection(configDB.url)
 
 const http = require('http')
-var csv = require('csv-express');
 
 // file system to write in file
 var fs = require("fs")
@@ -639,19 +638,6 @@ module.exports = function(app, passport) {
         });
     })
 
-    // Récupérer les humeurs en fichier CSV
-    app.get('/humeursCSV', function(req, res, next) {
-        var filename = "humeurs.csv";
-
-        Humeur.find().lean().exec({}, function(err, docs) {
-            if (err)
-                res.send(err);
-
-            res.setHeader('Content-Type', 'text/csv');
-            res.setHeader("Content-Disposition", 'attachment; filename='+filename);
-            res.csv(docs, true);
-        });
-    });
     
 }
 
