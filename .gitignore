@@ -60,3 +60,7 @@ typings/
 
 
 \.idea/
+
+tmp/moods\.json
+
+config/auth\.js
