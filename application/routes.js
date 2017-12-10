@@ -12,6 +12,8 @@ const db = mongoose.createConnection(configDB.url)
 const http = require('http')
 var csv = require('csv-express');
 
+var js2xmlparser = require("js2xmlparser");
+
 // file system to write in file
 var fs = require("fs")
 
@@ -650,6 +652,53 @@ module.exports = function(app, passport) {
             res.setHeader('Content-Type', 'text/csv');
             res.setHeader("Content-Disposition", 'attachment; filename='+filename);
             res.csv(docs, true);
+        });
+    });
+
+    // Récupérer les humeurs en fichier CSV
+    app.get('/humeursXML', isLoggedInAndActivated, function(req, res) {
+        var user = req.user
+
+        Humeur.find().lean().exec({}, function(err, docs) {
+            user.moods = docs
+            if (err)
+                res.send(err);
+            else {
+
+                //var jsonObj = JSON.stringify(user.moods, null, '\t')
+                var pers1 = {
+                        "_id": "5a2c526c133cbb0f64b67f18",
+                        "city": "Montpellier",
+                        "long": 3.8874849,
+                        "lat": 43.6056118,
+                        "date": 1512854124920,
+                        "user": "5a2c51d6133cbb0f64b67ef0",
+                        "emotion": "tristounet",
+                        "__v": 0
+                    }
+                var pers2 = {
+                        "_id": "5a2c5270133cbb0f64b67f1b",
+                        "city": "Montpellier",
+                        "long": 3.8874849,
+                        "lat": 43.6056118,
+                        "date": 1512854128262,
+                        "user": "5a2c51d6133cbb0f64b67ef0",
+                        "emotion": "en colère",
+                        "__v": 0
+                    }
+
+                var jsonObj = [pers1, pers2]
+
+                console.log(jsonObj)
+
+                console.log(user.moods)
+
+                var xml = js2xmlparser.parse("emotionsList", jsonObj)
+                console.log(xml)
+                res.set('Content-Type', 'text/xml');
+                res.send(xml)
+
+            }
         });
     });
     
