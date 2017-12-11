@@ -12,6 +12,8 @@ const db = mongoose.createConnection(configDB.url)
 const http = require('http')
 var csv = require('csv-express');
 
+var js2xmlparser = require("js2xmlparser");
+
 // file system to write in file
 var fs = require("fs")
 
@@ -650,6 +652,27 @@ module.exports = function(app, passport) {
             res.setHeader('Content-Type', 'text/csv');
             res.setHeader("Content-Disposition", 'attachment; filename='+filename);
             res.csv(docs, true);
+        });
+    });
+
+    // Récupérer les humeurs en fichier CSV
+    app.get('/humeursXML', isLoggedInAndActivated, function(req, res) {
+        var user = req.user
+
+        Humeur.find().lean().exec({}, function(err, docs) {
+            user.moods = docs
+            if (err)
+                res.send(err);
+            else {
+                var moodsTmp = JSON.stringify(user.moods)
+                var jsonObj = JSON.parse(moodsTmp)
+
+                var xml = js2xmlparser.parse("emotionsList", jsonObj)
+                console.log(xml)
+                res.set('Content-Type', 'text/xml');
+                res.send(xml)
+
+            }
         });
     });
     
