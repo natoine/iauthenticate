@@ -664,34 +664,8 @@ module.exports = function(app, passport) {
             if (err)
                 res.send(err);
             else {
-
-                //var jsonObj = JSON.stringify(user.moods, null, '\t')
-                var pers1 = {
-                        "_id": "5a2c526c133cbb0f64b67f18",
-                        "city": "Montpellier",
-                        "long": 3.8874849,
-                        "lat": 43.6056118,
-                        "date": 1512854124920,
-                        "user": "5a2c51d6133cbb0f64b67ef0",
-                        "emotion": "tristounet",
-                        "__v": 0
-                    }
-                var pers2 = {
-                        "_id": "5a2c5270133cbb0f64b67f1b",
-                        "city": "Montpellier",
-                        "long": 3.8874849,
-                        "lat": 43.6056118,
-                        "date": 1512854128262,
-                        "user": "5a2c51d6133cbb0f64b67ef0",
-                        "emotion": "en colère",
-                        "__v": 0
-                    }
-
-                var jsonObj = [pers1, pers2]
-
-                console.log(jsonObj)
-
-                console.log(user.moods)
+                var moodsTmp = JSON.stringify(user.moods)
+                var jsonObj = JSON.parse(moodsTmp)
 
                 var xml = js2xmlparser.parse("emotionsList", jsonObj)
                 console.log(xml)
