@@ -681,25 +681,6 @@ module.exports = function(app, passport) {
 
     // Chatbot Api.AI
     app.get('/chatbot', function(req, res) {
-        /*
-        var request = apiai.textRequest("Bonjour", {
-            sessionId: 'uniqueSessionId'
-        });
-
-        request.on('response', function(response) {
-            console.log("GET response")
-            console.log(response.result.fulfillment.speech);
-            //res.render('chatApiai.ejs', {rspApiai: response.result.fulfillment.speech})
-            res.render('chatApiai.ejs', {rspApiai: '...'})
-        });
-
-        request.on('error', function(error) {
-            console.log(error);
-            res.render('chatApiai.ejs', {rspApiai: error})
-        });
-
-        request.end();
-        */
         res.render('chatApiai.ejs', {rspApiai: '...'})
     });
 
