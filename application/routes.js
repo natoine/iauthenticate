@@ -17,6 +17,9 @@ var js2xmlparser = require("js2xmlparser");
 // file system to write in file
 var fs = require("fs")
 
+// Get a reply from API.ai
+const apiai = require('apiai')(credentials.APIAI_TOKEN);
+
 //to send emails
 const smtpTransport = require('../config/mailer')
 
@@ -675,6 +678,52 @@ module.exports = function(app, passport) {
             }
         });
     });
+
+    // Chatbot Api.AI
+    app.get('/chatbot', function(req, res) {
+        /*
+        var request = apiai.textRequest("Bonjour", {
+            sessionId: 'uniqueSessionId'
+        });
+
+        request.on('response', function(response) {
+            console.log("GET response")
+            console.log(response.result.fulfillment.speech);
+            //res.render('chatApiai.ejs', {rspApiai: response.result.fulfillment.speech})
+            res.render('chatApiai.ejs', {rspApiai: '...'})
+        });
+
+        request.on('error', function(error) {
+            console.log(error);
+            res.render('chatApiai.ejs', {rspApiai: error})
+        });
+
+        request.end();
+        */
+        res.render('chatApiai.ejs', {rspApiai: '...'})
+    });
+
+    app.post('/chatbot', function(req, res) {
+        var textQuery = req.body.textMsg
+
+        var request = apiai.textRequest(textQuery, {
+            sessionId: 'uniqueSessionId'
+        });
+
+        request.on('response', function(response) {
+            console.log("POST response")
+            console.log(response.result.fulfillment.speech);
+            res.render('chatApiai.ejs', {rspApiai: response.result.fulfillment.speech})
+        });
+
+        request.on('error', function(error) {
+            console.log(error)
+            res.render('chatApiai.ejs', {rspApiai: error})
+        });
+
+        request.end();
+
+    })
     
 }
 
