@@ -10,12 +10,12 @@ const configDB = require('../config/database.js')
 const db = mongoose.createConnection(configDB.url)
 
 const http = require('http')
-var csv = require('csv-express');
+const csv = require('csv-express');
 
-var js2xmlparser = require("js2xmlparser");
+const js2xmlparser = require("js2xmlparser");
 
 // file system to write in file
-var fs = require("fs")
+const fs = require("fs")
 
 // Get a reply from API.ai
 const apiai = require('apiai')(credentials.APIAI_TOKEN);
