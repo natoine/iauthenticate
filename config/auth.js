@@ -20,6 +20,7 @@ module.exports = {
         'clientID'      : '',
         'clientSecret'  : '',
         'callbackURL'   : 'http://localhost:8080/auth/google/callback'
-    }
+    },
+	'APIAI_TOKEN' : '' // your Client access token from dialogflow (Api.ai)
 
 }
