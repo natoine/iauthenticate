@@ -1,21 +1,9 @@
 // load up the user model
-const User = require('../application/models/user')
+const User              = require('../application/models/user')
 const mongoose = require('mongoose')
-const Humeur = require('../application/models/humeur')
-const TweetDb = require('../application/models/tweets')
-var Twitter = require('twitter');
-var credentials = require('../config/auth.js');
-
+const Humeur            = require('../application/models/humeur')
 const configDB = require('../config/database.js')
 const db = mongoose.createConnection(configDB.url)
-
-const http = require('http')
-var csv = require('csv-express');
-
-var js2xmlparser = require("js2xmlparser");
-
-// file system to write in file
-var fs = require("fs")
 
 //to send emails
 const smtpTransport = require('../config/mailer')
@@ -161,10 +149,9 @@ module.exports = function(app, passport) {
                             {
                                 to : email,
                                 subject : "iauthenticate pwd recovery ok",
-                                html : "you seem to have lost your pwd. "
+                                text : "you seem to have lost your pwd. "
                                  + "Click on the following link to change your password : " 
-                                 + "<a href=\"http://localhost:8080/pwdrecovery?token=" + user.local.pwdrecotoken
-                                 + "\">Password change</a>"
+                                 + "http://localhost:8080/pwdrecovery?token=" + user.local.pwdrecotoken
                             }
                             smtpTransport.sendMail(mailOptions, function(error, response){
                                 if(error)
@@ -508,28 +495,37 @@ module.exports = function(app, passport) {
         })
     })
     
-    // Récupérer l'humer ----------------------
-    app.get('/humeur', isLoggedInAndActivated, function(req, res) {
-            var user = req.user
-            var humeur = new Humeur();
-            var list;
-            var list_humeurs = require("../ressources/humeurs.json")
-            
-            console.log(list_humeurs.humeurs[1])
-            Humeur.find({'user' : req.user},
-            function(err, docs){
-                user.moods = docs;
-                 res.render('humeur.ejs',{
-            moods : user.moods ,list : list_humeurs
-        })
-                
+    // visualisation graphqiue ----------------------
+    app.get('/graph_mood', isLoggedInAndActivated, function(req, res) {
+		var user = req.user
+		var humeur = new Humeur();
+		var list;
+		var list_humeurs = require("../ressources/humeurs.json")
+		console.log(list_humeurs.humeurs[1])
+		Humeur.find({'user' : req.user},
+		function(err, docs){
+			user.moods = docs;
+			res.render('graph_mood.ejs',{
+				moods : user.moods , list : list_humeurs
+			})
+		});
+	})
     
-    });
-        
-            
-           
-      
-    })
+    // Récupérer l'humeur ----------------------
+    app.get('/humeur', isLoggedInAndActivated, function(req, res) {
+		var user = req.user
+		var humeur = new Humeur();
+		var list;
+		var list_humeurs = require("../ressources/humeurs.json")
+		console.log(list_humeurs.humeurs[1])
+		Humeur.find({'user' : req.user},
+		function(err, docs){
+			user.moods = docs;
+			res.render('humeur.ejs',{
+				moods : user.moods ,list : list_humeurs
+			})
+		});
+	})
     
     app.post('/humeur', isLoggedInAndActivated, function(req, res) {
 
@@ -538,144 +534,14 @@ module.exports = function(app, passport) {
         newmood.user = req.user
         newmood.date = new Date().getTime()
         newmood.lat = req.body.lat
-        newmood.meteo = req.body.meteo
-        newmood.temp = req.body.temp
-        newmood.vent = req.body.vent
+        newmood.long = req.body.long
         newmood.city = req.body.city
         newmood.save(function(err) {
            res.redirect('/humeur')
         })
            
     })
-	
-	//Récupération des tweets
-    app.get('/humeur/tweets', isLoggedInTwitterAndActivated, function(req, res) {
-		var client = new Twitter({
-			consumer_key: credentials.twitterAuth.consumerKey,
-			consumer_secret: credentials.twitterAuth.consumerSecret,
-			access_token_key: credentials.twitterAuth.accessTokenKey,
-			access_token_secret: credentials.twitterAuth.accessTokenSecret
-		});
-		var params = {screen_name: req.user.twitter.username};
-		//var params = {screen_name: '20Minutes'};
-		client.get('statuses/user_timeline', params, function(error, tweets, response) {
-			if (!error) {
-				tweets.forEach(function(tweet) {
-					newtweet = new TweetDb()
-					newtweet.tweet = tweet.text 
-					newtweet.user = tweet.user.screen_name
-					newtweet.date = tweet.created_at
-					newtweet.save
-				})
-				//tweets.map(tweet => {console.log(tweet.created_at),console.log(tweet.user.screen_name),console.log(tweet.text)})
-				//console.log(params.screen_name)
-				res.render('tweets.ejs' , {tweets: tweets, twitter_user: params.screen_name})
-				
-			}
-			else {
-				console.log("problème lors de la récupération des tweets, vérifiez le statut de confidentialité du profil")
-				res.redirect('/')
-			}
-		});  
-    })
-	
-	app.post('/humeur/tweets', isLoggedInTwitterAndActivated, function(req, res) {
-        var client = new Twitter({
-			consumer_key: credentials.twitterAuth.consumerKey,
-			consumer_secret: credentials.twitterAuth.consumerSecret,
-			access_token_key: credentials.twitterAuth.accessTokenKey,
-			access_token_secret: credentials.twitterAuth.accessTokenSecret
-		});
-		//var params = {screen_name: req.user.twitter.username};
-		var params = {screen_name: req.body.newtweets};
-		client.get('statuses/user_timeline', params, function(error, tweets, response) {
-			if (!error) {
-				//tweets.map(tweet => {console.log(tweet.created_at),console.log(tweet.user.screen_name),console.log(tweet.text)})
-				//console.log(params.screen_name)
-				res.render('tweets.ejs' , {tweets: tweets, twitter_user: params.screen_name})
-			}
-			else {
-				console.log("problème pour la récupération des tweets, vérifiez le statut de confidentialité du profil")
-				res.redirect('/')
-			}
-		}); 
-    })
 
-
-
-// Récupérer toutes les humeurs--
-    app.get('/listhumeur', isLoggedInAndActivated, function(req, res) {
-		var user = req.user
-		var humeur = new Humeur();
-		var list;
-		var list_humeurs = require("../ressources/humeurs.json")
-		console.log(list_humeurs.humeurs[1])
-		Humeur.find({}, function(err, docs){
-			user.moods = docs;
-
-			res.render('listhumeur.ejs',{
-				moods : user.moods ,list : list_humeurs
-			})
-		});
-    })
-
-    // Récupérer toutes les humeurs en JSON : http://localhost:8080/moodsJSON
-    app.get('/moodsJSON', isLoggedInAndActivated, function(req, res) {
-        var user = req.user
-
-        Humeur.find({}, function(err, docs){
-            user.moods = docs
-
-            var modsJson = JSON.stringify(user.moods, null, '\t')
-            var myFile = process.cwd()+"/tmp/moods.json"
-
-            fs.writeFile(myFile, modsJson, function (err) {
-                if (err) {
-                    return console.log('error writing file: ' + err);
-                } else {
-                    console.log('file written, just check it');
-                }
-            });
-
-            res.json(user.moods)
-        });
-    })
-
-    // Récupérer les humeurs en fichier CSV
-    app.get('/humeursCSV', function(req, res, next) {
-        var filename = "humeurs.csv";
-
-        Humeur.find().lean().exec({}, function(err, docs) {
-            if (err)
-                res.send(err);
-
-            res.setHeader('Content-Type', 'text/csv');
-            res.setHeader("Content-Disposition", 'attachment; filename='+filename);
-            res.csv(docs, true);
-        });
-    });
-
-    // Récupérer les humeurs en fichier CSV
-    app.get('/humeursXML', isLoggedInAndActivated, function(req, res) {
-        var user = req.user
-
-        Humeur.find().lean().exec({}, function(err, docs) {
-            user.moods = docs
-            if (err)
-                res.send(err);
-            else {
-                var moodsTmp = JSON.stringify(user.moods)
-                var jsonObj = JSON.parse(moodsTmp)
-
-                var xml = js2xmlparser.parse("emotionsList", jsonObj)
-                console.log(xml)
-                res.set('Content-Type', 'text/xml');
-                res.send(xml)
-
-            }
-        });
-    });
-    
 }
 
 // route middleware to make sure a user is logged in
@@ -696,24 +562,6 @@ function isLoggedInAndActivated(req, res, next) {
     {
         if(req.user.local.email || req.user.facebook.token || req.user.twitter.token || req.user.google.token)
         return next()
-    }
-
-    // if they aren't redirect them to the home page
-    res.redirect('/')
-}
-
-function isLoggedInTwitterAndActivated(req, res, next) {
-
-    // if user is authenticated in the session, carry on 
-    if (req.isAuthenticated() && req.user.isActivated())
-    {
-        if(req.user.twitter.username){
-			console.log(req.user.twitter.username, "logged in")
-			return next()
-		}
-        else{
-			res.redirect('/')
-		}
     }
 
     // if they aren't redirect them to the home page
