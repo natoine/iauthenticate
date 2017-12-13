@@ -6,26 +6,78 @@
   	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
-        body        { padding-top:80px; }
-        .tablisthum {border-spacing: 10px;border-collapse: separate;}
+      body {
+        margin: 0 auto;
+        max-width: 800px;
+        padding: 0 20px;
+      }
+
+      .container {
+        border: 2px solid #dedede;
+        background-color: #f1f1f1;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 10px 0;
+      }
+
+      .darker {
+        border-color: #ccc;
+        background-color: #ddd;
+      }
+
+      .container::after {
+        content: "";
+        clear: both;
+        display: table;
+      }
+
+      .container img {
+        float: left;
+        max-width: 60px;
+        width: 100%;
+        margin-right: 20px;
+        border-radius: 50%;
+      }
+
+      .container img.right {
+        float: right;
+        margin-left: 20px;
+        margin-right:0;
+      }
+
+      .time-right {
+        float: right;
+        color: #aaa;
+      }
+
+      .time-left {
+        float: left;
+        color: #999;
+      }
     </style>
   </head>
 
   <body>
 
-    <h1> - </h1>
-    <h2>Simple Chatbot avec API.AI</h2>
+    <h1>Simple Chatbot avec API.AI</h1>
+    <h2> Chat Messages </h2>
     <div>
       <form action="/chatbot" method ="post" >
-
           <input type="text" name="textMsg" />
           <input type="submit" />
-
       </form>
+    </div>
 
-      <ul>
-        <li><%= rspApiai %></li>
-      </ul>
+    <div class="container">
+      <img src="images/monAvatar.png" alt="Mon avatar" style="width:100%;">
+      <p> ... </p>
+      <!--<span class="time-right">11:00</span>-->
+    </div>
+
+    <div class="container darker">
+      <img src="images/bot.jpg" alt="Avatar api-ai" class="right" style="width:100%;">
+      <p><%= rspApiai %></p>
+      <!--<span class="time-left">11:01</span>-->
     </div>
 
   </body>
