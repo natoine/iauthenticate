@@ -35,6 +35,9 @@
         <a href="/auth/google" class="btn btn-danger"><span class="fa fa-google-plus"></span> Google+</a>
     </div>
 </div>
+<div id="listHumeurs" style="display: none">
+    <%= humeurs %>
+</div>
 
 
 <div id="map" style="width: 100%; height: 500px"></div>
@@ -50,6 +53,11 @@
         <script src="http://d3js.org/d3.v4.min.js"></script>
              
         <script>
+            var humeursStr = document.getElementById("listHumeurs").innerHTML;
+            var humeurs = JSON.parse(humeursStr)
+
+            //alert(humeurs[0].emotion);
+
             var map = L.map('map').setView([43.61,3.88], 12);
                 mapLink = 
                     '<a href="http://openstreetmap.org">OpenStreetMap</a>';
@@ -58,7 +66,7 @@
                     attribution: '&copy; ' + mapLink + ' Contributors',
                     maxZoom: 18,
                 }).addTo(map);
-            
+            /*
             var request = new Request("/listhumeur",{
                     headers : new Headers({
                         'Content-Type' : 'application/json',
@@ -69,15 +77,18 @@
                     response.text().then(function(data){
                     var humeurs = data
                     console.log(response)
+            */
                      for ( var i=0; i<humeurs.length; i++) {
-                            long=humeurs[i].long
-                            lat=humeurs[i].lat
-                            humeur = humeurs[i].humeur
-                            var marker = L.marker([lat, long]).addTo(map);} //
-                   }
-                    )
+                        //alert(humeurs[i].emotion)
+                        long =humeurs[i].long
+                        lat = humeurs[i].lat
+                        humeur = humeurs[i].emotion
+                        var marker = L.marker([lat, long]).addTo(map);
+                     } //
+            /*
+                   })
             })
-           
+           */
         </script>
 
 </body>
