@@ -23,7 +23,11 @@
     <label><input type="radio" name="mood" value="<%= list.humeurs[i].humeur %>" style="display:none"><img src="../ressources/<%= list.humeurs[i].picto %>" alt="<%= list.humeurs[i].humeur %>" width="80" /></label>
     
     <% }%>
-
+	
+	
+	
+	
+	
 
      <input type="hidden" name="lat" id="lat" value="">
      <input type="hidden" name="long" id="long" value="">
@@ -77,7 +81,8 @@ function success(pos) {
  s.src = 'http://nominatim.openstreetmap.org/reverse?json_callback=city&format=json&lat='+ crd.latitude + '&lon=' + crd.longitude + '&zoom=18&addressdetails=1';
  document.getElementsByTagName('head')[0].appendChild(s);
 
- var url = 'http://api.openweathermap.org/data/2.5/weather?lat='+crd.latitude+'&lon='+crd.longitude+'&APPID=9662eab1170b33ae9cc5e74d1612bf46'
+ //<%= key %>'
+ var url = 'http://api.openweathermap.org/data/2.5/weather?lat='+crd.latitude+'&lon='+crd.longitude+'&APPID=<%= key %>'
  fetch(url).then(
 	 function(response){
 		 response.json().then(function(data){

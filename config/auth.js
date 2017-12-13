@@ -19,8 +19,14 @@ module.exports = {
     'googleAuth' : {
         'clientID'      : '',
         'clientSecret'  : '',
-        'callbackURL'   : 'http://localhost:8080/auth/google/callback'
+        'callbackURL'   : 'http://127.0.0.1:8080/auth/google/callback'
     },
-	'APIAI_TOKEN' : '' // your Client access token from dialogflow (Api.ai)
+	'APIAI_TOKEN' : '3', // your Client access token from dialogflow (Api.ai)
+	
+	'API_OPENWEATHER' : {
+        'consumerKey'       : '572a91d106726c152b30397f8298898f',
+    },
+	
+	//'API_OPENWEATHER':'572a91d106726c152b30397f8298898f'
 
 }

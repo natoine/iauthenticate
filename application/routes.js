@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const Humeur = require('../application/models/humeur')
 const TweetDb = require('../application/models/tweets')
 var Twitter = require('twitter');
+var weather = require('openweather-apis');
 var credentials = require('../config/auth.js');
 
 const configDB = require('../config/database.js')
@@ -19,6 +20,10 @@ const fs = require("fs")
 
 // Get a reply from API.ai
 const apiai = require('apiai')(credentials.APIAI_TOKEN);
+
+// openweather
+const apiow = require('openweather-apis');
+apiow.setAPPID(credentials.API_OPENWEATHER);
 
 //to send emails
 const smtpTransport = require('../config/mailer')
@@ -517,13 +522,13 @@ module.exports = function(app, passport) {
             var humeur = new Humeur();
             var list;
             var list_humeurs = require("../ressources/humeurs.json")
-            
+            var key = credentials.API_OPENWEATHER.consumerKey
             console.log(list_humeurs.humeurs[1])
             Humeur.find({'user' : req.user},
             function(err, docs){
                 user.moods = docs;
                  res.render('humeur.ejs',{
-            moods : user.moods ,list : list_humeurs
+            moods : user.moods, list : list_humeurs, key : key
         })
                 
     
@@ -700,6 +705,58 @@ module.exports = function(app, passport) {
         request.on('error', function(error) {
             console.log(error)
             res.render('chatApiai.ejs', {rspApiai: error})
+        });
+
+        request.end();
+
+    })
+	
+	
+	
+	
+
+	app.get('/humeur', function(req, res) {
+        res.render('humeur.ejs', {rspApiow: ''})
+    });
+	
+	app.post('/humeur/tweets2', isLoggedInTwitterAndActivated, function(req, res) {
+        var client = new Twitter({
+			consumer_key: credentials.twitterAuth.consumerKey,
+			consumer_secret: credentials.twitterAuth.consumerSecret,
+			access_token_key: credentials.twitterAuth.accessTokenKey,
+			access_token_secret: credentials.twitterAuth.accessTokenSecret
+		});
+		//var params = {screen_name: req.user.twitter.username};
+		var params = {screen_name: req.body.newtweets};
+		client.get('statuses/user_timeline', params, function(error, tweets, response) {
+			if (!error) {
+				//tweets.map(tweet => {console.log(tweet.created_at),console.log(tweet.user.screen_name),console.log(tweet.text)})
+				//console.log(params.screen_name)
+				res.render('tweets.ejs' , {tweets: tweets, twitter_user: params.screen_name})
+			}
+			else {
+				console.log("problème pour la récupération des tweets, vérifiez le statut de confidentialité du profil")
+				res.redirect('/')
+			}
+		}); 
+    })
+
+    app.post('/humeur', function(req, res) {
+        var textQuery = req.body.textMsg
+
+        var request = apiow.textRequest(textQuery, {
+            sessionId: 'uniqueSessionId'
+        });
+
+        request.on('response', function(response) {
+            console.log("POST response")
+            console.log(response.result.fulfillment.speech);
+            res.render('humeur.ejs', {rspApiow: response.result.fulfillment.speech})
+        });
+
+        request.on('error', function(error) {
+            console.log(error)
+            res.render('humeur.ejs', {rspApiow: error})
         });
 
         request.end();
