@@ -82,8 +82,9 @@
                         //alert(humeurs[i].emotion)
                         long =humeurs[i].long
                         lat = humeurs[i].lat
-                        humeur = humeurs[i].emotion
+                        humeur = humeurs[i].humeur
                         var marker = L.marker([lat, long]).addTo(map);
+                        marker.bindPopup(humeur).openPopup();
                      } //
             /*
                    })
