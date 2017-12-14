@@ -555,6 +555,7 @@ module.exports = function(app, passport) {
         newmood.user = req.user
         newmood.date = new Date().getTime()
         newmood.lat = req.body.lat
+        newmood.long = req.body.long
         newmood.meteo = req.body.meteo
         newmood.temp = req.body.temp
         newmood.vent = req.body.vent
