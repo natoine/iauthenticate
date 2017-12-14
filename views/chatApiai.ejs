@@ -54,6 +54,14 @@
         float: left;
         color: #999;
       }
+
+      .text-right {
+        text-align: right;
+      }
+
+      form {
+        text-align: center;
+      }
     </style>
   </head>
 
@@ -64,23 +72,25 @@
     <a href="/listhumeur" class="btn btn-default">Liste totale des humeurs</a>
     <h2> Chat Messages </h2>
     <div>
-      <form action="/chatbot" method ="post" >
-          <input type="text" name="textMsg" />
+      <form class="container" action="/chatbot" method ="post" >
+          <input style="width: 85%;" type="text" name="textMsg" />
           <input type="submit" />
       </form>
     </div>
 
-    <div class="container">
-      <img src="images/monAvatar.png" alt="Mon avatar" style="width:100%;">
-      <p> ... </p>
-      <!--<span class="time-right">11:00</span>-->
-    </div>
+    <%for (var i=0; i<listTchat.length; i++) {
+        var index = listTchat.length-1-i%>
+        <div class="container" style="display: <%= StyleDisplay %>;">
+          <img src="images/bot.jpg" alt="Mon avatar" style="width:100%;">
+          <p><%= listTchat[index].rspApiai %></p>
+          <span class="time-left"><%= new Date(listTchat[index].date).toLocaleString() %></span>
+        </div>
 
-    <div class="container darker">
-      <img src="images/bot.jpg" alt="Avatar api-ai" class="right" style="width:100%;">
-      <p><%= rspApiai %></p>
-      <!--<span class="time-left">11:01</span>-->
-    </div>
-
+        <div class="container darker" style="display: <%= StyleDisplay %>;">
+          <img src="images/monAvatar.png" alt="Avatar api-ai" class="right" style="width:100%;">
+          <p class="text-right"><%= listTchat[index].textMsg %></p>
+          <span class="time-right"><%= new Date(listTchat[index].date).toLocaleString() %></span>
+        </div>
+    <% } %>
   </body>
 </html>
