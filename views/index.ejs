@@ -49,7 +49,9 @@
         <script
            src="http://leaflet.github.io/Leaflet.heat/dist/leaflet-heat.js">
         </script>
-        
+        <script
+        src="http://leaflet.github.io/Leaflet.heat/dist/leaflet-heat.js">
+        </script>
         <script src="http://d3js.org/d3.v4.min.js"></script>
              
         <script>
@@ -78,6 +80,9 @@
                     var humeurs = data
                     console.log(response)
             */
+            
+            
+
                      for ( var i=0; i<humeurs.length; i++) {
                         //alert(humeurs[i].emotion)
                         long =humeurs[i].long
@@ -85,6 +90,11 @@
                         humeur = humeurs[i].humeur
                         var marker = L.marker([lat, long]).addTo(map);
                         marker.bindPopup(humeur).openPopup();
+                        var heat = L.heatLayer([lat, long],{
+                        radius: 20,
+                        blur: 15, 
+                        maxZoom: 17,
+                        }).addTo(map);
                      } //
             /*
                    })
@@ -93,4 +103,4 @@
         </script>
 
 </body>
-</html>
+</html>t 
