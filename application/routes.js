@@ -3,6 +3,7 @@ const User = require('../application/models/user')
 const mongoose = require('mongoose')
 const Humeur = require('../application/models/humeur')
 const TweetDb = require('../application/models/tweets')
+const Tchat = require('../application/models/tchat')
 var Twitter = require('twitter');
 var weather = require('openweather-apis');
 var credentials = require('../config/auth.js');
@@ -627,14 +628,17 @@ module.exports = function(app, passport) {
 		});
     })
 
-    // Récupérer toutes les humeurs en JSON : http://localhost:8080/moodsJSON
+    // ================================================
+    // Récupérer toutes les humeurs en JSON ===========
+    // ================================================
+
     app.get('/moodsJSON', isLoggedInAndActivated, function(req, res) {
         var user = req.user
 
         Humeur.find({}, function(err, docs){
-            user.moods = docs
+            var userMoods = docs
 
-            var modsJson = JSON.stringify(user.moods, null, '\t')
+            var modsJson = JSON.stringify(userMoods, null, '\t')
             var myFile = process.cwd()+"/tmp/moods.json"
 
             fs.writeFile(myFile, modsJson, function (err) {
@@ -645,9 +649,13 @@ module.exports = function(app, passport) {
                 }
             });
 
-            res.json(user.moods)
+            res.json(userMoods)
         });
     })
+    // ================================================
+    // Fin les humeurs en JSON ========================
+    // ================================================
+
 
     // Récupérer les humeurs en fichier CSV
     app.get('/humeursCSV', function(req, res, next) {
@@ -663,7 +671,7 @@ module.exports = function(app, passport) {
         });
     });
 
-    // Récupérer les humeurs en fichier CSV
+    // Récupérer les humeurs en XML
     app.get('/humeursXML', isLoggedInAndActivated, function(req, res) {
         var user = req.user
 
@@ -684,9 +692,21 @@ module.exports = function(app, passport) {
         });
     });
 
-    // Chatbot Api.AI
-    app.get('/chatbot', function(req, res) {
-        res.render('chatApiai.ejs', {rspApiai: '...'})
+    // ================================================
+    // // Chatbot Api.AI ==============================
+    // ================================================
+    app.get('/chatbot', isLoggedInAndActivated, function(req, res) {
+        Tchat.find({}, function(err, docs) {
+            var styleDisp = ''
+            console.log(docs)
+            if (docs.length<1)
+                styleDisp = 'none'
+            else
+                styleDisp = 'block'
+            res.render('chatApiai.ejs', {
+                listTchat: docs, StyleDisplay: styleDisp
+            })
+        })
     });
 
     app.post('/chatbot', function(req, res) {
@@ -697,20 +717,36 @@ module.exports = function(app, passport) {
         });
 
         request.on('response', function(response) {
+            var rspApiai = response.result.fulfillment.speech
             console.log("POST response")
-            console.log(response.result.fulfillment.speech);
-            res.render('chatApiai.ejs', {rspApiai: response.result.fulfillment.speech})
+            console.log(rspApiai)
+
+            var newTchat = new Tchat()
+            newTchat.user = req.user
+            newTchat.date = new Date().getTime()
+            newTchat.textMsg = textQuery
+            newTchat.rspApiai = rspApiai
+
+            newTchat.save(function(err) {
+                res.redirect('/chatbot')
+            })
+
         });
 
         request.on('error', function(error) {
-            console.log(error)
-            res.render('chatApiai.ejs', {rspApiai: error})
+            console.log(error.message)
+            var listTchatErr = [{textMsg: '', rspApiai:error.message, date:new Date().getTime()}]
+            res.render('chatApiai.ejs', {
+                listTchat: listTchatErr, StyleDisplay: 'block'
+            })
         });
 
         request.end();
 
     })
-	
+    // =================================================
+    // Fin chatbot api.ai ==============================
+    // =================================================
 	
 	
 	
