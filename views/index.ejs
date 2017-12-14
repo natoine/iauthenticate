@@ -87,7 +87,7 @@
                         //alert(humeurs[i].emotion)
                         long =humeurs[i].long
                         lat = humeurs[i].lat
-                        humeur = humeurs[i].humeur
+                        humeur = humeurs[i].emotion
                         var marker = L.marker([lat, long]).addTo(map);
                         marker.bindPopup(humeur).openPopup();
                         var heat = L.heatLayer([lat, long],{
