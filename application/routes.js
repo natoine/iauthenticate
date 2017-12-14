@@ -38,8 +38,16 @@ module.exports = function(app, passport) {
     // HOME PAGE (with login links) ========
     // =====================================
     app.get('/', function(req, res) {
-        req.logout()
-        res.render('index.ejs')// load the index.ejs file
+        req.logout() 
+
+        //gather moods
+        Humeur.find({}, function(err,docs){
+            console.log("Liste d'humeurs " + docs)
+            var moodsTmp = JSON.stringify(docs)
+
+            res.render('index.ejs', { humeurs: moodsTmp })// load the index.ejs file
+        })
+        //res.render('index.ejs')// load the index.ejs file
     })
 
     // =====================================
@@ -613,7 +621,7 @@ module.exports = function(app, passport) {
 
 
 // Récupérer toutes les humeurs--
-    app.get('/listhumeur', isLoggedInAndActivated, function(req, res) {
+    app.get('/listhumeur',  function(req, res) {
 		var user = req.user
 		var humeur = new Humeur();
 		var list;

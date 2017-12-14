@@ -8,6 +8,17 @@
     <style>
         body        { padding-top:80px; }
     </style>
+
+    <!-- Boostrap dépend de Jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css">
+    <script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 </head>
 <body>
 <div class="container">
@@ -23,7 +34,73 @@
         <a href="/auth/twitter" class="btn btn-info"><span class="fa fa-twitter"></span> Twitter</a>
         <a href="/auth/google" class="btn btn-danger"><span class="fa fa-google-plus"></span> Google+</a>
     </div>
-
 </div>
+<div id="listHumeurs" style="display: none">
+    <%= humeurs %>
+</div>
+
+
+<div id="map" style="width: 100%; height: 500px"></div>
+
+        <script
+           src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js">
+        </script>
+        
+        <script
+           src="http://leaflet.github.io/Leaflet.heat/dist/leaflet-heat.js">
+        </script>
+        <script
+        src="http://leaflet.github.io/Leaflet.heat/dist/leaflet-heat.js">
+        </script>
+        <script src="http://d3js.org/d3.v4.min.js"></script>
+             
+        <script>
+            var humeursStr = document.getElementById("listHumeurs").innerHTML;
+            var humeurs = JSON.parse(humeursStr)
+
+            //alert(humeurs[0].emotion);
+
+            var map = L.map('map').setView([43.61,3.88], 12);
+                mapLink = 
+                    '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+                L.tileLayer(
+                    'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; ' + mapLink + ' Contributors',
+                    maxZoom: 18,
+                }).addTo(map);
+            /*
+            var request = new Request("/listhumeur",{
+                    headers : new Headers({
+                        'Content-Type' : 'application/json',
+                        'accept': 'application/json'
+                    })
+            })
+            fetch(request).then(function(response){
+                    response.text().then(function(data){
+                    var humeurs = data
+                    console.log(response)
+            */
+            
+            
+
+                     for ( var i=0; i<humeurs.length; i++) {
+                        //alert(humeurs[i].emotion)
+                        long =humeurs[i].long
+                        lat = humeurs[i].lat
+                        humeur = humeurs[i].humeur
+                        var marker = L.marker([lat, long]).addTo(map);
+                        marker.bindPopup(humeur).openPopup();
+                        var heat = L.heatLayer([lat, long],{
+                        radius: 20,
+                        blur: 15, 
+                        maxZoom: 17,
+                        }).addTo(map);
+                     } //
+            /*
+                   })
+            })
+           */
+        </script>
+
 </body>
-</html>
+</html>t 
