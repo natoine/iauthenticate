@@ -2,6 +2,7 @@
 <!doctype html>
 <html>
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Node Authentication</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -15,10 +16,23 @@
     <div class="page-header text-center">
         <h1><span class="fa fa-anchor"></span> Profile Page</h1>
         <a href="/logout" class="btn btn-default btn-sm">Logout</a>
-		<a href="/humeur" class="btn btn-default btn-sm">Flux</a>
+        <a href="/humeur" class="btn btn-default btn-sm">Humeur</a>
     </div>
-<!--hello-->
-    <%= xmlLeMonde %>
+    <div id="contentInfo"> <!-- style="display: none"> -->
+        <% for (var i=0; i<xmlLeMonde.length; i++) {%>
+        <div id="item<%=i%>">
+            <h3 href= <%= xmlLeMonde[i].link %>>
+                <a href= <%= xmlLeMonde[i].link %>> <%= xmlLeMonde[i].title %> </a>
+            </h3>
+            <img src=<%= xmlLeMonde[i].enclosure %> type="image/jpeg"/>
+            <p id="description">  <%= xmlLeMonde[i].description %> </p>
+            <p id="pubDate"><%= xmlLeMonde[i].pubDate %> </p>
+            <a href=<%= xmlLeMonde[i].guid %> isPermaLink="true"> Source </a>
+            <br><br>
+        </div>
+        <%}%>
+    </div>
+
 </div>
 </body>
 </html>
