@@ -711,8 +711,6 @@ module.exports = function(app, passport) {
     // ================================================
 
     app.get('/moodsJSON', isLoggedInAndActivated, function(req, res) {
-        var user = req.user
-
         Humeur.find({}, function(err, docs){
             var userMoods = docs
 
