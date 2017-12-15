@@ -634,14 +634,13 @@ module.exports = function(app, passport) {
 		}); 
     })
 	
-	app.get('/api/tweets/:user', (req, res) => {
-		res.json({
-			tweets.find({ 'user': req.params.user }, 'tweet', function (err, athletes) {
-				if (err) return handleError(err);
-				// 'athletes' contains the list of athletes that match the criteria.
-			})
-			//response: `a GET request for LOOKING at a special answer id: ${req.params.user}`
-		});
+	app.get('/api/tweets/', (req, res) => {
+		TweetDb.find(function(err, bears) {
+            if (err)
+                res.send(err);
+
+            res.json(bears);
+        });
 	});
 
 
