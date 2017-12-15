@@ -5,8 +5,8 @@ const bcrypt   = require('bcrypt-nodejs')
 
 // define the schema for our user model
 const tweetsSchema = mongoose.Schema({
-	
-        user: {type : mongoose.Schema.Types.ObjectId, ref : 'User'},
+		tweet_id: Number,
+        user: String,
         tweet: String,
         date: String,
 		

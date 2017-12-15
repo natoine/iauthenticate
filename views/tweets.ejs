@@ -16,17 +16,19 @@
 	<div class="col-sm-6 col-sm-offset-3">
 
 		<div>
-		  <p>Affichage des Tweets de <%= twitter_user %></p>
+			<p><% if(twitter_user) { %>
+				Affichage des tweets de <%= twitter_user %> 
+			   <% } %>
+			</p>
 		  <a href="/humeur" class="btn btn-default">Retour</a></br>
 		  
 		  <form action="/humeur/tweets" method ="post" >
 			<p>
 				<label for="newtweets">Récupérer les tweets par username:</label>
 				<input type="text" name="newtweets" id="newtweets" autofocus />
-				<input type="submit" />
+				<input type="submit"/>
             </p>
 		  </form>
-		  
 		  <ul>
 			<% tweets.map(tweet => { %>
 				<li><%= tweet.text %></li>
