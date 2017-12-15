@@ -17,10 +17,6 @@ const smtpTransport = require('../config/mailer')
 const TIMINGTOCHANGEPWD = 3600000
 
 
-// to accès aux flux rss
-const http = require('http');
-
-
 
 // application/routes.js
 module.exports = function(app, passport) {
@@ -54,13 +50,15 @@ module.exports = function(app, passport) {
 				})
 				httpresponse.on('end', function() {
 					console.log(xmlLeMonde)
-				})
+                    res.render('flux.ejs', {xmlLeMonde: xmlLeMonde});
+                })
 				httpresponse.on('error', function (e) {
 					console.log('problem with request: ' + e.message);
+                    res.render('flux.ejs', {xmlLeMonde: e.message});
 				})
 				//parser le xml xmlLeMonde et construire un json de ce qu'on veut garder jsonLeMonde
 				//passer le jsonLeMonde en argument du render
-				res.render('flux.ejs');
+				//res.render('flux.ejs');
 		})
 		
 	})
