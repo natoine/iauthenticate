@@ -14,13 +14,14 @@ const db = mongoose.createConnection(configDB.url)
 const http = require('http')
 const csv = require('csv-express');
 
-const js2xmlparser = require("js2xmlparser");
+const js2xmlparser = require("js2xmlparser")
+const libxmljs = require("libxmljs")
 
 // file system to write in file
 const fs = require("fs")
 
 // Get a reply from API.ai
-//const apiai = require('apiai')(credentials.APIAI_TOKEN);
+const apiai = require('apiai')(credentials.APIAI_TOKEN);
 
 // openweather
 const apiow = require('openweather-apis');
@@ -30,6 +31,8 @@ apiow.setAPPID(credentials.API_OPENWEATHER);
 const smtpTransport = require('../config/mailer')
 
 const TIMINGTOCHANGEPWD = 3600000
+
+
 
 // application/routes.js
 module.exports = function(app, passport) {
@@ -49,7 +52,73 @@ module.exports = function(app, passport) {
         })
         //res.render('index.ejs')// load the index.ejs file
     })
+// =====================================
+    // XML Actualités ROUTES without login. Permet de récupérer les actualités sans login.=====================
+    // =====================================
+	
 
+	app.get('/lemonde', function(req, res) {	
+		console.log('debut xml');
+		var options = {
+		  hostname: 'www.lemonde.fr',
+		  path: '/international/rss_full.xml'
+		}
+		http.get(options, function(httpresponse){
+				console.log("httpresponse : " + httpresponse.statusCode)
+				console.log("httpresponse : " + httpresponse.headers['content-type'])
+				
+				var xmlLeMonde = '';
+				httpresponse.on('data', function (chunk) 
+				{
+					xmlLeMonde += chunk
+				})
+            httpresponse.on('end', function() {
+                var xmlDoc = libxmljs.parseXml(xmlLeMonde)
+
+                var gchild = xmlDoc.get('//channel')
+
+                var children = gchild.childNodes();
+                var itemsTab = new Array()
+
+                var k = 0
+                for (var i=0; i<children.length; i++) {
+                    var item = children[i].childNodes()
+                    if (item.length>12) {
+                        var attrTab = new Array()
+                        for (var j=1; j<(item.length); j=j+2) {
+                            if (j==11) {
+                                attrName = item[j].name()
+                                attrValue = item[j].attr('url').value()
+                                attrTab[attrName] = attrValue
+                            } else {
+                                attrName = item[j].name()
+                                attrValue = item[j].text()
+                                attrTab[attrName] = attrValue
+                            }
+                        }
+                        itemsTab[k] = attrTab
+                        k++
+                    }
+                }
+
+                res.render('flux.ejs', {xmlLeMonde: itemsTab});
+            })
+				httpresponse.on('error', function (e) {
+					console.log('problem with request: ' + e.message);
+                    res.render('flux.ejs', {xmlLeMonde: e.message});
+				})
+				//parser le xml xmlLeMonde et construire un json de ce qu'on veut garder jsonLeMonde
+				//passer le jsonLeMonde en argument du render
+				//res.render('flux.ejs');
+		})
+		
+	})
+		
+ 
+	
+	
+	
+	
     // =====================================
     // LOGIN ===============================
     // =====================================
