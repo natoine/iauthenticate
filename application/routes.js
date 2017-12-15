@@ -758,6 +758,34 @@ module.exports = function(app, passport) {
     // =================================================
 	
 	
+
+
+    // ================================================
+    // // Visualisation graphique =====================
+    // ================================================
+	
+    
+    // visualisation graphqiue ----------------------
+    app.get('/graph_mood', isLoggedInAndActivated, function(req, res) {
+		var user = req.user
+		var humeur = new Humeur();
+		var list;
+		var list_humeurs = require("../ressources/humeurs.json")
+		console.log(list_humeurs.humeurs[1])
+		Humeur.find({'user' : req.user},
+		function(err, docs){
+			user.moods = docs;
+			res.render('graph_mood.ejs',{
+				moods : user.moods , list : list_humeurs
+			})
+		});
+	})
+	
+    // =================================================
+    // Visualisation graphique =========================
+    // =================================================
+	
+	
 	
 
 	app.get('/humeur', function(req, res) {

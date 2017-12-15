@@ -3,106 +3,373 @@
 <html>
 	<head>
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+		<script src="https://d3js.org/d3.v3.js"></script>
 		<title>Visualisation des humeurs</title>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 		<style>
 			#myDiv{ width:500px; height:700px}
-		</style>
-		<script>
-	function drawAxes_curs(val_pol){
-		var axes = document.getElementById("axes_curs");
-		var tmp = "";
-		var y = document.getElementById("curs_pola").offsetHeight*5/6;
-		var y2 = y*500/540;
-		var d = (y-y2)/2
-			
-		// Axe Y
-		tmp += '<line x1="-10" y1="'+(-d)+'" x2="-10" y2="'+(y2+d)+'" stroke="black" stroke-width="2.5" />';
-		var pas = y2/10;
-		for(i=0;i<=100;i+=10){
-			tmp += '<line x1="-10" y1="'+(i*pas)+'" x2="-20" y2="'+(i*pas)+'" stroke="gray" />';
-		}
-		pas = y2/2;
-		pas2 = y2/100
-		tmp += '<line x1="-40" y1="'+(y2/2)+'" x2="-20" y2="'+(y2/2)+'" stroke="gray" stroke-dasharray="1" />';
-		tmp += '<line x1="-23" y1="'+(y2/2)+'" x2="3" y2="'+(y2/2)+'" stroke="black" stroke-width="2.5"0 />';
-		//Axe Y
-		for(i=0;i<=100;i+=50){
-			tmp += '<text font-family="stellar" font x="-85" y="'+(pas2+i*pas2)+'" fill="black" >'+((200-2*i)-100)+'%</text>';				//Etiquette Y
-		}
-		pas = y2/100
-		for(i=0;i<=100;i+=1){
-			tmp += '<line x1="-20" y1="'+(i*pas)+'" x2="0" y2="'+(i*pas)+'" stroke-width="0.9" style="stroke:rgb('+Math.trunc(2.55*i)+','+Math.trunc(255-2.55*i)+',0)" />';
-			if(i%5==0){
-				tmp += '<line x1="-20" y1="'+(i*pas)+'" x2="0" y2="'+(i*pas)+'" stroke-width="2" style="stroke:rgb('+Math.trunc(2.55*i)+','+Math.trunc(255-2.55*i)+',0)" />';
-				if(i%25==0){
-					tmp += '<line x1="-20" y1="'+(i*pas)+'" x2="0" y2="'+(i*pas)+'" stroke="black" stroke-width="2"  />';
-				}
+			body {
+			  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+			  width: 960px;
+			  height: 500px;
+			  position: relative;
 			}
-		}
-		tmp += '<path d="M -15,'+(-d+5)+' L -10,'+(-d)+' L -5,'+(-d+5)+'" fill="none" stroke="black" stroke-linecap="round" stroke-width="2" />';
-		tmp += '<path d="M -15,'+(y2+d-5)+' L -10,'+(y2+d)+' L -5,'+(y2+d-5)+'" fill="none" stroke="black" stroke-linecap="round" stroke-width="2" />';
-		axes_curs.innerHTML = tmp;		
-	}
-		function draw_curs(val_pol){
-			val_pol = Math.round(val_pol);
-			var points = document.getElementById("points_curs");
-			var curs="";
-			var y = document.getElementById("curs_pola").offsetHeight*5/6;
-			var y2 = y*500/540;
-			var d = (y-y2)/2
-			drawAxes_curs(val_pol);
-			curs += '<line x1="-20" y1="'+(y2-((val_pol+100)*y2/200))+'" x2="20" y2="'+(y2-((val_pol+100)*y2/200))+'" stroke="blue" stroke-width="1" />';
-			curs += '<text font-family="stellar" x="35" y="'+(y2-((val_pol+100)*y2/200)+5)+'" fill="black" font-size="20" >'+val_pol+'%</text>';
-			var path = "";
-			alert(n);
-			curs += '<image xlink:href="'+path+'" x="90" y="'+(y2-((val_pol+100)*y2/200)-35)+'" height="50px" width="50px"/>'
-			points_curs.innerHTML=curs;
-		}		
-		</script>
+			path.slice{
+				stroke-width:2px;
+			}
+			polyline{
+				opacity: .3;
+				stroke: black;
+				stroke-width: 2px;
+				fill: none;
+			} 
+			svg text.percent{
+				fill:white;
+				text-anchor:middle;
+				font-size:12px;
+			}
+			.axis path,
+			.axis line {
+				fill: none;
+				stroke: grey;
+				stroke-width: 1;
+				shape-rendering: crispEdges;
+			}			
+			
+		</style>
 	</head>
 	<body onload="draw_curs(moy)">
-        <div id="myDiv"></div>
+		<p style="font-size:60px;color:blue;text-align:center;"> Visualisations </p>
 		
-		<div id="curs_pola">
-			<svg width="1500" height="600">
-				<g id="axes_curs" transform="translate(100,50)"></g>
-				<g id="points_curs" transform="translate(100,50)"></g>
-			</svg>
-		</div>		
+		<table>
+			<tr>
+				<td>
+					<p style="font-size:30px;"> Boite à moustache </p>
+					<i style="font-size:15px;"> Affiche les minimum/maximum, les 1er et 3ème quartiles et la médiane</i>
+				</td>
+				<td>
+					<p style="font-size:30px;"> Humeur moyenne de l'utilisateur </p>
+				</td>
+				<td>
+					<p style="font-size:30px;"> Distribution des niveaux d'humeurs de l'utilisateur</p>
+				</td>
+				<td>
+					<p style="font-size:30px;"> Evolution de l'humeur dans le temps</p>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div id="moust">
+						<div id="myDiv"></div>
+					<div>
+				</td>
+				<td>
+					<div id="curs_pola">
+						<svg width="300" height="600">
+							<g id="axes_curs" transform="translate(100,50)"></g>
+							<g id="points_curs" transform="translate(100,50)"></g>
+						</svg>
+					</div>	
+				</td>
+				<td>
+					<div id="cam"></div>
+				</td>
+				<td>
+					<div id="graph"></div>
+				</td>
+			</tr>
+		</table>
 		
 		<a href="/profile" class="btn btn-default">Mon Profil</a></br>
 		
 		<script>
+			// Récupération des donnée *******************************************************************************************************************
 			var humeur = <%- JSON.stringify(moods) %> 	//Récupération des humeurs de l'utilisateur
 			var onto = <%- JSON.stringify(list) %>		//Récupération du dico des humeurs
 			var onto = onto.humeurs
+			var tab = [];
+			var data_courbe = []
+			var sum = 0;
+			var tab_cam=[0,0,0,0,0,0,0,0,0];
+			var parseDate = d3.time.format("%d-%b-%y")
+			var parseDate2 = d3.time.format("%d-%b-%y").parse;
 			var onto2 = {}
 			for (i in onto){							//Convertion du dico des humeurs
 				onto[i].valeur -= 100
 				onto2[onto[i].humeur] = onto[i].valeur
 			}
-
-			var tab = []
-			var sum = 0;
+			
+			elt = {}
+			
 			for (i in humeur){
+				date= parseDate2(parseDate(new Date(humeur[i].date)))
+				console.log(date)
 				if (humeur[i].emotion == undefined){
 					tab.push(0)
-						
+					humeur[i].val = 0
 				}
 				else{
 					tab.push(onto2[humeur[i].emotion])
-					sum+=onto2[humeur[i].emotion]
+					sum+=onto2[humeur[i].emotion]					
+					for (j=0;j<9;j++){
+						if(onto2[humeur[i].emotion]==(j-4)*25){
+							tab_cam[j]+=1;
+						}
+					}
+					humeur[i].val = onto2[humeur[i].emotion]
+				}
+				if(elt["date"] == undefined){
+					elt["date"] = date
+					elt["mood"] = humeur[i].val
+					elt["nb"] = 1
+				}
+				else{
+					console.log(elt["date"]+" : "+date)
+					console.log(elt["date"].getTime() == date.getTime())
+					if (elt["date"].getTime() == date.getTime()){
+						elt["mood"] += humeur[i].val
+						elt["nb"] += 1
+					}
+					else{
+						elt["mood"] /= elt["nb"]
+						data_courbe.push(elt)
+						elt = {}
+						elt["date"] = date
+						elt["mood"] = humeur[i].val
+						elt["nb"] = 1
+					}
 				}
 			}
+			elt["mood"] /= elt["nb"]
+			data_courbe.push(elt)
+			
+			console.log(data_courbe)
+			
 			var n = tab.length
 			if(n==0){
 				n=1
 			}
 			var moy = sum/n
 			
+			// Courbe *****************************************************************************************************************************************
+			// Set the dimensions of the canvas / graph
+			var margin = {top: 30, right: 40, bottom: 30, left: 50},
+				width = 600 - margin.left - margin.right,
+				height = 270 - margin.top - margin.bottom;
+			// Set the ranges
+			var x = d3.time.scale().range([0, width]);
+			var y = d3.scale.linear().range([height, 0]);
+			// Define the axes
+			var xAxis = d3.svg.axis().scale(x)
+				.orient("bottom").ticks(5);
+			var yAxis = d3.svg.axis().scale(y)
+				.orient("left").ticks(5);
+			// Define the line
+			var valueline = d3.svg.line()
+				.x(function(data_courbe) { return x(data_courbe.date); })
+				.y(function(data_courbe) { return y(data_courbe.mood); });
+				
+			// Adds the svg canvas
+			var graph = d3.select("#graph")
+				.append("svg")
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.top + margin.bottom)
+				.append("g")
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+				
+				
+			x.domain(d3.extent(data_courbe, function(data_courbe) { return data_courbe.date; }));
+			y.domain([d3.min(data_courbe, function(data_courbe) { return data_courbe.mood; }), d3.max(data_courbe, function(data_courbe) { return data_courbe.mood; })]);
 			
+			// Add the valueline path.
+			graph.data(data_courbe)
+				.append("path")
+				.attr("class", "line")
+				.attr("stroke", "steelblue")
+				.attr("stroke-width", "2")
+				.attr("fill", "none")
+				.attr("d", valueline(data_courbe));
+			// Add the X Axis
+			graph.append("g")
+				.attr("class", "axis")
+				.attr("transform", "translate(0," + height + ")")
+				.call(xAxis);
+			// Add the Y Axis
+			graph.append("g")
+				.attr("class", "axis")
+				.call(yAxis);
+			
+			
+			// Camembert *****************************************************************************************************************************************
+			var Donut3D={};			
+			function pieTop(d, rx, ry, ir ){
+				if(d.endAngle - d.startAngle == 0 ) return "M 0 0";
+				var sx = rx*Math.cos(d.startAngle),
+					sy = ry*Math.sin(d.startAngle),
+					ex = rx*Math.cos(d.endAngle),
+					ey = ry*Math.sin(d.endAngle);
+					
+				var ret =[];
+				ret.push("M",sx,sy,"A",rx,ry,"0",(d.endAngle-d.startAngle > Math.PI? 1: 0),"1",ex,ey,"L",ir*ex,ir*ey);
+				ret.push("A",ir*rx,ir*ry,"0",(d.endAngle-d.startAngle > Math.PI? 1: 0), "0",ir*sx,ir*sy,"z");
+				return ret.join(" ");
+			}
+			function pieOuter(d, rx, ry, h ){
+				var startAngle = (d.startAngle > Math.PI ? Math.PI : d.startAngle);
+				var endAngle = (d.endAngle > Math.PI ? Math.PI : d.endAngle);
+				
+				var sx = rx*Math.cos(startAngle),
+					sy = ry*Math.sin(startAngle),
+					ex = rx*Math.cos(endAngle),
+					ey = ry*Math.sin(endAngle);
+					
+					var ret =[];
+					ret.push("M",sx,h+sy,"A",rx,ry,"0 0 1",ex,h+ey,"L",ex,ey,"A",rx,ry,"0 0 0",sx,sy,"z");
+					return ret.join(" ");
+			}
+			function pieInner(d, rx, ry, h, ir ){
+				var startAngle = (d.startAngle < Math.PI ? Math.PI : d.startAngle);
+				var endAngle = (d.endAngle < Math.PI ? Math.PI : d.endAngle);
+				
+				var sx = ir*rx*Math.cos(startAngle),
+					sy = ir*ry*Math.sin(startAngle),
+					ex = ir*rx*Math.cos(endAngle),
+					ey = ir*ry*Math.sin(endAngle);
+					var ret =[];
+					ret.push("M",sx, sy,"A",ir*rx,ir*ry,"0 0 1",ex,ey, "L",ex,h+ey,"A",ir*rx, ir*ry,"0 0 0",sx,h+sy,"z");
+					return ret.join(" ");
+			}
+			function getPercent(d){
+				return (d.endAngle-d.startAngle > 0.2 ? 
+						Math.round(1000*(d.endAngle-d.startAngle)/(Math.PI*2))/10+'%' : '');
+			}	
+			
+			Donut3D.transition = function(id, data, rx, ry, h, ir){
+				function arcTweenInner(a) {
+				  var i = d3.interpolate(this._current, a);
+				  this._current = i(0);
+				  return function(t) { return pieInner(i(t), rx+0.5, ry+0.5, h, ir);  };
+				}
+				function arcTweenTop(a) {
+				  var i = d3.interpolate(this._current, a);
+				  this._current = i(0);
+				  return function(t) { return pieTop(i(t), rx, ry, ir);  };
+				}
+				function arcTweenOuter(a) {
+				  var i = d3.interpolate(this._current, a);
+				  this._current = i(0);
+				  return function(t) { return pieOuter(i(t), rx-.5, ry-.5, h);  };
+				}
+				function textTweenX(a) {
+				  var i = d3.interpolate(this._current, a);
+				  this._current = i(0);
+				  return function(t) { return 0.6*rx*Math.cos(0.5*(i(t).startAngle+i(t).endAngle));  };
+				}
+				function textTweenY(a) {
+				  var i = d3.interpolate(this._current, a);
+				  this._current = i(0);
+				  return function(t) { return 0.6*rx*Math.sin(0.5*(i(t).startAngle+i(t).endAngle));  };
+				}
+				
+				var _data = d3.layout.pie().sort(null).value(function(d) {return d.value;})(data);
+				
+				d3.select("#"+id).selectAll(".innerSlice").data(_data)
+					.transition().duration(750).attrTween("d", arcTweenInner); 
+					
+				d3.select("#"+id).selectAll(".topSlice").data(_data)
+					.transition().duration(750).attrTween("d", arcTweenTop); 
+					
+				d3.select("#"+id).selectAll(".outerSlice").data(_data)
+					.transition().duration(750).attrTween("d", arcTweenOuter); 	
+					
+				d3.select("#"+id).selectAll(".percent").data(_data).transition().duration(750)
+					.attrTween("x",textTweenX).attrTween("y",textTweenY).text(getPercent); 	
+			}
+				
+			Donut3D.draw=function(id, data, x /*center x*/, y/*center y*/, 
+					rx/*radius x*/, ry/*radius y*/, h/*height*/, ir/*inner radius*/){
+			
+				var _data = d3.layout.pie().sort(null).value(function(d) {return d.value;})(data);
+				
+				var slices = d3.select("#"+id).append("g").attr("transform", "translate(" + x + "," + y + ")")
+					.attr("class", "slices");
+					
+				slices.selectAll(".innerSlice").data(_data).enter().append("path").attr("class", "innerSlice")
+					.style("fill", function(d) { return d3.hsl(d.data.color).darker(0.7); })
+					.attr("d",function(d){ return pieInner(d, rx+0.5,ry+0.5, h, ir);})
+					.each(function(d){this._current=d;});
+				
+				slices.selectAll(".topSlice").data(_data).enter().append("path").attr("class", "topSlice")
+					.style("fill", function(d) { return d.data.color; })
+					.style("stroke", function(d) { return d.data.color; })
+					.attr("d",function(d){ return pieTop(d, rx, ry, ir);})
+					.each(function(d){this._current=d;});
+				
+				slices.selectAll(".outerSlice").data(_data).enter().append("path").attr("class", "outerSlice")
+					.style("fill", function(d) { return d3.hsl(d.data.color).darker(0.7); })
+					.attr("d",function(d){ return pieOuter(d, rx-.5,ry-.5, h);})
+					.each(function(d){this._current=d;});
+				slices.selectAll(".percent").data(_data).enter().append("text").attr("class", "percent")
+					.attr("x",function(d){ return 0.6*rx*Math.cos(0.5*(d.startAngle+d.endAngle));})
+					.attr("y",function(d){ return 0.6*ry*Math.sin(0.5*(d.startAngle+d.endAngle));})
+					.text(getPercent).each(function(d){this._current=d;});				
+			}
+				
+			this.Donut3D = Donut3D;
+			
+			// Thermomètre **********************************************************************************************************************************
+			function drawAxes_curs(val_pol){
+				var axes = document.getElementById("axes_curs");
+				var tmp = "";
+				var y = document.getElementById("curs_pola").offsetHeight*5/6;
+				var y2 = y*500/540;
+				var d = (y-y2)/2
+					
+				// Axe Y
+				tmp += '<line x1="-10" y1="'+(-d)+'" x2="-10" y2="'+(y2+d)+'" stroke="black" stroke-width="2.5" />';
+				var pas = y2/10;
+				for(i=0;i<=100;i+=10){
+					tmp += '<line x1="-10" y1="'+(i*pas)+'" x2="-20" y2="'+(i*pas)+'" stroke="gray" />';
+				}
+				pas = y2/2;
+				pas2 = y2/100
+				tmp += '<line x1="-40" y1="'+(y2/2)+'" x2="-20" y2="'+(y2/2)+'" stroke="gray" stroke-dasharray="1" />';
+				tmp += '<line x1="-23" y1="'+(y2/2)+'" x2="3" y2="'+(y2/2)+'" stroke="black" stroke-width="2.5"0 />';
+				//Axe Y
+				for(i=0;i<=100;i+=50){
+					tmp += '<text font-family="stellar" font x="-85" y="'+(pas2+i*pas2)+'" fill="black" >'+((200-2*i)-100)+'%</text>';				//Etiquette Y
+				}
+				pas = y2/100
+				for(i=0;i<=100;i+=1){
+					tmp += '<line x1="-20" y1="'+(i*pas)+'" x2="0" y2="'+(i*pas)+'" stroke-width="0.9" style="stroke:rgb('+Math.trunc(2.55*i)+','+Math.trunc(255-2.55*i)+',0)" />';
+					if(i%5==0){
+						tmp += '<line x1="-20" y1="'+(i*pas)+'" x2="0" y2="'+(i*pas)+'" stroke-width="2" style="stroke:rgb('+Math.trunc(2.55*i)+','+Math.trunc(255-2.55*i)+',0)" />';
+						if(i%25==0){
+							tmp += '<line x1="-20" y1="'+(i*pas)+'" x2="0" y2="'+(i*pas)+'" stroke="black" stroke-width="2"  />';
+						}
+					}
+				}
+				tmp += '<path d="M -15,'+(-d+5)+' L -10,'+(-d)+' L -5,'+(-d+5)+'" fill="none" stroke="black" stroke-linecap="round" stroke-width="2" />';
+				tmp += '<path d="M -15,'+(y2+d-5)+' L -10,'+(y2+d)+' L -5,'+(y2+d-5)+'" fill="none" stroke="black" stroke-linecap="round" stroke-width="2" />';
+				axes_curs.innerHTML = tmp;		
+			}
+			function draw_curs(val_pol){
+				val_pol = Math.round(val_pol);
+				var points = document.getElementById("points_curs");
+				var curs="";
+				var y = document.getElementById("curs_pola").offsetHeight*5/6;
+				var y2 = y*500/540;
+				var d = (y-y2)/2
+				drawAxes_curs(val_pol);
+				curs += '<line x1="-20" y1="'+(y2-((val_pol+100)*y2/200))+'" x2="20" y2="'+(y2-((val_pol+100)*y2/200))+'" stroke="blue" stroke-width="1" />';
+				curs += '<text font-family="stellar" x="35" y="'+(y2-((val_pol+100)*y2/200)+5)+'" fill="black" font-size="20" >'+val_pol+'%</text>';
+				var path = "";
+				curs += '<image xlink:href="'+path+'" x="90" y="'+(y2-((val_pol+100)*y2/200)-35)+'" height="50px" width="50px"/>'
+				points_curs.innerHTML=curs;
+			}
+			
+			// Boite à moustache *********************************************************************************************************************************
 			var trace1 = {
 			  y: tab,
 			  name: 'Humeur Général',
@@ -120,7 +387,27 @@
 			};
 			Plotly.newPlot('myDiv', data, layout);
 			
-		</script>
+			var salesData=[
+				{label:"execrable", color:"#FC0404",value:tab_cam[0]},
+				{label:"enerve", color:"#FE5304",value:tab_cam[1]},
+				{label:"triste", color:"#FE8C04",value:tab_cam[2]},
+				{label:"tristounet", color:"#FEB204",value:tab_cam[3]},
+				{label:"neutre", color:"#FEEE04",value:tab_cam[4]},
+				{label:"favorable", color:"#D9FE04",value:tab_cam[5]},
+				{label:"content", color:"#B9FE04",value:tab_cam[6]},
+				{label:"heureux", color:"#60FE04",value:tab_cam[7]},
+				{label:"euphorique", color:"#06E116",value:tab_cam[8]}
+			];		
 			
+			var svg = d3.select("#cam").append("svg").attr("width",400).attr("height",300);
+			svg.append("g").attr("id","salesDonut");
+			Donut3D.draw("salesDonut", Data(), 150, 150, 130, 100, 30, 0.4);
+				
+			function Data(){
+				return salesData.map(function(d){ 
+					return {label:d.label, value:d.value, color:d.color};});
+			}
+		</script>
+		
 	</body>
 </html>
