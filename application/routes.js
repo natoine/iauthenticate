@@ -786,6 +786,23 @@ module.exports = function(app, passport) {
 		}); 
     })
 
+    
+	// Nuage de points meteo ----------------------
+    app.get('/meteo', isLoggedInAndActivated, function(req, res) {
+		var user = req.user
+		var humeur = new Humeur();
+		var list;
+		var list_humeurs = require("../ressources/humeurs.json")
+		console.log(list_humeurs.humeurs[1])
+		Humeur.find({'user' : req.user},
+		function(err, docs){
+			user.moods = docs;
+			res.render('meteo.ejs',{
+				moods : user.moods , list : list_humeurs
+			})
+		});
+	})
+
     app.post('/humeur', function(req, res) {
         var textQuery = req.body.textMsg
 
