@@ -633,7 +633,11 @@ module.exports = function(app, passport) {
 			}
 		}); 
     })
-
+	app.get('/humeur/tweets/:user', (req, res) => {
+		res.json({
+			response: `a GET request for LOOKING at a special answer id: ${req.params.user}`
+		});
+	});
 
 
 // Récupérer toutes les humeurs--
