@@ -31,6 +31,8 @@ const smtpTransport = require('../config/mailer')
 
 const TIMINGTOCHANGEPWD = 3600000
 
+
+
 // application/routes.js
 module.exports = function(app, passport) {
 
@@ -49,7 +51,46 @@ module.exports = function(app, passport) {
         })
         //res.render('index.ejs')// load the index.ejs file
     })
+// =====================================
+    // XML Actualités ROUTES without login. Permet de récupérer les actualités sans login.=====================
+    // =====================================
+	
 
+	app.get('/lemonde', function(req, res) {	
+		console.log('debut xml');
+		var options = {
+		  hostname: 'www.lemonde.fr',
+		  path: '/international/rss_full.xml'
+		}
+		http.get(options, function(httpresponse){
+				console.log("httpresponse : " + httpresponse.statusCode)
+				console.log("httpresponse : " + httpresponse.headers['content-type'])
+				
+				var xmlLeMonde = '';
+				httpresponse.on('data', function (chunk) 
+				{
+					xmlLeMonde += chunk
+				})
+				httpresponse.on('end', function() {
+					console.log(xmlLeMonde)
+                    res.render('flux.ejs', {xmlLeMonde: xmlLeMonde});
+                })
+				httpresponse.on('error', function (e) {
+					console.log('problem with request: ' + e.message);
+                    res.render('flux.ejs', {xmlLeMonde: e.message});
+				})
+				//parser le xml xmlLeMonde et construire un json de ce qu'on veut garder jsonLeMonde
+				//passer le jsonLeMonde en argument du render
+				//res.render('flux.ejs');
+		})
+		
+	})
+		
+ 
+	
+	
+	
+	
     // =====================================
     // LOGIN ===============================
     // =====================================
