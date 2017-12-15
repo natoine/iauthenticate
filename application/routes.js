@@ -38,8 +38,16 @@ module.exports = function(app, passport) {
     // HOME PAGE (with login links) ========
     // =====================================
     app.get('/', function(req, res) {
-        req.logout()
-        res.render('index.ejs')// load the index.ejs file
+        req.logout() 
+
+        //gather moods
+        Humeur.find({}, function(err,docs){
+            console.log("Liste d'humeurs " + docs)
+            var moodsTmp = JSON.stringify(docs)
+
+            res.render('index.ejs', { humeurs: moodsTmp })// load the index.ejs file
+        })
+        //res.render('index.ejs')// load the index.ejs file
     })
 
     // =====================================
@@ -539,21 +547,22 @@ module.exports = function(app, passport) {
             var humeur = new Humeur();
             var list;
             var list_humeurs = require("../ressources/humeurs.json")
-            //var key = credentials.API_OPENWEATHER.consumerKey
-			var key = ""
+            var key = credentials.API_OPENWEATHER.consumerKey
             console.log(list_humeurs.humeurs[1])
-            Humeur.find(
-				{'user' : req.user},
-				function(err, docs){
-					user.moods = docs;
-					res.render('humeur.ejs',{
-						moods : user.moods,
-						list : list_humeurs,
-						key : key
-					})
-				}
-			);
-	})
+            Humeur.find({'user' : req.user},
+            function(err, docs){
+                user.moods = docs;
+                 res.render('humeur.ejs',{
+            moods : user.moods, list : list_humeurs, key : key
+        })
+                
+    
+    });
+        
+            
+           
+      
+    })
     
     app.post('/humeur', isLoggedInAndActivated, function(req, res) {
 
@@ -562,6 +571,7 @@ module.exports = function(app, passport) {
         newmood.user = req.user
         newmood.date = new Date().getTime()
         newmood.lat = req.body.lat
+        newmood.long = req.body.long
         newmood.meteo = req.body.meteo
         newmood.temp = req.body.temp
         newmood.vent = req.body.vent
@@ -628,7 +638,7 @@ module.exports = function(app, passport) {
 
 
 // Récupérer toutes les humeurs--
-    app.get('/listhumeur', isLoggedInAndActivated, function(req, res) {
+    app.get('/listhumeur',  function(req, res) {
 		var user = req.user
 		var humeur = new Humeur();
 		var list;
@@ -764,6 +774,33 @@ module.exports = function(app, passport) {
     // =================================================
 	
 	
+
+
+    // ================================================
+    // // Visualisation graphique =====================
+    // ================================================
+	
+    
+    // visualisation graphqiue ----------------------
+    app.get('/graph_mood', isLoggedInAndActivated, function(req, res) {
+		var user = req.user
+		var humeur = new Humeur();
+		var list;
+		var list_humeurs = require("../ressources/humeurs.json")
+		console.log(list_humeurs.humeurs[1])
+		Humeur.find({'user' : req.user},
+		function(err, docs){
+			user.moods = docs;
+			res.render('graph_mood.ejs',{
+				moods : user.moods , list : list_humeurs
+			})
+		});
+	})
+	
+    // =================================================
+    // Visualisation graphique =========================
+    // =================================================
+	
 	
 
 	app.get('/humeur', function(req, res) {
@@ -791,6 +828,25 @@ module.exports = function(app, passport) {
 			}
 		}); 
     })
+
+
+    
+	// Nuage de points meteo ----------------------
+    app.get('/meteo', isLoggedInAndActivated, function(req, res) {
+		var user = req.user
+		var humeur = new Humeur();
+		var list;
+		var list_humeurs = require("../ressources/humeurs.json")
+		console.log(list_humeurs.humeurs[1])
+		Humeur.find({'user' : req.user},
+		function(err, docs){
+			user.moods = docs;
+			res.render('meteo.ejs',{
+				moods : user.moods , list : list_humeurs
+			})
+		});
+	})
+
 
     app.post('/humeur', function(req, res) {
         var textQuery = req.body.textMsg

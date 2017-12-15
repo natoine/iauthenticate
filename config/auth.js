@@ -20,6 +20,10 @@ module.exports = {
         'clientID'      : '',
         'clientSecret'  : '',
         'callbackURL'   : 'http://localhost:8080/auth/google/callback'
+    },
+    'APIAI_TOKEN' : "",
+    'API_OPENWEATHER' : {
+        'consumerKey'       : '',
     }
 
 }
