@@ -20,7 +20,7 @@ const js2xmlparser = require("js2xmlparser");
 const fs = require("fs")
 
 // Get a reply from API.ai
-const apiai = require('apiai')(credentials.APIAI_TOKEN);
+//const apiai = require('apiai')(credentials.APIAI_TOKEN);
 
 // openweather
 const apiow = require('openweather-apis');
