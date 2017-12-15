@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <title>Simple Chatbot avec API.AI</title>
+  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+      body {
+        margin: 0 auto;
+        max-width: 800px;
+        padding: 0 20px;
+      }
+
+      .container {
+        border: 2px solid #dedede;
+        background-color: #f1f1f1;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 10px 0;
+      }
+
+      .darker {
+        border-color: #ccc;
+        background-color: #ddd;
+      }
+
+      .container::after {
+        content: "";
+        clear: both;
+        display: table;
+      }
+
+      .container img {
+        float: left;
+        max-width: 60px;
+        width: 100%;
+        margin-right: 20px;
+        border-radius: 50%;
+      }
+
+      .container img.right {
+        float: right;
+        margin-left: 20px;
+        margin-right:0;
+      }
+
+      .time-right {
+        float: right;
+        color: #aaa;
+      }
+
+      .time-left {
+        float: left;
+        color: #999;
+      }
+
+      .text-right {
+        text-align: right;
+      }
+
+      form {
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <h1>Simple Chatbot avec api.ai</h1>
+    <a href="/humeur" class="btn btn-default">Mon humeur</a>
+    <a href="/listhumeur" class="btn btn-default">Liste totale des humeurs</a>
+    <h2> Chat Messages </h2>
+    <div>
+      <form class="container" action="/chatbot" method ="post" >
+          <input style="width: 85%;" type="text" name="textMsg" />
+          <input type="submit" />
+      </form>
+    </div>
+
+    <%for (var i=0; i<listTchat.length; i++) {
+        var index = listTchat.length-1-i%>
+        <div class="container" style="display: <%= StyleDisplay %>;">
+          <img src="images/bot.jpg" alt="Mon avatar" style="width:100%;">
+          <p><%= listTchat[index].rspApiai %></p>
+          <span class="time-left"><%= new Date(listTchat[index].date).toLocaleString() %></span>
+        </div>
+
+        <div class="container darker" style="display: <%= StyleDisplay %>;">
+          <img src="images/monAvatar.png" alt="Avatar api-ai" class="right" style="width:100%;">
+          <p class="text-right"><%= listTchat[index].textMsg %></p>
+          <span class="time-right"><%= new Date(listTchat[index].date).toLocaleString() %></span>
+        </div>
+    <% } %>
+  </body>
+</html>

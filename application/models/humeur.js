@@ -8,11 +8,14 @@ const humeurSchema = mongoose.Schema({
 
         user       : {type : mongoose.Schema.Types.ObjectId, ref : 'User'},
         emotion    : String,
-        date 	   : Number,
-        lat 	   : Number,
-        long	   : Number,    
-        city	   : String
-        
+        date 	     : Number,
+        lat 	     : Number,
+        long	     : Number, 
+		    meteo      : String,
+		    temp       : Number,
+		    vent       : Number,
+        city	     : String
+
 })
 
 

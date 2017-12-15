@@ -1,0 +1,460 @@
+[
+	{
+		"_id": "59dccc6efcd53b34accd1747",
+		"long": 3.8685164,
+		"lat": 43.6334211,
+		"date": 1507642478654,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "joyeux",
+		"__v": 0
+	},
+	{
+		"_id": "59dcce76fcd53b34accd174a",
+		"long": 3.8685164,
+		"lat": 43.6334211,
+		"date": 1507642998964,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "bof",
+		"__v": 0
+	},
+	{
+		"_id": "59dceb8ea9e35b31b8bd016b",
+		"long": null,
+		"lat": null,
+		"date": 1507650446272,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "bof",
+		"__v": 0
+	},
+	{
+		"_id": "59dced0e547f2d2ef08a6ad5",
+		"long": null,
+		"lat": null,
+		"date": 1507650830091,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "triste",
+		"__v": 0
+	},
+	{
+		"_id": "59ddddf9ca975f1a687fd206",
+		"long": null,
+		"lat": null,
+		"date": 1507712505156,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "bof",
+		"__v": 0
+	},
+	{
+		"_id": "59dddeaeca975f1a687fd209",
+		"long": 3.8757218000000004,
+		"lat": 43.6391339,
+		"date": 1507712686035,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "bof",
+		"__v": 0
+	},
+	{
+		"_id": "59dddf67ca975f1a687fd210",
+		"long": 3.8684990999999997,
+		"lat": 43.6333889,
+		"date": 1507712871499,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "bof",
+		"__v": 0
+	},
+	{
+		"_id": "59dddf8aca975f1a687fd213",
+		"long": 3.8685576999999998,
+		"lat": 43.633384899999996,
+		"date": 1507712906158,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "bof",
+		"__v": 0
+	},
+	{
+		"_id": "59dddf98ca975f1a687fd216",
+		"long": null,
+		"lat": null,
+		"date": 1507712920047,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "bof",
+		"__v": 0
+	},
+	{
+		"_id": "59dde54aca975f1a687fd21a",
+		"long": 3.8685207,
+		"lat": 43.6334083,
+		"date": 1507714378378,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "bof",
+		"__v": 0
+	},
+	{
+		"_id": "59dde76dca975f1a687fd21e",
+		"long": 3.8685199999999997,
+		"lat": 43.6334115,
+		"date": 1507714925686,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "bof",
+		"__v": 0
+	},
+	{
+		"_id": "59dde7e2ca975f1a687fd222",
+		"long": 3.8685199999999997,
+		"lat": 43.6334115,
+		"date": 1507715042029,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "bof",
+		"__v": 0
+	},
+	{
+		"_id": "59dde86bca975f1a687fd226",
+		"long": 3.8685191,
+		"lat": 43.6334241,
+		"date": 1507715179566,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "bof",
+		"__v": 0
+	},
+	{
+		"_id": "59dde8aeca975f1a687fd229",
+		"long": 3.8757218000000004,
+		"lat": 43.6391339,
+		"date": 1507715246572,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "bof",
+		"__v": 0
+	},
+	{
+		"_id": "59dde9b5ca975f1a687fd22c",
+		"long": 3.8684933000000004,
+		"lat": 43.6333992,
+		"date": 1507715509493,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "bof",
+		"__v": 0
+	},
+	{
+		"_id": "59dde9dcca975f1a687fd230",
+		"long": 3.8684876999999998,
+		"lat": 43.6334106,
+		"date": 1507715548068,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "bof",
+		"__v": 0
+	},
+	{
+		"_id": "59ddea36ca975f1a687fd235",
+		"long": 3.868506,
+		"lat": 43.6334094,
+		"date": 1507715638801,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "bof",
+		"__v": 0
+	},
+	{
+		"_id": "59ddeb1bca975f1a687fd23c",
+		"long": 3.868515,
+		"lat": 43.6334143,
+		"date": 1507715867231,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "bof",
+		"__v": 0
+	},
+	{
+		"_id": "59ddeda1ca975f1a687fd23f",
+		"long": 3.8685178000000002,
+		"lat": 43.6334319,
+		"date": 1507716513292,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "bof",
+		"__v": 0
+	},
+	{
+		"_id": "59de215dca975f1a687fd242",
+		"long": 3.8685095000000005,
+		"lat": 43.633421999999996,
+		"date": 1507729757743,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "bof",
+		"__v": 0
+	},
+	{
+		"_id": "59de21b3ca975f1a687fd245",
+		"long": 3.8757218000000004,
+		"lat": 43.6221362,
+		"date": 1507729843122,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "bof",
+		"__v": 0
+	},
+	{
+		"_id": "59de2251ca975f1a687fd248",
+		"long": 3.8684933999999997,
+		"lat": 43.633415199999995,
+		"date": 1507730001255,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "bof",
+		"__v": 0
+	},
+	{
+		"_id": "59de225cca975f1a687fd24b",
+		"long": null,
+		"lat": null,
+		"date": 1507730012545,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "bof",
+		"__v": 0
+	},
+	{
+		"_id": "59de2488ca975f1a687fd24e",
+		"long": null,
+		"lat": null,
+		"date": 1507730568638,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "bof",
+		"__v": 0
+	},
+	{
+		"_id": "59de2ceaca975f1a687fd251",
+		"long": null,
+		"lat": null,
+		"date": 1507732714055,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "bof",
+		"__v": 0
+	},
+	{
+		"_id": "59de2d65ca975f1a687fd255",
+		"long": null,
+		"lat": null,
+		"date": 1507732837667,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "bof",
+		"__v": 0
+	},
+	{
+		"_id": "5a2fe5ae3e71bc1174acfd5c",
+		"city": "Montpellier",
+		"vent": null,
+		"temp": null,
+		"meteo": "",
+		"lat": 43.622192399999996,
+		"date": 1513088430942,
+		"user": "59db4e38f285a410443c28db",
+		"__v": 0
+	},
+	{
+		"_id": "5a2fe6c13e71bc1174acfd68",
+		"city": "Montpellier",
+		"vent": null,
+		"temp": null,
+		"meteo": "",
+		"lat": 43.631539599999996,
+		"date": 1513088705783,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "en colère",
+		"__v": 0
+	},
+	{
+		"_id": "5a2fe70d3e71bc1174acfd70",
+		"city": "Montpellier",
+		"vent": null,
+		"temp": null,
+		"meteo": "",
+		"lat": 43.622192399999996,
+		"date": 1513088781998,
+		"user": "59db4e38f285a410443c28db",
+		"__v": 0
+	},
+	{
+		"_id": "5a2fe7233e71bc1174acfd74",
+		"city": "Montpellier",
+		"vent": null,
+		"temp": null,
+		"meteo": "",
+		"lat": 43.622192399999996,
+		"date": 1513088803725,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "neutre",
+		"__v": 0
+	},
+	{
+		"_id": "5a2fe72c3e71bc1174acfd77",
+		"city": "Montpellier",
+		"vent": null,
+		"temp": null,
+		"meteo": "",
+		"lat": 43.622192399999996,
+		"date": 1513088812929,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "triste",
+		"__v": 0
+	},
+	{
+		"_id": "5a2feece3e71bc1174acfd7d",
+		"city": "Montpellier",
+		"vent": null,
+		"temp": null,
+		"meteo": "",
+		"lat": 43.633390899999995,
+		"date": 1513090766312,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "neutre",
+		"__v": 0
+	},
+	{
+		"_id": "5a2fef1a3e71bc1174acfd81",
+		"city": "Montpellier",
+		"vent": null,
+		"temp": null,
+		"meteo": "",
+		"lat": 43.631529199999996,
+		"date": 1513090842629,
+		"user": "59db4e38f285a410443c28db",
+		"__v": 0
+	},
+	{
+		"_id": "5a2fef9d3e71bc1174acfd89",
+		"city": "Montpellier",
+		"vent": null,
+		"temp": null,
+		"meteo": "",
+		"lat": 43.6333505,
+		"date": 1513090973815,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "neutre",
+		"__v": 0
+	},
+	{
+		"_id": "5a2fefb23e71bc1174acfd8d",
+		"city": "Montpellier",
+		"vent": null,
+		"temp": null,
+		"meteo": "",
+		"lat": 43.622192399999996,
+		"date": 1513090994306,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "euphorique (voire drogué)",
+		"__v": 0
+	},
+	{
+		"_id": "5a2ff2133e71bc1174acfd93",
+		"city": "Montpellier",
+		"vent": null,
+		"temp": null,
+		"meteo": "",
+		"lat": 43.631519999999995,
+		"date": 1513091603067,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "triste",
+		"__v": 0
+	},
+	{
+		"_id": "5a2ff2253e71bc1174acfd96",
+		"city": "Montpellier",
+		"vent": null,
+		"temp": null,
+		"meteo": "",
+		"lat": 43.631539599999996,
+		"date": 1513091621657,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "neutre",
+		"__v": 0
+	},
+	{
+		"_id": "5a2ff2393e71bc1174acfd99",
+		"city": "Montpellier",
+		"vent": null,
+		"temp": null,
+		"meteo": "",
+		"lat": 43.631539599999996,
+		"date": 1513091641275,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "en colère",
+		"__v": 0
+	},
+	{
+		"_id": "5a2ff3d13e71bc1174acfd9c",
+		"city": "Montpellier",
+		"vent": null,
+		"temp": null,
+		"meteo": "",
+		"lat": 43.631539599999996,
+		"date": 1513092049392,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "triste",
+		"__v": 0
+	},
+	{
+		"_id": "5a2ff6b93e71bc1174acfda3",
+		"city": "Montpellier",
+		"vent": null,
+		"temp": null,
+		"meteo": "",
+		"lat": 43.6333683,
+		"date": 1513092793579,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "tristounet",
+		"__v": 0
+	},
+	{
+		"_id": "5a2ffc98873a2827708cc292",
+		"city": "Montpellier",
+		"vent": null,
+		"temp": null,
+		"meteo": "",
+		"lat": 43.6333969,
+		"date": 1513094296503,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "exécrable",
+		"__v": 0
+	},
+	{
+		"_id": "5a2ffca8873a2827708cc294",
+		"city": "Montpellier",
+		"vent": null,
+		"temp": null,
+		"meteo": "",
+		"lat": 43.633387299999995,
+		"date": 1513094312469,
+		"user": "59db4e38f285a410443c28db",
+		"__v": 0
+	},
+	{
+		"_id": "5a2ffcb3873a2827708cc297",
+		"city": "Montpellier",
+		"vent": null,
+		"temp": null,
+		"meteo": "",
+		"lat": 43.6333732,
+		"date": 1513094323005,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "heureux",
+		"__v": 0
+	},
+	{
+		"_id": "5a3113c65b721d2cb82190ce",
+		"city": "Montpellier",
+		"vent": null,
+		"temp": null,
+		"meteo": "",
+		"lat": 43.633377700000004,
+		"date": 1513165766352,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "exécrable",
+		"__v": 0
+	},
+	{
+		"_id": "5a31479efe1ea3109c3f7d22",
+		"city": "Montpellier",
+		"vent": 1.5,
+		"temp": 8.8378125,
+		"meteo": "Clouds",
+		"lat": 43.633378799999996,
+		"date": 1513179038873,
+		"user": "59db4e38f285a410443c28db",
+		"emotion": "tristounet",
+		"__v": 0
+	}
+]

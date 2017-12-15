@@ -18,16 +18,27 @@
   },
   "homepage": "https://github.com/natoine/iauthenticate#readme",
   "dependencies": {
+    "apiai": "^4.0.3",
     "bcrypt-nodejs": "0.0.3",
-    "body-parser": "^1.17.2",
+    "body-parser": "^1.18.2",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.3",
+    "csv-express": "^1.2.2",
     "ejs": "^2.5.7",
-    "express": "^4.15.4",
-    "express-session": "^1.15.5",
-    "mongoose": "^4.11.7",
-    "morgan": "^1.8.2",
+    "express": "^4.16.2",
+    "express-session": "^1.15.6",
+    "fs": "0.0.1-security",
+    "js2xmlparser": "^3.0.0",
+    "libxmljs": "^0.18.7",
+    "mongoose": "^4.13.7",
+    "morgan": "^1.9.0",
+    "nodemailer": "^4.4.1",
+    "openweather-apis": "^3.3.5",
     "passport": "^0.4.0",
-    "passport-local": "^1.0.0"
+    "passport-facebook": "^2.1.1",
+    "passport-google-oauth": "^1.0.0",
+    "passport-local": "^1.0.0",
+    "passport-twitter": "^1.0.4",
+    "twitter": "^1.7.1"
   }
 }
