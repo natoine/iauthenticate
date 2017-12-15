@@ -2,7 +2,6 @@
 <!doctype html>
 <html>
 	<head>
-        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 		<script src="https://d3js.org/d3.v3.js"></script>
 		<title>Visualisation des humeurs</title>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
@@ -25,7 +24,9 @@
 			
 		</style>
 	</head>
-	<body">	
+	<body>
+		<p style="font-size:60px;color:blue;text-align:center;"> Visualisations </p>
+		
 		<table>
 			<tr>
 				<td>
@@ -35,7 +36,7 @@
 			</tr>
 			<tr>
 				<td>
-					<div id="nuage">
+					<div id="graph">
 						<div id="myDiv"></div>
 					<div>
 				</td>
@@ -52,9 +53,6 @@
 			var tab = [];
 			var data_courbe = []
 			var sum = 0;
-			var sum2=0;
-			var tab_cam=[0,0,0,0,0,0,0,0,0];
-			var tab_meteo=[0,0,0,0,0,0];
 			var parseDate = d3.time.format("%d-%b-%y")
 			var parseDate2 = d3.time.format("%d-%b-%y").parse;
 			var onto2 = {}
@@ -67,12 +65,13 @@
 			
 			for (i in humeur){
 				date= parseDate2(parseDate(new Date(humeur[i].date)))
+				//console.log(date)
 				if (humeur[i].emotion == undefined){
 					tab.push(0)
 					humeur[i].val = 0
 				}
 				else{
-					tab.push(onto2[humeur[i].emotion])
+				
 					if (onto2[humeur[i].emotion] == 'execrable'){
 						onto2[humeur[i].emotion] = '#FC0404'
 					}
@@ -99,21 +98,15 @@
 					}
 					if (onto2[humeur[i].emotion] == 'euphorique'){
 						onto2[humeur[i].emotion] = '#06E116'
-					}					
-					sum+=onto2[humeur[i].emotion]					
-					for (j=0;j<9;j++){
-						if(onto2[humeur[i].emotion]==(j-4)*25){
-							tab_cam[j]+=1;
-						}
-					}
+					}		
+					tab.push(onto2[humeur[i].emotion])
+					sum+=onto2[humeur[i].emotion]	
 					humeur[i].val = onto2[humeur[i].emotion]
 				}
-				if (humeur[i].meteo == undefined){
-					tab.push(0)
-					humeur[i].val2 = 0
-				}
-				else{
-					tab.push(humeur[i].meteo)
+				if(elt["date"] == undefined){
+					elt["date"] = date
+					elt["mood"] = humeur[i].val
+							
 					if (humeur[i].meteo == 'Clear'){
 						humeur[i].meteo = 2
 					}
@@ -129,25 +122,35 @@
 					else if (humeur[i].meteo == 'Sun'){
 						humeur[i].meteo = 1
 					}
-					else{humeur[i].meteo = 6}
-					sum2+=humeur[i].meteo				
-					for (j=0;j<5;j++){
-						if(humeur[i].meteo==(j)){
-							tab_meteo[j]+=1;
-						}
-					}
-					humeur[i].val2 = humeur[i].meteo
-				}
-				if(elt["date"] == undefined){
-					elt["date"] = date
-					elt["mood"] = humeur[i].val
-					elt["meteo"] = humeur[i].val2
+					else{
+						humeur[i].meteo = 6
+					}	
+					elt["meteo"] = humeur[i].meteo
 					elt["nb"] = 1
 				}
 				else{
 					if (elt["date"].getTime() == date.getTime()){
 						elt["mood"] += humeur[i].val
-						elt["meteo"] += humeur[i].val2
+							
+					if (humeur[i].meteo == 'Clear'){
+						humeur[i].meteo = 2
+					}
+					else if (humeur[i].meteo == 'Clouds'){
+						humeur[i].meteo = 3
+					}
+					else if (humeur[i].meteo == 'Snow'){
+						humeur[i].meteo = 5
+					}
+					else if (humeur[i].meteo == 'Rain'){
+						humeur[i].meteo = 4
+					}
+					else if (humeur[i].meteo == 'Sun'){
+						humeur[i].meteo = 1
+					}
+					else{
+						humeur[i].meteo = 6
+					}	
+					elt["meteo"] = humeur[i].meteo
 						elt["nb"] += 1
 					}
 					else{
@@ -156,13 +159,34 @@
 						elt = {}
 						elt["date"] = date
 						elt["mood"] = humeur[i].val
-						elt["meteo"] = humeur[i].val2
+							
+					if (humeur[i].meteo == 'Clear'){
+						humeur[i].meteo = 2
+					}
+					else if (humeur[i].meteo == 'Clouds'){
+						humeur[i].meteo = 3
+					}
+					else if (humeur[i].meteo == 'Snow'){
+						humeur[i].meteo = 5
+					}
+					else if (humeur[i].meteo == 'Rain'){
+						humeur[i].meteo = 4
+					}
+					else if (humeur[i].meteo == 'Sun'){
+						humeur[i].meteo = 1
+					}
+					else{
+						humeur[i].meteo = 6
+					}	
+					elt["meteo"] = humeur[i].meteo
 						elt["nb"] = 1
 					}
 				}
 			}
 			elt["mood"] /= elt["nb"]
-			data_courbe.push(elt)
+			//data_courbe.push(elt)
+			
+			console.log(data_courbe)
 			
 			var n = tab.length
 			if(n==0){
@@ -171,70 +195,45 @@
 			var moy = sum/n
 			
 			
+			// nuage de pts *****************************************************************************************************************************************
+			// Set the dimensions of the canvas / graph
+			var margin = {top: 30, right: 40, bottom: 30, left: 50},
+				width = 600 - margin.left - margin.right,
+				height = 270 - margin.top - margin.bottom;
 
+			// Set the ranges
+			var x = d3.time.scale().range([0, width]);
+			var y = d3.scale.linear().range([height, 0]);
+
+			// Define the axes
+			var xAxis = d3.svg.axis().scale(x)
+				.orient("bottom").ticks(5);
+
+			var yAxis = d3.svg.axis().scale(y)
+				.orient("left").ticks(5);
 				
 				
 
-			
-			//nuage de point
-			var margin = {top: 20, right: 20, bottom: 30, left: 40},
-				width = 960 - margin.left - margin.right,
-				height = 500 - margin.top - margin.bottom;
-
-			var x = d3.scale.linear()
-				.range([0, width]);
-
-			var y = d3.scale.linear()
-				.range([height, 0]);
-
-			var color = d3.scale.category10();
-
-			var xAxis = d3.svg.axis()
-				.scale(x)
-				.orient("bottom");
-
-			var yAxis = d3.svg.axis()
-				.scale(y)
-				.orient("left");
-
-			var svg = d3.select("body").append("svg")
+			// Define the line
+			var valueline = d3.svg.line()
+				.x(function(data_courbe) { return x(data_courbe.date); })
+				.y(function(data_courbe) { return y(data_courbe.meteo); });
+				
+			// Adds the svg canvas
+			var graph = d3.select("#graph")
+				.append("svg")
 				.attr("width", width + margin.left + margin.right)
 				.attr("height", height + margin.top + margin.bottom)
-			  .append("g")
+				.append("g")
 				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-
-			  data_courbe.forEach(function(d) {
-				d.date = +d.date;
-				d.meteo = +d.meteo;
-			  });
-
-			  x.domain(d3.extent(data_courbe, function(d) { return d.date; })).nice();
-			  y.domain(d3.extent(data_courbe, function(d) { return d.meteo; })).nice();
-
-			  svg.append("g")
-				  .attr("class", "x axis")
-				  .attr("transform", "translate(0," + height + ")")
-				  .call(xAxis)
-				.append("text")
-				  .attr("class", "label")
-				  .attr("x", width)
-				  .attr("y", -6)
-				  .style("text-anchor", "end")
-				  .text("Date");
-
-			  svg.append("g")
-				  .attr("class", "y axis")
-				  .call(yAxis)
-				.append("text")
-				  .attr("class", "label")
-				  .attr("transform", "rotate(-90)")
-				  .attr("y", 6)
-				  .attr("dy", ".71em")
-				  .style("text-anchor", "end")
-				  .text("Météo")
-
-			  svg.selectAll(".dot")
+				
+				
+			x.domain(d3.extent(data_courbe, function(data_courbe) { return data_courbe.date; }));
+			y.domain([d3.min(data_courbe, function(data_courbe) { return data_courbe.meteo; }), d3.max(data_courbe, function(data_courbe) { return data_courbe.mood; })]);
+			
+			var color = d3.scale.category10();
+			
+			  graph.selectAll(".dot")
 				  .data(data_courbe)
 				.enter().append("circle")
 				  .attr("class", "dot")
@@ -242,8 +241,33 @@
 				  .attr("cx", function(d) { return x(d.date); })
 				  .attr("cy", function(d) { return y(d.meteo); })
 				  .style("fill", function(d) { return color(d.mood); });
+				  
+			// Add the X Axis
+			graph.append("g")
+				.attr("class", "axis")
+				.attr("transform", "translate(0," + height + ")")
+				.call(xAxis)
+				.append("text")
+				  .attr("class", "label")
+				  .attr("x", width)
+				  .attr("y", -6)
+				  .style("text-anchor", "end")
+				  .text("Date");
 
-			  var legend = svg.selectAll(".legend")
+			// Add the Y Axis
+			graph.append("g")
+				.attr("class", "axis")
+				.call(yAxis)
+				.append("text")
+				  .attr("class", "label")
+				  .attr("transform", "rotate(-90)")
+				  .attr("y", 6)
+				  .attr("dy", ".71em")
+				  .style("text-anchor", "end")
+				  .text("Météo")
+				  
+		
+			  var legend = graph.selectAll(".legend")
 				  .data(color.domain())
 				.enter().append("g")
 				  .attr("class", "legend")
@@ -260,8 +284,7 @@
 				  .attr("y", 9)
 				  .attr("dy", ".35em")
 				  .style("text-anchor", "end")
-				  .text(function(d) { return d.mood; });
-			
+				  .text(function(d) { return [humeur[i].emotion]; });
 		</script>
 		
 	</body>
