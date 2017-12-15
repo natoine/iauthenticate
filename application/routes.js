@@ -633,9 +633,14 @@ module.exports = function(app, passport) {
 			}
 		}); 
     })
-	app.get('/humeur/tweets/:user', (req, res) => {
+	
+	app.get('/api/tweets/:user', (req, res) => {
 		res.json({
-			response: `a GET request for LOOKING at a special answer id: ${req.params.user}`
+			tweets.find({ 'user': req.params.user }, 'tweet', function (err, athletes) {
+				if (err) return handleError(err);
+				// 'athletes' contains the list of athletes that match the criteria.
+			})
+			//response: `a GET request for LOOKING at a special answer id: ${req.params.user}`
 		});
 	});
 
