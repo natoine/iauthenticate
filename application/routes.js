@@ -14,7 +14,8 @@ const db = mongoose.createConnection(configDB.url)
 const http = require('http')
 const csv = require('csv-express');
 
-const js2xmlparser = require("js2xmlparser");
+const js2xmlparser = require("js2xmlparser")
+const libxmljs = require("libxmljs")
 
 // file system to write in file
 const fs = require("fs")
@@ -71,10 +72,37 @@ module.exports = function(app, passport) {
 				{
 					xmlLeMonde += chunk
 				})
-				httpresponse.on('end', function() {
-					console.log(xmlLeMonde)
-                    res.render('flux.ejs', {xmlLeMonde: xmlLeMonde});
-                })
+            httpresponse.on('end', function() {
+                var xmlDoc = libxmljs.parseXml(xmlLeMonde)
+
+                var gchild = xmlDoc.get('//channel')
+
+                var children = gchild.childNodes();
+                var itemsTab = new Array()
+
+                var k = 0
+                for (var i=0; i<children.length; i++) {
+                    var item = children[i].childNodes()
+                    if (item.length>12) {
+                        var attrTab = new Array()
+                        for (var j=1; j<(item.length); j=j+2) {
+                            if (j==11) {
+                                attrName = item[j].name()
+                                attrValue = item[j].attr('url').value()
+                                attrTab[attrName] = attrValue
+                            } else {
+                                attrName = item[j].name()
+                                attrValue = item[j].text()
+                                attrTab[attrName] = attrValue
+                            }
+                        }
+                        itemsTab[k] = attrTab
+                        k++
+                    }
+                }
+
+                res.render('flux.ejs', {xmlLeMonde: itemsTab});
+            })
 				httpresponse.on('error', function (e) {
 					console.log('problem with request: ' + e.message);
                     res.render('flux.ejs', {xmlLeMonde: e.message});
