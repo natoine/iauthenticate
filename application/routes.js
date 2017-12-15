@@ -406,6 +406,37 @@ module.exports = function(app, passport) {
     })
 
 // =============================================================================
+// API =========================================================================
+// =============================================================================
+
+	// Twitter
+	app.get('/api/tweets/', (req, res) => {
+		TweetDb.find(function(err, tweets) {
+            if (err) res.send(err);
+			res.json(tweets);
+        });
+	});
+	app.get('/api/tweets/:user', (req, res) => {
+		TweetDb.find({user : req.params.user},function (err, tweets) {
+			if (err) res.send(err);
+			res.json(tweets);
+		});
+	});
+	// Humeurs
+	app.get('/api/humeurs/', (req, res) => {
+		Humeur.find(function(err, humeurs) {
+            if (err) res.send(err);
+			res.json(humeurs);
+        });
+	});
+	app.get('/api/humeurs/:user/', (req, res) => {
+		Humeur.find({user : req.params.user},function(err, humeurs) {
+            if (err) res.send(err);
+			res.json(humeurs);
+        });
+	});
+
+// =============================================================================
 // AUTHORIZE (ALREADY LOGGED IN / CONNECTING OTHER SOCIAL ACCOUNT) =============
 // =============================================================================
 
@@ -633,16 +664,6 @@ module.exports = function(app, passport) {
 			}
 		}); 
     })
-	
-	app.get('/api/tweets/', (req, res) => {
-		TweetDb.find(function(err, bears) {
-            if (err)
-                res.send(err);
-
-            res.json(bears);
-        });
-	});
-
 
 // Récupérer toutes les humeurs--
     app.get('/listhumeur', isLoggedInAndActivated, function(req, res) {
