@@ -200,7 +200,7 @@ module.exports = function(app, express) {
                                 else
                                 {
                                     req.flash('loginMessage', 'pwd changed. Try to login.')
-                                    res.render('login.ejs', { message: req.flash('loginMessage') })
+                                    res.redirect("/login")
                                 }
                             })
                         }
