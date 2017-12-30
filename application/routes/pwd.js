@@ -180,26 +180,37 @@ module.exports = function(app, express) {
                     }
                     else
                     {
-                        user.local.password = user.generateHash(req.body.password)
-                        user.local.pwdrecotoken = ""
-                        user.local.timepwdreco = ""
-                        user.local.mailvalidated = true //validate account in the same time. Afterall, if a guy recovers pwd but is not activated, we have verified its email in the same time.
-                        user.save(function(err) {
-                            if (err)
-                            {
-                                console.log(err)
-                                //flash
-                                req.flash('pwdrecoveryMessage', 'An error occured, try later')
-                                req.flash('pwdrecoveryokMessage', '')
-                                res.render('pwdrecovery.ejs', { messageok: req.flash('pwdrecoveryokMessage') , 
-                                    messagedanger: req.flash('pwdrecoveryMessage') })
-                            }
-                            else
-                            {
-                                req.flash('loginMessage', 'pwd changed. Try to login.')
-                                res.render('login.ejs', { message: req.flash('loginMessage') })
-                            }
-                        })
+                        newpwd = req.body.password
+                        if(newpwd.length != 0)
+                        {
+                            user.local.password = user.generateHash(newpwd)
+                            user.local.pwdrecotoken = ""
+                            user.local.timepwdreco = ""
+                            user.local.mailvalidated = true //validate account in the same time. Afterall, if a guy recovers pwd but is not activated, we have verified its email in the same time.
+                            user.save(function(err) {
+                                if (err)
+                                {
+                                    console.log(err)
+                                    //flash
+                                    req.flash('pwdrecoveryMessage', 'An error occured, try later')
+                                    req.flash('pwdrecoveryokMessage', '')
+                                    res.render('pwdrecovery.ejs', { messageok: req.flash('pwdrecoveryokMessage') , 
+                                        messagedanger: req.flash('pwdrecoveryMessage') })
+                                }
+                                else
+                                {
+                                    req.flash('loginMessage', 'pwd changed. Try to login.')
+                                    res.render('login.ejs', { message: req.flash('loginMessage') })
+                                }
+                            })
+                        }
+                        else
+                        {
+                            req.flash('pwdrecoverylinkMessage', 'Bad pwd, try again')
+                            res.render('pwdrecoverylink' , 
+                            { message: req.flash('pwdrecoverylinkMessage'), 
+                                email: user.local.email, token: req.body.token })
+                        }
                     }
                 }
             })
