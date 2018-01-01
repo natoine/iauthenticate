@@ -139,13 +139,7 @@ module.exports = function(passport)
                 return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.')) // create the loginMessage and save it to session as flashdata
 
             // all is well, return successful user
-            if(req.body.rememberme == "yes") 
-            {
-                    //generates rememberme token
-                    //stores rememberme token in User
-                    //stores rememberme token in cookie with uid
-
-            }
+            console.log("success user")
             return done(null, user)
         })
 

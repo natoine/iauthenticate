@@ -19,10 +19,45 @@ module.exports = function(app, express, passport) {
 
     // process the login form
     authRoutes.post('/login', passport.authenticate('local-login', {
-        successRedirect : '/profile', // redirect to the secure profile section
+        //successRedirect : '/profile', // redirect to the secure profile section
         failureRedirect : '/login', // redirect back to the signup page if there is an error
         failureFlash : true // allow flash messages
-    }))
+    }),
+    function(req, res, next){
+        console.log("next")
+        if(req.body.rememberme == "yes") 
+        {
+            user = req.user
+            //generates rememberme token
+            tokenrem = user.generatesRememberMeToken()
+            user.local.remembermetoken = tokenrem
+            user.save(function(err) 
+            {
+                if (err) 
+                {
+                    console.log("unable to save rememberme token - error : " + err)
+                    res.redirect('/profile')
+                }
+                else 
+                {
+                    //stores rememberme token in cookie with user email
+                    console.log("before clear cookies : " + req.cookies.useremail + " " + req.cookies.remembermetoken)
+                    res.clearCookie('useremail')
+                    res.clearCookie('remembermetoken')
+                    res.cookie("useremail", user.local.email)
+                    res.cookie("remembermetoken", user.local.remembermetoken, {maxAge: 604800000})//7 days
+                    console.log("login cookies : " + user.local.email + " " + user.local.remembermetoken)
+                    res.redirect('/profile')
+                }
+            })
+        }
+        else 
+        {
+            res.clearCookie('useremail')
+            res.clearCookie('remembermetoken')
+            res.redirect('/profile')
+        }
+    })
 
     // =====================================
     // SIGNUP ==============================
@@ -138,6 +173,8 @@ module.exports = function(app, express, passport) {
     // LOGOUT ==============================
     // =====================================
     authRoutes.get('/logout', function(req, res) { 
+        res.clearCookie('remembermetoken')
+        res.clearCookie('useremail')
         req.logout()
         res.redirect('/')
     })

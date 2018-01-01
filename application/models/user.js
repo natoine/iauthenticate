@@ -12,7 +12,8 @@ const userSchema = mongoose.Schema({
         mailvalidated: Boolean, 
         activationtoken: String,
         timepwdreco  : Number,
-        pwdrecotoken : String
+        pwdrecotoken : String,
+        remembermetoken : String
     },
     facebook         : {
         id           : String,
@@ -54,6 +55,12 @@ userSchema.methods.generatePwdRecoToken = function(email , timepwdreco) {
 //checking if user is activated
 userSchema.methods.isActivated = function() {
     return this.local.mailvalidated
+}
+
+//generates a token for rememberme
+userSchema.methods.generatesRememberMeToken = function() {
+    const now = new Date().getTime()
+    return bcrypt.hashSync(this.local.email + now, bcrypt.genSaltSync(8), null)
 }
 
 // create the model for users and expose it to our app
