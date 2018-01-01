@@ -18,8 +18,8 @@ module.exports = function(app, express) {
     // HOME PAGE (with login links) ========
     // =====================================
     mainRoutes.get('/', function(req, res) {
-        req.logout()
-        res.render('index.ejs')// load the index.ejs file
+        if(req.isAuthenticated() && req.user.isActivated()) res.redirect('/profile')
+        else res.render('index.ejs')// load the index.ejs file
     })
 
     // =====================================
