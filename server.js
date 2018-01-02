@@ -34,6 +34,7 @@ app.set('view engine', 'ejs') // set up ejs for templating
 app.use(session({ secret: confsecret })) // session secret
 app.use(passport.initialize())
 app.use(passport.session()) // persistent login sessions
+//app.use(passport.authenticate('remember-me'))
 app.use(flash()) // use connect-flash for flash messages stored in session
 
 // routes ======================================================================
