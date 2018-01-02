@@ -22,9 +22,13 @@ module.exports = function(app, express) {
             console.log("isAuthenticated ? " + req.isAuthenticated())
             if(req.isAuthenticated() && req.user.isActivated()) 
             {
-                res.redirect('/profile')
+                res.redirect('/main')
             }
             else res.render('index.ejs')// load the index.ejs file
+    })
+
+    mainRoutes.get('/main', function(req, res) {
+        res.redirect('/profile')
     })
 
     // =====================================

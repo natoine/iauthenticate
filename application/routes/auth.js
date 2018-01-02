@@ -24,7 +24,6 @@ module.exports = function(app, express, passport) {
         failureFlash : true // allow flash messages
     }),
     function(req, res, next){
-        console.log("next")
         if(req.body.rememberme == "yes") 
         {
             user = req.user
@@ -36,7 +35,7 @@ module.exports = function(app, express, passport) {
                 if (err) 
                 {
                     console.log("unable to save rememberme token - error : " + err)
-                    res.redirect('/profile')
+                    res.redirect('/main')
                 }
                 else 
                 {
@@ -45,7 +44,7 @@ module.exports = function(app, express, passport) {
                     res.clearCookie('remembermetoken')
                     res.cookie("useremail", user.local.email)
                     res.cookie("remembermetoken", user.local.remembermetoken, {maxAge: 604800000})//7 days
-                    res.redirect('/profile')
+                    res.redirect('/main')
                 }
             })
         }
@@ -53,7 +52,7 @@ module.exports = function(app, express, passport) {
         {
             res.clearCookie('useremail')
             res.clearCookie('remembermetoken')
-            res.redirect('/profile')
+            res.redirect('/main')
         }
     })
 
@@ -134,7 +133,7 @@ module.exports = function(app, express, passport) {
     // handle the callback after facebook has authenticated the user
     authRoutes.get('/auth/facebook/callback',
         passport.authenticate('facebook', {
-            successRedirect : '/profile',
+            successRedirect : '/main',
             failureRedirect : '/'
         }))
 
@@ -147,7 +146,7 @@ module.exports = function(app, express, passport) {
     // handle the callback after twitter has authenticated the user
     authRoutes.get('/auth/twitter/callback',
         passport.authenticate('twitter', {
-            successRedirect : '/profile',
+            successRedirect : '/main',
             failureRedirect : '/'
         }))
 
@@ -162,7 +161,7 @@ module.exports = function(app, express, passport) {
     // the callback after google has authenticated the user
     authRoutes.get('/auth/google/callback',
             passport.authenticate('google', {
-                    successRedirect : '/profile',
+                    successRedirect : '/main',
                     failureRedirect : '/'
             }))
 
@@ -187,7 +186,7 @@ module.exports = function(app, express, passport) {
         })
 
         authRoutes.post('/connect/local', security.isLoggedInAndActivated, passport.authenticate('local-signup', {
-            successRedirect : '/profile', // redirect to the secure profile section
+            successRedirect : '/main', // redirect to the secure profile section
             failureRedirect : '/connect/local', // redirect back to the signup page if there is an error
             failureFlash : true // allow flash messages
         }))
@@ -200,7 +199,7 @@ module.exports = function(app, express, passport) {
         // handle the callback after facebook has authorized the user
         authRoutes.get('/connect/facebook/callback', security.isLoggedInAndActivated,
             passport.authorize('facebook', {
-                successRedirect : '/profile',
+                successRedirect : '/main',
                 failureRedirect : '/'
             }))
 
@@ -212,7 +211,7 @@ module.exports = function(app, express, passport) {
         // handle the callback after twitter has authorized the user
         authRoutes.get('/connect/twitter/callback', security.isLoggedInAndActivated,
             passport.authorize('twitter', {
-                successRedirect : '/profile',
+                successRedirect : '/main',
                 failureRedirect : '/'
             }))
 
@@ -224,7 +223,7 @@ module.exports = function(app, express, passport) {
         // the callback after google has authorized the user
         authRoutes.get('/connect/google/callback', security.isLoggedInAndActivated,
             passport.authorize('google', {
-                successRedirect : '/profile',
+                successRedirect : '/main',
                 failureRedirect : '/'
             }))
 
