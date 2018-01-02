@@ -42,16 +42,50 @@ module.exports = function(passport)
     // REMEMBERME ============================================================
     // =========================================================================
 
-/*    passport.use(new RememberMeStrategy(function(token, done) {
+    passport.use(new RememberMeStrategy(
+        function(token, done) {
+            console.log("remember me strategy !!! ")
+            consumeRememberMeToken(token, function(err, uid) {
+                if (err) return done(err)
+                if (!uid) return done(null, false)
+                User.findById(uid, function(err, user) {
+                    if (err) return done(err)
+                    if (!user) return done(null, false)
+                    return done(null, user)
+                })
+            })
+      },
+      issueToken
+    ))
 
-    })
-    ,
-    function(user, done) {
-        
+    function consumeRememberMeToken(token, fn) {
+        User.findOne({ 'local.remembermetoken' :  token }, function(err, user) {
+            if(err) return fn(err, false)
+            if(!user) return fn(null, false)
+            else return fn(null, user._id)
+        })  
     }
-    )
 
-*/
+    function issueToken(user, done) {
+        console.log("issueToken")
+        token = user.generatesRememberMeToken()
+        
+        saveRememberMeToken(token, user, function(err) {
+            if (err) return done(err)
+            return done(null, token)
+        })
+
+    }
+
+    function saveRememberMeToken(token, user, fn) {
+        user.local.remembermetoken = token
+        user.save(function(err){
+            if(err) console.log(err)
+            else console.log("saved new token for rememberme")
+        })
+        return fn()
+    }
+
     // =========================================================================
     // LOCAL SIGNUP ============================================================
     // =========================================================================
