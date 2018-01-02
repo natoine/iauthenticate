@@ -14,7 +14,7 @@ module.exports = {
     },
 
     rememberme: function(req, res, next) {
-        //console.log("req.cookies.useremail" + req.cookies.useremail)
+        console.log("rememberme")
         // if user has cookies
         if(req.cookies.useremail && req.cookies.remembermetoken)
         {
@@ -51,6 +51,7 @@ module.exports = {
     },
 
     isLoggedInAndActivated: function(req, res, next) {
+        console.log("isLoggedInAndActivated")
         // if user is authenticated in the session, carry on 
         if (req.isAuthenticated() && req.user.isActivated())
         {
