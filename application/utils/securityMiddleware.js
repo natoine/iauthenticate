@@ -33,21 +33,21 @@ module.exports = {
                         if(err) 
                         {
                             console.log("unable to save rememberme token - error : " + err)
-                            return next(req, res)
+                            return next()
                         }
                         else
                         {
                             res.cookie("useremail", user.local.email)
                             res.cookie("remembermetoken", user.local.remembermetoken, {maxAge: 604800000})//7 days
-                            return next(req, res)
+                            return next()
                         }
                     })
                     //return next(req, res)
                 }
-                else return next(req, res)
+                else return next()
             })
         }
-        else return next(req, res)
+        else return next()
     },
 
     isLoggedInAndActivated: function(req, res, next) {

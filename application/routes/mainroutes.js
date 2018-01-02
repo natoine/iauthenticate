@@ -17,8 +17,7 @@ module.exports = function(app, express) {
     // =====================================
     // HOME PAGE (with login links) ========
     // =====================================
-    mainRoutes.get('/', function(req, res) {
-        security.rememberme(req, res, function(req, res) {
+    mainRoutes.get('/', security.rememberme, function(req, res) {
             //console.log("get / passport.user: " + req.session.passport.user)
             console.log("isAuthenticated ? " + req.isAuthenticated())
             if(req.isAuthenticated() && req.user.isActivated()) 
@@ -26,7 +25,6 @@ module.exports = function(app, express) {
                 res.redirect('/profile')
             }
             else res.render('index.ejs')// load the index.ejs file
-        })
     })
 
     // =====================================
