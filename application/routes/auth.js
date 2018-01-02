@@ -41,12 +41,10 @@ module.exports = function(app, express, passport) {
                 else 
                 {
                     //stores rememberme token in cookie with user email
-                    console.log("before clear cookies : " + req.cookies.useremail + " " + req.cookies.remembermetoken)
                     res.clearCookie('useremail')
                     res.clearCookie('remembermetoken')
                     res.cookie("useremail", user.local.email)
                     res.cookie("remembermetoken", user.local.remembermetoken, {maxAge: 604800000})//7 days
-                    console.log("login cookies : " + user.local.email + " " + user.local.remembermetoken)
                     res.redirect('/profile')
                 }
             })
