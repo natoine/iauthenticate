@@ -14,35 +14,36 @@ module.exports = {
     },
 
     rememberme: function(req, res, next) {
-        console.log("rememberme")
         // if user has cookies
         if(req.cookies.useremail && req.cookies.remembermetoken)
         {
-            console.log("ok rememberme")
             User.findOne({'local.email' : req.cookies.useremail, 'local.remembermetoken' : req.cookies.remembermetoken}, function(err, user){
+                res.clearCookie('remembermetoken')
+                res.clearCookie('useremail')    
                 if(user) 
                 {
-                    req.session.passport = {}
-                    req.session.passport.user = user._id
-                    console.log("rememberme isauthenticated ? " + req.isAuthenticated())
-                    res.clearCookie('remembermetoken')
-                    res.clearCookie('useremail')
-                    tokenrem = user.generatesRememberMeToken()
-                    user.local.remembermetoken = tokenrem
-                    user.save(function(err){
-                        if(err) 
+                    req.login(user, function(err)
+                    {
+                        if(err) return next()
+                        else 
                         {
-                            console.log("unable to save rememberme token - error : " + err)
-                            return next()
-                        }
-                        else
-                        {
-                            res.cookie("useremail", user.local.email)
-                            res.cookie("remembermetoken", user.local.remembermetoken, {maxAge: 604800000})//7 days
-                            return next()
+                            tokenrem = user.generatesRememberMeToken()
+                            user.local.remembermetoken = tokenrem
+                            user.save(function(err){
+                                if(err) 
+                                {
+                                    console.log("unable to save rememberme token - error : " + err)
+                                    return next()
+                                }
+                                else
+                                {
+                                    res.cookie("useremail", user.local.email)
+                                    res.cookie("remembermetoken", user.local.remembermetoken, {maxAge: 604800000})//7 days
+                                    return next()
+                                }
+                            })
                         }
                     })
-                    //return next(req, res)
                 }
                 else return next()
             })
@@ -51,7 +52,6 @@ module.exports = {
     },
 
     isLoggedInAndActivated: function(req, res, next) {
-        console.log("isLoggedInAndActivated")
         // if user is authenticated in the session, carry on 
         if (req.isAuthenticated() && req.user.isActivated())
         {

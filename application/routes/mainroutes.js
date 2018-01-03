@@ -18,8 +18,6 @@ module.exports = function(app, express) {
     // HOME PAGE (with login links) ========
     // =====================================
     mainRoutes.get('/', security.rememberme, function(req, res) {
-            //console.log("get / passport.user: " + req.session.passport.user)
-            console.log("isAuthenticated ? " + req.isAuthenticated())
             if(req.isAuthenticated() && req.user.isActivated()) 
             {
                 res.redirect('/main')
@@ -37,7 +35,6 @@ module.exports = function(app, express) {
     // we will want this protected so you have to be logged in to visit
     // we will use route middleware to verify this (the isLoggedIn function)
     mainRoutes.get('/profile', security.rememberme, security.isLoggedInAndActivated, function(req, res) {
-        console.log("render /profile")
         res.render('profile.ejs', {
             user : req.user // get the user out of session and pass to template
         })
