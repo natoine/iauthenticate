@@ -61,7 +61,6 @@ module.exports = function(app, express, passport) {
     // =====================================
     // show the signup form
     authRoutes.get('/signup', function(req, res) {
-        console.log("/signup isAuthenticated ? " + req.isAuthenticated())
         // render the page and pass in any flash data if it exists
         res.render('signup.ejs', { message: req.flash('signupMessage') })
     })
@@ -74,12 +73,7 @@ module.exports = function(app, express, passport) {
     })
     , 
     function(req, res) {
-        console.log("after signup")
-        if(req) 
-            {
-                console.log("after signup isAuthenticated ? " + req.isAuthenticated())
-                req.logout()
-            }
+        if(req) req.logout()
         res.redirect('/signup')
     })
 
