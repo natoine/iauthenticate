@@ -61,16 +61,27 @@ module.exports = function(app, express, passport) {
     // =====================================
     // show the signup form
     authRoutes.get('/signup', function(req, res) {
+        console.log("/signup isAuthenticated ? " + req.isAuthenticated())
         // render the page and pass in any flash data if it exists
         res.render('signup.ejs', { message: req.flash('signupMessage') })
     })
 
     // process the signup form
     authRoutes.post('/signup', passport.authenticate('local-signup', {
-        successRedirect : '/signup', // redirect to the secure profile section
+        //successRedirect : '/signup', // redirect to the secure profile section
         failureRedirect : '/signup', // redirect back to the signup page if there is an error
         failureFlash : true // allow flash messages
-    }))
+    })
+    , 
+    function(req, res) {
+        console.log("after signup")
+        if(req) 
+            {
+                console.log("after signup isAuthenticated ? " + req.isAuthenticated())
+                req.logout()
+            }
+        res.redirect('/signup')
+    })
 
     // =====================================
     // ACTIVATE ACCOUNT ==============================

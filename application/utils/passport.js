@@ -51,6 +51,7 @@ module.exports = function(passport)
     },
     function(req, email, password, done) {
 
+        console.log("local-signup : mail " + email)
         //check to see if email is correctly spelled
         const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
         if(!email.match(mailformat)) {
@@ -96,6 +97,7 @@ module.exports = function(passport)
                             }
                         })
                     }
+                    console.log("local-signup : isAuthenticated ? " + req.isAuthenticated())
                     return done(null, newUser, 
                                     req.flash('signupMessage', 'We have sent you an activation email'))
                 })
