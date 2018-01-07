@@ -8,6 +8,8 @@ const TIMINGTOCHANGEPWD = 3600000
 
 const security = require('../utils/securityMiddleware')
 
+const Humeur = require('../models/humeur')
+
 // application/routes.js
 module.exports = function(app, express) {
 

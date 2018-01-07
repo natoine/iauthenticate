@@ -1,9 +1,9 @@
 // load up the user model
-const User = require('../application/models/user')
+const User = require('../models/user')
 const mongoose = require('mongoose')
-const Humeur = require('../application/models/humeur')
-const TweetDb = require('../application/models/tweets')
-const Tchat = require('../application/models/tchat')
+const Humeur = require('../models/humeur')
+const TweetDb = require('../models/tweets')
+const Tchat = require('../models/tchat')
 var Twitter = require('twitter');
 var weather = require('openweather-apis');
 var credentials = require('../config/auth.js');
