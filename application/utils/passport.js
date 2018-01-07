@@ -7,13 +7,13 @@ var TwitterStrategy  = require('passport-twitter').Strategy
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 
 //to send emails
-const smtpTransport = require('../config/mailer')
+const mailSender = require('./mailSender')
 
 // load up the user model
-var User            = require('../application/models/user')
+var User            = require('../../application/models/user')
 
 // load the auth variables
-var configAuth = require('./auth')
+var configAuth = require('../../config/auth')
 
 // expose this function to our app using module.exports
 module.exports = function(passport) 
@@ -82,13 +82,14 @@ module.exports = function(passport)
                     else 
                     {
                         //sends an email to activate account
-                        const mailOptions =
-                        {
-                            to : email,
-                            subject : "iauthenticate account activation",
-                            html : "Welcome on iauthenticate. Please click the link bellow to activate your account : <a href=\"http://localhost:8080/activateaccount?email=" + email + "&token=" + newUser.local.activationtoken +"\">Activate Account</a>"
-                        }
-                        smtpTransport.sendMail(mailOptions, function(error, response){
+                        var subject = "iauthenticate account activation"
+                        var html = "Welcome on iauthenticate." + 
+                            " Please click the link bellow to activate your account : <a href=\""
+                            + mailSender.urlService 
+                            + "/activateaccount?email=" + email 
+                            + "&token=" + newUser.local.activationtoken 
+                            +"\">Activate Account</a>"
+                        mailSender.sendMail(email, subject, html, function(error, response){
                             if(error)
                             {
                                 console.log(error)

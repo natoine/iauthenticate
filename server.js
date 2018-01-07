@@ -20,7 +20,7 @@ const confsecret = require('./config/auth.js').sessionsecret
 // configuration ===============================================================
 const db = mongoose.createConnection(configDB.url)
 
-require('./config/passport')(passport)
+require('./application/utils/passport')(passport)
 // pass passport for configuration
 
 // set up our express application
@@ -43,8 +43,11 @@ app.use(passport.session()) // persistent login sessions
 app.use(flash()) // use connect-flash for flash messages stored in session
 
 // routes ======================================================================
-require('./application/routes.js')(app, passport)
+require('./application/routes/mainroutes.js')(app, express)
 // load our routes and pass in our app and fully configured passport
+require('./application/routes/pwd.js')(app, express)
+require('./application/routes/auth.js')(app, express, passport)
+
 
 // launch ======================================================================
 app.listen(port)
