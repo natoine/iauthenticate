@@ -24,7 +24,7 @@ module.exports = {
         res.redirect('/')
     },
 
-    function isLoggedInTwitterAndActivated(req, res, next) {
+    isLoggedInTwitterAndActivated(req, res, next) {
 
         // if user is authenticated in the session, carry on 
         if (req.isAuthenticated() && req.user.isActivated())
