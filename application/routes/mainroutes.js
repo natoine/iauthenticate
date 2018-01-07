@@ -19,7 +19,7 @@ module.exports = function(app, express) {
     // =====================================
     // HOME PAGE (with login links) ========
     // =====================================
-    app.get('/', function(req, res) {
+    mainRoutes.get('/', function(req, res) {
         req.logout() 
 
         //gather moods

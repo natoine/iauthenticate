@@ -6,7 +6,7 @@ const TweetDb = require('../models/tweets')
 const Tchat = require('../models/tchat')
 var Twitter = require('twitter');
 var weather = require('openweather-apis');
-var credentials = require('../config/auth.js');
+var credentials = require('../../config/auth');
 
 const http = require('http')
 const csv = require('csv-express');
@@ -27,12 +27,15 @@ apiow.setAPPID(credentials.API_OPENWEATHER);
 const security = require('../utils/securityMiddleware')
 
 // application/routes.js
-module.exports = function(app, passport) {
+module.exports = function(app, express) {
+
+    // get an instance of the router for clientfiles routes
+    const studentRoutes = express.Router()
 
     // =====================================
     // XML Actualités ROUTES without login. Permet de récupérer les actualités sans login.=====================
     // =====================================
-	app.get('/lemonde', function(req, res) {	
+	studentRoutes.get('/lemonde', function(req, res) {	
 		console.log('debut xml');
 		var options = {
 		  hostname: 'www.lemonde.fr',
@@ -94,26 +97,26 @@ module.exports = function(app, passport) {
 // =============================================================================
 
 	// Twitter
-	app.get('/api/tweets/', (req, res) => {
+	studentRoutes.get('/api/tweets/', (req, res) => {
 		TweetDb.find(function(err, tweets) {
             if (err) res.send(err);
 			res.json(tweets);
         });
 	});
-	app.get('/api/tweets/:user', (req, res) => {
+	studentRoutes.get('/api/tweets/:user', (req, res) => {
 		TweetDb.find({user : req.params.user},function (err, tweets) {
 			if (err) res.send(err);
 			res.json(tweets);
 		});
 	});
 	// Humeurs
-	app.get('/api/humeurs/', (req, res) => {
+	studentRoutes.get('/api/humeurs/', (req, res) => {
 		Humeur.find(function(err, humeurs) {
             if (err) res.send(err);
 			res.json(humeurs);
         });
 	});
-	app.get('/api/humeurs/:user/', (req, res) => {
+	studentRoutes.get('/api/humeurs/:user/', (req, res) => {
 		Humeur.find({user : req.params.user},function(err, humeurs) {
             if (err) res.send(err);
 			res.json(humeurs);
@@ -121,11 +124,11 @@ module.exports = function(app, passport) {
 	});
     
     // Récupérer l'humer ----------------------
-    app.get('/humeur', isLoggedInAndActivated, function(req, res) {
+    studentRoutes.get('/humeur', security.isLoggedInAndActivated, function(req, res) {
             var user = req.user
             var humeur = new Humeur();
             var list;
-            var list_humeurs = require("../ressources/humeurs.json")
+            var list_humeurs = require("../../ressources/humeurs.json")
             var key = credentials.API_OPENWEATHER.consumerKey
             console.log(list_humeurs.humeurs[1])
             Humeur.find({'user' : req.user},
@@ -140,7 +143,7 @@ module.exports = function(app, passport) {
               
     })
     
-    app.post('/humeur', isLoggedInAndActivated, function(req, res) {
+    studentRoutes.post('/humeur', security.isLoggedInAndActivated, function(req, res) {
 
         var newmood = new Humeur()
         newmood.emotion = req.body.mood
@@ -159,7 +162,7 @@ module.exports = function(app, passport) {
     })
 	
 	//Récupération des tweets
-    app.get('/humeur/tweets', security.isLoggedInTwitterAndActivated, function(req, res) {
+    studentRoutes.get('/humeur/tweets', security.isLoggedInTwitterAndActivated, function(req, res) {
 		var client = new Twitter({
 			consumer_key: credentials.twitterAuth.consumerKey,
 			consumer_secret: credentials.twitterAuth.consumerSecret,
@@ -207,7 +210,7 @@ module.exports = function(app, passport) {
 		});  
     })
 	
-	app.post('/humeur/tweets', security.isLoggedInTwitterAndActivated, function(req, res) {
+	studentRoutes.post('/humeur/tweets', security.isLoggedInTwitterAndActivated, function(req, res) {
         var client = new Twitter({
 			consumer_key: credentials.twitterAuth.consumerKey,
 			consumer_secret: credentials.twitterAuth.consumerSecret,
@@ -256,11 +259,11 @@ module.exports = function(app, passport) {
     })
 
 // Récupérer toutes les humeurs--
-    app.get('/listhumeur',  function(req, res) {
+    studentRoutes.get('/listhumeur', security.isLoggedInAndActivated,  function(req, res) {
 		var user = req.user
 		var humeur = new Humeur();
 		var list;
-		var list_humeurs = require("../ressources/humeurs.json")
+		var list_humeurs = require("../../ressources/humeurs.json")
 		console.log(list_humeurs.humeurs[1])
 		Humeur.find({}, function(err, docs){
 			user.moods = docs;
@@ -275,7 +278,7 @@ module.exports = function(app, passport) {
     // Récupérer toutes les humeurs en JSON ===========
     // ================================================
 
-    app.get('/moodsJSON', isLoggedInAndActivated, function(req, res) {
+    studentRoutes.get('/moodsJSON', security.isLoggedInAndActivated, function(req, res) {
         Humeur.find({}, function(err, docs){
             var userMoods = docs
 
@@ -299,7 +302,7 @@ module.exports = function(app, passport) {
 
 
     // Récupérer les humeurs en fichier CSV
-    app.get('/humeursCSV', function(req, res, next) {
+    studentRoutes.get('/humeursCSV', function(req, res, next) {
         var filename = "humeurs.csv";
 
         Humeur.find().lean().exec({}, function(err, docs) {
@@ -313,7 +316,7 @@ module.exports = function(app, passport) {
     });
 
     // Récupérer les humeurs en XML
-    app.get('/humeursXML', isLoggedInAndActivated, function(req, res) {
+    studentRoutes.get('/humeursXML', security.isLoggedInAndActivated, function(req, res) {
         var user = req.user
 
         Humeur.find().lean().exec({}, function(err, docs) {
@@ -336,7 +339,7 @@ module.exports = function(app, passport) {
     // ================================================
     // // Chatbot Api.AI ==============================
     // ================================================
-    app.get('/chatbot', isLoggedInAndActivated, function(req, res) {
+    studentRoutes.get('/chatbot', security.isLoggedInAndActivated, function(req, res) {
         Tchat.find({}, function(err, docs) {
             var styleDisp = ''
             console.log(docs)
@@ -350,7 +353,7 @@ module.exports = function(app, passport) {
         })
     });
 
-    app.post('/chatbot', function(req, res) {
+    studentRoutes.post('/chatbot', function(req, res) {
         var textQuery = req.body.textMsg
 
         var request = apiai.textRequest(textQuery, {
@@ -395,11 +398,11 @@ module.exports = function(app, passport) {
 	
     
     // visualisation graphqiue ----------------------
-    app.get('/graph_mood', isLoggedInAndActivated, function(req, res) {
+    studentRoutes.get('/graph_mood', security.isLoggedInAndActivated, function(req, res) {
 		var user = req.user
 		var humeur = new Humeur();
 		var list;
-		var list_humeurs = require("../ressources/humeurs.json")
+		var list_humeurs = require("../../ressources/humeurs.json")
 		console.log(list_humeurs.humeurs[1])
 		Humeur.find({'user' : req.user},
 		function(err, docs){
@@ -414,11 +417,11 @@ module.exports = function(app, passport) {
     // Visualisation graphique =========================
     // =================================================
 
-	app.get('/humeur', function(req, res) {
+	studentRoutes.get('/humeur', function(req, res) {
         res.render('humeur.ejs', {rspApiow: ''})
     });
 	
-	app.post('/humeur/tweets2', security.isLoggedInTwitterAndActivated, function(req, res) {
+	studentRoutes.post('/humeur/tweets2', security.isLoggedInTwitterAndActivated, function(req, res) {
         var client = new Twitter({
 			consumer_key: credentials.twitterAuth.consumerKey,
 			consumer_secret: credentials.twitterAuth.consumerSecret,
@@ -442,11 +445,11 @@ module.exports = function(app, passport) {
 
     
 	// Nuage de points meteo ----------------------
-    app.get('/meteo', isLoggedInAndActivated, function(req, res) {
+    studentRoutes.get('/meteo', security.isLoggedInAndActivated, function(req, res) {
 		var user = req.user
 		var humeur = new Humeur();
 		var list;
-		var list_humeurs = require("../ressources/humeurs.json")
+		var list_humeurs = require("../../ressources/humeurs.json")
 		console.log(list_humeurs.humeurs[1])
 		Humeur.find({'user' : req.user},
 		function(err, docs){
@@ -457,7 +460,7 @@ module.exports = function(app, passport) {
 		});
 	})
 
-    app.post('/humeur', function(req, res) {
+    studentRoutes.post('/humeur', function(req, res) {
         var textQuery = req.body.textMsg
 
         var request = apiow.textRequest(textQuery, {
@@ -478,5 +481,8 @@ module.exports = function(app, passport) {
         request.end();
 
     })
+
+     // apply the routes to our application
+    app.use('/', studentRoutes)
     
 }

@@ -23,10 +23,10 @@ module.exports = {
         'callbackURL'   : process.env.callbackURLGG
     },
     
-    'APIAI_TOKEN' : "",
+    'APIAI_TOKEN' : process.env.apiaitoken,
 
     'API_OPENWEATHER' : {
-    'consumerKey'       : '',
+    'consumerKey'       : process.env.apiopenweatherkey,
     }
 
 }
