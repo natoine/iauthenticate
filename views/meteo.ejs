@@ -1,0 +1,291 @@
+<!-- views/index.ejs -->
+<!doctype html>
+<html>
+	<head>
+		<script src="https://d3js.org/d3.v3.js"></script>
+		<title>Visualisation des humeurs</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+		<style>
+			body {
+			  font: 10px sans-serif;
+			}
+
+			.axis path,
+			.axis line {
+			  fill: none;
+			  stroke: #000;
+			  shape-rendering: crispEdges;
+			}
+
+			.dot {
+			  stroke: #000;
+			}	
+			
+		</style>
+	</head>
+	<body>
+		<p style="font-size:60px;color:blue;text-align:center;"> Visualisations </p>
+		
+		<table>
+			<tr>
+				<td>
+					<p style="font-size:30px;"> Météo </p>
+					<p style="font-size:15px;"> Comparer l'humeur en fonction de la météo et du temps </p>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div id="graph">
+						<div id="myDiv"></div>
+					<div>
+				</td>
+			</tr>
+		</table>
+		
+		<a href="/profile" class="btn btn-default">Mon Profil</a></br>
+		
+		<script>
+			// Récupération des donnée *******************************************************************************************************************
+			var humeur = <%- JSON.stringify(moods) %> 	//Récupération des humeurs de l'utilisateur
+			var onto = <%- JSON.stringify(list) %>		//Récupération du dico des humeurs
+			var onto = onto.humeurs
+			var tab = [];
+			var data_courbe = []
+			var sum = 0;
+			var parseDate = d3.time.format("%d-%b-%y")
+			var parseDate2 = d3.time.format("%d-%b-%y").parse;
+			var onto2 = {}
+			for (i in onto){							//Convertion du dico des humeurs
+				onto[i].valeur -= 100
+				onto2[onto[i].humeur] = onto[i].valeur
+			}
+			
+			elt = {}
+			
+			for (i in humeur){
+				date= parseDate2(parseDate(new Date(humeur[i].date)))
+				//console.log(date)
+				if (humeur[i].emotion == undefined){
+					tab.push(0)
+					humeur[i].val = 0
+				}
+				else{
+				
+					if (onto2[humeur[i].emotion] == 'execrable'){
+						onto2[humeur[i].emotion] = '#FC0404'
+					}
+					if (onto2[humeur[i].emotion] == 'enerve'){
+						onto2[humeur[i].emotion] = '#FE5304'
+					}
+					if (onto2[humeur[i].emotion] == 'triste'){
+						onto2[humeur[i].emotion] = '#FE8C04'
+					}
+					if (onto2[humeur[i].emotion] == 'tristounet'){
+						onto2[humeur[i].emotion] = '#FEB204'
+					}
+					if (onto2[humeur[i].emotion] == 'neutre'){
+						onto2[humeur[i].emotion] = '#FEEE04'
+					}
+					if (onto2[humeur[i].emotion] == 'favorable'){
+						onto2[humeur[i].emotion] = '#D9FE04'
+					}
+					if (onto2[humeur[i].emotion] == 'content'){
+						onto2[humeur[i].emotion] = '#B9FE04'
+					}
+					if (onto2[humeur[i].emotion] == 'heureux'){
+						onto2[humeur[i].emotion] = '#60FE04'
+					}
+					if (onto2[humeur[i].emotion] == 'euphorique'){
+						onto2[humeur[i].emotion] = '#06E116'
+					}		
+					tab.push(onto2[humeur[i].emotion])
+					sum+=onto2[humeur[i].emotion]	
+					humeur[i].val = onto2[humeur[i].emotion]
+				}
+				if(elt["date"] == undefined){
+					elt["date"] = date
+					elt["mood"] = humeur[i].val
+							
+					if (humeur[i].meteo == 'Clear'){
+						humeur[i].meteo = 2
+					}
+					else if (humeur[i].meteo == 'Clouds'){
+						humeur[i].meteo = 3
+					}
+					else if (humeur[i].meteo == 'Snow'){
+						humeur[i].meteo = 5
+					}
+					else if (humeur[i].meteo == 'Rain'){
+						humeur[i].meteo = 4
+					}
+					else if (humeur[i].meteo == 'Sun'){
+						humeur[i].meteo = 1
+					}
+					else{
+						humeur[i].meteo = 6
+					}	
+					elt["meteo"] = humeur[i].meteo
+					elt["nb"] = 1
+				}
+				else{
+					if (elt["date"].getTime() == date.getTime()){
+						elt["mood"] += humeur[i].val
+							
+					if (humeur[i].meteo == 'Clear'){
+						humeur[i].meteo = 2
+					}
+					else if (humeur[i].meteo == 'Clouds'){
+						humeur[i].meteo = 3
+					}
+					else if (humeur[i].meteo == 'Snow'){
+						humeur[i].meteo = 5
+					}
+					else if (humeur[i].meteo == 'Rain'){
+						humeur[i].meteo = 4
+					}
+					else if (humeur[i].meteo == 'Sun'){
+						humeur[i].meteo = 1
+					}
+					else{
+						humeur[i].meteo = 6
+					}	
+					elt["meteo"] = humeur[i].meteo
+						elt["nb"] += 1
+					}
+					else{
+						elt["mood"] /= elt["nb"]
+						data_courbe.push(elt)
+						elt = {}
+						elt["date"] = date
+						elt["mood"] = humeur[i].val
+							
+					if (humeur[i].meteo == 'Clear'){
+						humeur[i].meteo = 2
+					}
+					else if (humeur[i].meteo == 'Clouds'){
+						humeur[i].meteo = 3
+					}
+					else if (humeur[i].meteo == 'Snow'){
+						humeur[i].meteo = 5
+					}
+					else if (humeur[i].meteo == 'Rain'){
+						humeur[i].meteo = 4
+					}
+					else if (humeur[i].meteo == 'Sun'){
+						humeur[i].meteo = 1
+					}
+					else{
+						humeur[i].meteo = 6
+					}	
+					elt["meteo"] = humeur[i].meteo
+						elt["nb"] = 1
+					}
+				}
+			}
+			elt["mood"] /= elt["nb"]
+			//data_courbe.push(elt)
+			
+			console.log(data_courbe)
+			
+			var n = tab.length
+			if(n==0){
+				n=1
+			}
+			var moy = sum/n
+			
+			
+			// nuage de pts *****************************************************************************************************************************************
+			// Set the dimensions of the canvas / graph
+			var margin = {top: 30, right: 40, bottom: 30, left: 50},
+				width = 600 - margin.left - margin.right,
+				height = 270 - margin.top - margin.bottom;
+
+			// Set the ranges
+			var x = d3.time.scale().range([0, width]);
+			var y = d3.scale.linear().range([height, 0]);
+
+			// Define the axes
+			var xAxis = d3.svg.axis().scale(x)
+				.orient("bottom").ticks(5);
+
+			var yAxis = d3.svg.axis().scale(y)
+				.orient("left").ticks(5);
+				
+				
+
+			// Define the line
+			var valueline = d3.svg.line()
+				.x(function(data_courbe) { return x(data_courbe.date); })
+				.y(function(data_courbe) { return y(data_courbe.meteo); });
+				
+			// Adds the svg canvas
+			var graph = d3.select("#graph")
+				.append("svg")
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.top + margin.bottom)
+				.append("g")
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+				
+				
+			x.domain(d3.extent(data_courbe, function(data_courbe) { return data_courbe.date; }));
+			y.domain([d3.min(data_courbe, function(data_courbe) { return data_courbe.meteo; }), d3.max(data_courbe, function(data_courbe) { return data_courbe.mood; })]);
+			
+			var color = d3.scale.category10();
+			
+			  graph.selectAll(".dot")
+				  .data(data_courbe)
+				.enter().append("circle")
+				  .attr("class", "dot")
+				  .attr("r", 3.5)
+				  .attr("cx", function(d) { return x(d.date); })
+				  .attr("cy", function(d) { return y(d.meteo); })
+				  .style("fill", function(d) { return color(d.mood); });
+				  
+			// Add the X Axis
+			graph.append("g")
+				.attr("class", "axis")
+				.attr("transform", "translate(0," + height + ")")
+				.call(xAxis)
+				.append("text")
+				  .attr("class", "label")
+				  .attr("x", width)
+				  .attr("y", -6)
+				  .style("text-anchor", "end")
+				  .text("Date");
+
+			// Add the Y Axis
+			graph.append("g")
+				.attr("class", "axis")
+				.call(yAxis)
+				.append("text")
+				  .attr("class", "label")
+				  .attr("transform", "rotate(-90)")
+				  .attr("y", 6)
+				  .attr("dy", ".71em")
+				  .style("text-anchor", "end")
+				  .text("Météo")
+				  
+		
+			  var legend = graph.selectAll(".legend")
+				  .data(color.domain())
+				.enter().append("g")
+				  .attr("class", "legend")
+				  .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+			  legend.append("rect")
+				  .attr("x", width - 18)
+				  .attr("width", 18)
+				  .attr("height", 18)
+				  .style("fill", color);
+
+			  legend.append("text")
+				  .attr("x", width - 24)
+				  .attr("y", 9)
+				  .attr("dy", ".35em")
+				  .style("text-anchor", "end")
+				  .text(function(d) { return [humeur[i].emotion]; });
+		</script>
+		
+	</body>
+</html>

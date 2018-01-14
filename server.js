@@ -28,6 +28,12 @@ app.use(morgan('dev')) // log every request to the console
 app.use(cookieParser()) // read cookies (needed for auth)
 app.use(bodyParser()) // get information from html forms
 
+
+//rendre les images publiques
+app.use('/images', express.static('./ressources'));
+
+
+
 app.set('view engine', 'ejs') // set up ejs for templating
 
 // required for passport
@@ -38,6 +44,7 @@ app.use(flash()) // use connect-flash for flash messages stored in session
 
 // routes ======================================================================
 require('./application/routes/mainroutes.js')(app, express)
+require('./application/routes/studentroutes.js')(app, express)
 // load our routes and pass in our app and fully configured passport
 require('./application/routes/pwd.js')(app, express)
 require('./application/routes/auth.js')(app, express, passport)

@@ -22,6 +22,24 @@ module.exports = {
 
         // if they aren't redirect them to the home page
         res.redirect('/')
+    },
+
+    isLoggedInTwitterAndActivated(req, res, next) {
+
+        // if user is authenticated in the session, carry on 
+        if (req.isAuthenticated() && req.user.isActivated())
+        {
+            if(req.user.twitter.username){
+                return next()
+            }
+            else{
+                res.redirect('/')
+            }
+        }
+
+        // if they aren't redirect them to the home page
+        res.redirect('/')
     }
+
 
 }

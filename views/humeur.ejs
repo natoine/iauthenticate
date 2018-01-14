@@ -1,0 +1,106 @@
+<!-- views/humeur.ejs -->
+<!doctype html>
+<html>
+<head>
+	<title>Mon humeur</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body        { padding-top:80px; }
+        .tablisthum {border-spacing: 10px;border-collapse: separate;}
+    </style> 
+</head>
+<body onLoad="GPS()">
+	<div class="container">
+		<!--div class="col-sm-6 col-sm-offset-3"-->
+		<div>
+			<form action="/humeur" method ="post" >
+				<div align="center">
+					<%for (var i = 0;i < list.humeurs.length;i++){%>
+						<label><input type="radio" name="mood" value="<%= list.humeurs[i].humeur %>" style="display:none"><img src="images/<%= list.humeurs[i].picto %>" alt="<%= list.humeurs[i].humeur %>" width="80" /></label>
+					<% }%>
+					<input type="hidden" name="lat" id="lat" value="">
+					<input type="hidden" name="long" id="long" value="">
+					<input type="hidden" name="meteo" id="meteo" value="">
+					<input type="hidden" name="temp" id="temp" value="">
+					<input type="hidden" name="vent" id="vent" value="">
+					<input type="hidden" name="city" id="city" value="">
+				</div>
+				<div id="bouton">
+					<input type="submit" id="submit" disabled="" href="/humeur" value="Partager mon humeur" style="background-color:#555555; color:#ffffff">
+				</div>
+			</form>
+			
+			<a href="/profile" class="btn btn-default">Mon Profil</a>
+			<a href="/humeur/tweets" class="btn btn-default">Tweeting</a>
+			<a href="/listhumeur" class="btn btn-default">Liste totale des humeurs</a>
+			<a href="/chatbot" class="btn btn-default">Chatbot</a>
+			<a href="/meteo" class="btn btn-default">Meteo</a>
+			<a href="/graph_mood" class="btn btn-default">Visualisation graphique</a>
+			<a href="/lemonde" class="btn btn-default">Actualités en direct</a>
+
+			<% if(moods.length >0 ) {%>
+				<table id="table" class="tablisthum">
+				<tr><th>Date</th><th>Emotion</th><th>Ville</th><th>Météo (eng)</th></tr>
+				<% for (var i = 0;i < moods.length ;i++) {
+					var date = new Date(moods[moods.length-1-i].date);%>
+					<tr><td><%=date%></td><td><%=moods[moods.length-1-i].emotion%></td><td><%=moods[moods.length-1-i].city%></td><td><%=moods[moods.length-1-i].meteo%></td></tr>
+				<%}%>
+				</table>
+			<%}else{%>
+				Vous n avez exprimé aucune émotion.
+			<%}%> 
+		</div>
+	</div>
+</body>
+
+
+<script>
+	var options = {
+		enableHighAccuracy: true,
+		timeout: 5000,
+		maximumAge: 0
+	};
+
+	function success(pos) {
+		var crd = pos.coords;
+		document.getElementById('lat').value = crd.latitude;
+		document.getElementById('long').value = crd.longitude;
+		document.getElementById('submit').disabled = '';
+		
+		var s = document.createElement('script');
+		s.src = 'http://nominatim.openstreetmap.org/reverse?json_callback=city&format=json&lat='+ crd.latitude + '&lon=' + crd.longitude + '&zoom=18&addressdetails=1';
+		document.getElementsByTagName('head')[0].appendChild(s);
+		
+		//<%= key %>'
+		var url = 'http://api.openweathermap.org/data/2.5/weather?lat='+crd.latitude+'&lon='+crd.longitude+'&APPID=<%= key %>'
+		fetch(url).then(
+			function(response){
+				response.json().then(function(data){
+					console.log(data.weather[0].main);
+					console.log(data.main.temp / 32);
+					console.log(data.wind.speed); 
+					document.getElementById('meteo').value = data.weather[0].main;
+					document.getElementById('temp').value = data.main.temp / 32;
+					document.getElementById('vent').value = data.wind.speed;
+				})
+			}
+		)
+	};
+
+	window.city = function city(json) {
+		document.getElementById('city').value = json.address.city;
+	};
+
+	function error(err) {
+		console.warn(`ERROR(${err.code}): ${err.message}`);
+		document.getElementById('submit').disabled = 'disabled';
+		setTimeout(location.reload(), 5000);
+	};
+
+	window.onload = function GPS() {
+		navigator.geolocation.getCurrentPosition(success, error, options);
+	}
+</script>
+
+</html>

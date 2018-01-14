@@ -8,6 +8,8 @@ const TIMINGTOCHANGEPWD = 3600000
 
 const security = require('../utils/securityMiddleware')
 
+const Humeur = require('../models/humeur')
+
 // application/routes.js
 module.exports = function(app, express) {
 
@@ -18,8 +20,16 @@ module.exports = function(app, express) {
     // HOME PAGE (with login links) ========
     // =====================================
     mainRoutes.get('/', function(req, res) {
-        req.logout()
-        res.render('index.ejs')// load the index.ejs file
+        req.logout() 
+
+        //gather moods
+        Humeur.find({}, function(err,docs){
+            console.log("Liste d'humeurs " + docs)
+            var moodsTmp = JSON.stringify(docs)
+
+            res.render('index.ejs', { humeurs: moodsTmp })// load the index.ejs file
+        })
+        //res.render('index.ejs')// load the index.ejs file
     })
 
     // =====================================

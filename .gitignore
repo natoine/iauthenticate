@@ -58,3 +58,9 @@ typings/
 .env
 
 
+
+\.idea/
+
+tmp/moods\.json
+
+config/auth\.js
